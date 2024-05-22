@@ -16,6 +16,7 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, {
     ...config,
     define: {
+      paranoid: true,
       createdAt: 'created_at',
       updatedAt: 'updated_at',
       deletedAt: 'archived_at',
