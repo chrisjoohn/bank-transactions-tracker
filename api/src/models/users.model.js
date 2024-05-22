@@ -2,7 +2,7 @@
 
 const BaseModel = require('./baseModel');
 
-modeule.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
   class Users extends BaseModel {
     constructor() {
       super(sequelize, DataTypes);
@@ -21,7 +21,7 @@ modeule.exports = (sequelize, DataTypes) => {
     }
   }
 
-  let Model = sequelize.defeind('bt_users', new Users());
+  let Model = sequelize.define('bt_users', new Users());
 
   Model.associate = (models) => {};
 
