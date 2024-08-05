@@ -4,7 +4,7 @@
  *   - find and replace [serviceName]; it should be same as serviceName defined on the service;  e.g. userService
  */
 
-const [serviceName] = require('../services')[[serviceName]];
+const [serviceName] = require('../services')['[serviceName]'];
 
 exports.create = async (req, res) => {
   try {
