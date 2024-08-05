@@ -1,7 +1,7 @@
 
 /**
  * TODO:
- *   - find and replace [routeName]; e.g. users
+ *   - find and replace [routeName]; should be the same name as defined on controllers e.g. users
  */
 
 const express = require('express');
@@ -11,7 +11,7 @@ const router = express.Router();
 module.exports = (app) => {
   const route = '[routeName]';
 
-  const controller = require(`../controllers/${[routeName]}.controller`);
+  const controller = require(`../controllers/[routeName].controller`);
 
   router.get(`/${route}`, controller.findAll);
   router.get(`/${route}/:id`, controller.findOne);
