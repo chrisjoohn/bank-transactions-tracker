@@ -13,7 +13,7 @@ exports.serviceName = 'SERVICE_NAME_HERE';
 
 exports.create = async ({ first_name, last_name, email }) => {
   try {
-    const [modelName]Model = models[[modelName]];
+    const [modelName]Model = models.[modelName];
 
     const postData = {
       first_name,
