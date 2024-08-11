@@ -18,7 +18,9 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const data = await creditTransactionsService.findAll();
+    const { filters } = req.body;
+
+    const data = await creditTransactionsService.findAll({ filters, });
     res.json({
       data,
     });

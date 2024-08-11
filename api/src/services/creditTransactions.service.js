@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const models = require('../models');
 
 const accountsService = require('./accounts.service');
@@ -13,7 +14,6 @@ exports.create = async ({
 }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
-
 
     const account = await accountsService.findOne(account_id);
 
@@ -37,11 +37,34 @@ exports.create = async ({
   }
 };
 
-exports.findAll = async () => {
+exports.findAll = async ({ filters = {} }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
 
-    const data = await creditTransactionsModel.findAll();
+    const whereCondition = {};
+
+    const filterKeys = Object.keys(filters);
+    for (const filterKey of filterKeys) {
+      switch (filterKey) {
+        // add filters here
+        case 'account_id':
+          const accountId = filters[filterKey];
+          const account = await accountsService.findOne(accountId);
+
+          if (!account) {
+            throw new Error(`Cannot find account: ${accountId}`);
+          }
+
+          whereCondition['account_id'] = {
+            [Op.eq]: account.id,
+          };
+          break;
+      }
+    }
+
+    const data = await creditTransactionsModel.findAll({
+      where: whereCondition,
+    });
     return data;
   } catch (err) {
     console.log('Error in find all credit_transactions service: ', err);
