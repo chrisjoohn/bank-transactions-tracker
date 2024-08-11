@@ -1,5 +1,8 @@
 
 /**
+ * 
+ * REQUIREMENTS:
+ *   - create controller for this one
  * TODO:
  *   - find and replace [routeName]; should be the same name as defined on controllers e.g. users
  */
