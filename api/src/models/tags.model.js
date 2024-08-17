@@ -3,7 +3,7 @@
 const BaseModel = require('./baseModel');
 
 module.exports = (sequelize, DataTypes) => {
-  class Accounts extends BaseModel {
+  class Tags extends BaseModel {
     constructor() {
       super(sequelize, DataTypes);
 
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  let Model = sequelize.define('bt_accounts', new Accounts());
+  let Model = sequelize.define('bt_tags', new Tags());
 
   Model.associate = (models) => {};
 
