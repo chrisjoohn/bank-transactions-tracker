@@ -4,14 +4,13 @@ const models = require('../models');
 exports.serviceName = 'tagsService';
 
 
-exports.create = async ({ first_name, last_name, email }) => {
+exports.create = async ({ name, user_id }) => {
   try {
     const tagsModel = models.tags;
 
     const postData = {
-      first_name,
-      last_name,
-      email,
+      name,
+      user_id,
     };
 
     const data = await tagsModel.create(postData);
@@ -50,14 +49,13 @@ exports.findOne = async (id) => {
   }
 };
 
-exports.update = async (id, { first_name, last_name, email }) => {
+exports.update = async (id, { name, user_id }) => {
   try {
     const tagsModel = models.tags;
 
     const putData = {
-      first_name,
-      last_name,
-      email,
+      name,
+      user_id,
     };
 
     const keyField = isNaN(id) ? 'unique_code' : 'id';
