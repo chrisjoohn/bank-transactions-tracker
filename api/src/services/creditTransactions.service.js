@@ -39,6 +39,19 @@ exports.create = async ({
   }
 };
 
+exports.bulkCreate = async ({ records = [] }) => {
+  try {
+    const creditTransactionsModel = models.credit_transactions;
+
+    const data = await creditTransactionsModel.bulkCreate(records);
+
+    return data;
+  } catch (err) {
+    console.log(`Error in bulkCreate credit transactions service: `, err);
+    throw err;
+  }
+};
+
 exports.findAll = async ({ filters = {} }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
