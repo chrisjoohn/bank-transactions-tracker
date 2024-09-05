@@ -1,4 +1,6 @@
 const { Op } = require('sequelize');
+const PdfParse = require('pdf-parse');
+
 const models = require('../models');
 
 const accountsService = require('./accounts.service');
@@ -136,4 +138,124 @@ exports.delete = async (id) => {
     console.log('Error in delete credit_transactions service: ', err);
     throw err;
   }
+};
+
+/**
+ * @param {string} transactionStr
+ * e.g. BeyondTheBox-UptwnBTa:23/241,478.75
+ *
+ * returns an object
+ * {
+ *  transactionDate: string;
+ *  postDate: string;
+ * }
+ */
+const extractDates = (transactionStr) => {
+  const datePattern = /([A-Za-z]+\d{1,2})/g; // Matches "August28" or "July29"
+  let transactionDate;
+  let postDate;
+
+  // Extract transaction date and post date
+  const dateMatches = transactionStr.match(datePattern);
+  if (dateMatches && dateMatches.length >= 2) {
+    transactionDate = dateMatches[0];
+    postDate = dateMatches[1];
+  }
+
+  return {
+    transactionDate,
+    postDate,
+  };
+};
+
+/**
+ * @param {string} billerAndAmountStr
+ * @returns {
+ *  amount: string;
+ *  biller: string;
+ * }
+ */
+const extractBillerAndAmount = (billerAndAmountStr) => {
+  let amount;
+  let biller;
+
+  const amountMatch = billerAndAmountStr.match(
+    /(\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\.\d{2})$/
+  );
+
+  if (!amountMatch) {
+    throw 'Amount not found';
+  }
+
+  amount = amountMatch[0];
+
+  /**
+   * CUSTOM extracting
+   * TODO: Refactor this custom cleaners
+   */
+  // for items with :21/24<amount>
+  if (billerAndAmountStr.includes(':')) {
+    amount = billerAndAmountStr.split(':')[1].slice(5);
+  }
+
+  // for items with `0` as prefix. e.g. BpSunlif082923500016,000.00
+  if (amount.startsWith(0)) {
+    amount = amount.slice(1);
+  }
+
+  // Extract the biller part by removing the amount from the input
+  biller = billerAndAmountStr.slice(0, -amount.length).trim();
+
+  return {
+    amount,
+    biller,
+  };
+};
+
+/**
+ * @param {String[]} data
+ * @returns  {
+ *  transactionDate: string;
+ *  postDate: string;
+ *  amount: number;
+ *  biller: string
+ * }
+ */
+const parseTransactionData = (data) => {
+  return data.map((item) => {
+    // Extract transaction and post dates
+    const { transactionDate, postDate } = extractDates(item);
+
+    // Extract biller and amount
+    const datesString = `${transactionDate}${postDate}`;
+    const billerAndAmountStr = item.substring(datesString.length);
+
+    const { amount, biller } = extractBillerAndAmount(billerAndAmountStr);
+
+    return {
+      transactionDate,
+      postDate,
+      amount: parseFloat(amount.replace(',', '')),
+      biller,
+    };
+  });
+};
+
+exports.parsePDF = async (file) => {
+  const pdfData = await PdfParse(file.buffer);
+
+  const splittedPdfText = pdfData.text.split('\n');
+
+  const initial = splittedPdfText.findIndex((item) =>
+    item.toLowerCase().includes('installmentamortization')
+  );
+  const end = splittedPdfText.findIndex((item) =>
+    item.toLowerCase().includes('balancesummary')
+  );
+
+  const pdfTextArr = splittedPdfText.slice(initial + 1, end);
+
+  const data = parseTransactionData(pdfTextArr);
+
+  return data;
 };
