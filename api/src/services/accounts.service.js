@@ -3,7 +3,6 @@ const models = require('../models');
 // required name to be used on exporting services on index
 exports.serviceName = 'accountsService';
 
-
 exports.create = async ({ user_id, name, description, type }) => {
   try {
     const accountsModel = models.accounts;
@@ -24,11 +23,22 @@ exports.create = async ({ user_id, name, description, type }) => {
   }
 };
 
-exports.findAll = async () => {
+exports.findAll = async ({ filters = {} }) => {
   try {
     const accountsModel = models.accounts;
 
-    const data = await accountsModel.findAll();
+    const whereCondition = {};
+
+    const filterKeys = Object.keys(filters);
+    for (const filterKey of filterKeys) {
+      switch (filterKey) {
+        default:
+          whereCondition[filterKey] = filters[filterKey];
+          break;
+      }
+    }
+
+    const data = await accountsModel.findAll({ where: whereCondition });
     return data;
   } catch (err) {
     console.log('Error in find all accounts service: ', err);
