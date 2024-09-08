@@ -261,7 +261,7 @@ const parseTransactionData = (data) => {
   });
 };
 
-exports.parsePDF = async (file) => {
+exports.parseStatement = async (file) => {
   const pdfData = await PdfParse(file.buffer);
 
   const splittedPdfText = pdfData.text.split('\n');

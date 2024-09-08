@@ -89,7 +89,7 @@ exports.parseStatement = async (req, res) => {
       return;
     }
 
-    const data = await creditTransactionsService.parsePDF(file);
+    const data = await creditTransactionsService.parseStatement(file);
 
     res.json({
       data,
