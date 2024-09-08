@@ -89,6 +89,16 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     const { id } = req.params;
+    const { user_id } = req.user;
+
+    const toDelete = await accountsService.findOne(id, { user_id });
+    if (!toDelete) {
+      res.status(400).json({
+        message: `Can't find record to update: ${id}`
+      })
+      return;
+    }
+
     const data = await accountsService.delete(id);
 
     res.json({
