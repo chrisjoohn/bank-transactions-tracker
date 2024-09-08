@@ -22,7 +22,16 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const data = await accountsService.findAll();
+    const user_id = req.user.user_id;
+
+    const defaultFilters = {
+      user_id,
+    };
+
+    const data = await accountsService.findAll({
+      filters: { ...defaultFilters },
+    });
+
     res.json({
       data,
     });
