@@ -62,7 +62,17 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
+    const { user_id } = req.user;
+
     const putData = req.body;
+
+    const toUpdate = await accountsService.findOne(id, { user_id });
+    if (!toUpdate) {
+      res.status(400).json({
+        message: `Can't find record to update: ${id}`
+      })
+      return;
+    }
 
     const data = await accountsService.update(id, putData);
 
