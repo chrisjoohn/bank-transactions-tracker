@@ -74,12 +74,11 @@ exports.findOne = async (id, filters = {}) => {
   }
 };
 
-exports.update = async (id, { user_id, name, description, type, }) => {
+exports.update = async (id, { name, description, type }) => {
   try {
     const accountsModel = models.accounts;
 
     const putData = {
-      user_id,
       name,
       description,
       type
