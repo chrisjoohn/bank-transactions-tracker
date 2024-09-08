@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const PdfParse = require('pdf-parse');
-const { parse } = require('date-fns');
+const { parse, format } = require('date-fns');
 
 const { createHashFromObj } = require('../tools/createHash');
 
@@ -258,14 +258,17 @@ const parseTransactionData = (data) => {
     const { amount, biller } = extractBillerAndAmount(billerAndAmountStr);
 
     const transactionYear = new Date().getFullYear();
+    const dateFormat = 'yyyy-MM-dd';
 
     return {
-      transaction_date: parse(
-        transactionDate,
-        'MMMMd',
-        new Date(transactionYear, 0, 1)
+      transaction_date: format(
+        parse(transactionDate, 'MMMMd', new Date(transactionYear, 0, 1)),
+        dateFormat
       ),
-      post_date: parse(postDate, 'MMMMd', new Date(transactionYear, 0, 1)),
+      post_date: format(
+        parse(postDate, 'MMMMd', new Date(transactionYear, 0, 1)),
+        dateFormat
+      ),
       amount: parseFloat(amount.replace(',', '')),
       description: biller,
     };
