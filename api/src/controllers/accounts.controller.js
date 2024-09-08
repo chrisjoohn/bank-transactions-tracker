@@ -3,8 +3,12 @@ const accountsService = require('../services')['accountsService']
 exports.create = async (req, res) => {
   try {
     const postData = req.body;
+    const user_id = req.user.user_id;
 
-    const data = await accountsService.create(postData);
+    const data = await accountsService.create({
+      ...postData,
+      user_id,
+    });
 
     res.json({
       data,
