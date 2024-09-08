@@ -2,6 +2,8 @@ const { Op } = require('sequelize');
 const PdfParse = require('pdf-parse');
 const { parse } = require('date-fns');
 
+const { createHashFromObj } = require('../tools/createHash');
+
 const models = require('../models');
 
 const accountsService = require('./accounts.service');
@@ -44,7 +46,16 @@ exports.bulkCreate = async ({ records = [] }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
 
-    const data = await creditTransactionsModel.bulkCreate(records);
+    const toCreate = records.map((item) => {
+      const unique_code = createHashFromObj(item);
+
+      return {
+        ...item,
+        unique_code,
+      };
+    });
+
+    const data = await creditTransactionsModel.bulkCreate(toCreate);
 
     return data;
   } catch (err) {
