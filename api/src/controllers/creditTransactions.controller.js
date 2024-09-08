@@ -16,6 +16,21 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.bulkCreate = async (req, res) => {
+  try {
+    const { records } = req.body;
+    const data = await creditTransactionsService.bulkCreate({ records });
+
+    res.json({
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
 exports.findAll = async (req, res) => {
   try {
     const { filters } = req.body;
