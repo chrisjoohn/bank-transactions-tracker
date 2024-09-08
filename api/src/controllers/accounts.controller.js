@@ -45,7 +45,9 @@ exports.findAll = async (req, res) => {
 exports.findOne = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await accountsService.findOne(id);
+    const user_id = req.user.user_id;
+
+    const data = await accountsService.findOne(id, { user_id });
 
     res.json({
       data,
