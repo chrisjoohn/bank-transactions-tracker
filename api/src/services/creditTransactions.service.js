@@ -1,5 +1,6 @@
 const { Op } = require('sequelize');
 const PdfParse = require('pdf-parse');
+const { parse } = require('date-fns');
 
 const models = require('../models');
 
@@ -228,10 +229,10 @@ const extractBillerAndAmount = (billerAndAmountStr) => {
 /**
  * @param {String[]} data
  * @returns  {
- *  transactionDate: string;
- *  postDate: string;
+ *  transaction_date: string;
+ *  post_date: string;
  *  amount: number;
- *  biller: string
+ *  description: string
  * }
  */
 const parseTransactionData = (data) => {
@@ -245,11 +246,17 @@ const parseTransactionData = (data) => {
 
     const { amount, biller } = extractBillerAndAmount(billerAndAmountStr);
 
+    const transactionYear = new Date().getFullYear();
+
     return {
-      transactionDate,
-      postDate,
+      transaction_date: parse(
+        transactionDate,
+        'MMMMd',
+        new Date(transactionYear, 0, 1)
+      ),
+      post_date: parse(postDate, 'MMMMd', new Date(transactionYear, 0, 1)),
       amount: parseFloat(amount.replace(',', '')),
-      biller,
+      description: biller,
     };
   });
 };
