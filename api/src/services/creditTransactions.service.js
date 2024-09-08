@@ -42,8 +42,12 @@ exports.create = async ({
   }
 };
 
-exports.bulkCreate = async ({ records = [] }) => {
+exports.bulkCreate = async ({ records = [], account_id }) => {
   try {
+    if (!account_id) {
+      throw new Error("Account ID is required");
+    }
+
     const creditTransactionsModel = models.credit_transactions;
 
     const toCreate = records.map((item) => {
@@ -52,6 +56,7 @@ exports.bulkCreate = async ({ records = [] }) => {
       return {
         ...item,
         unique_code,
+        account_id,
       };
     });
 

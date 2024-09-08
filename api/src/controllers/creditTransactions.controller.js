@@ -18,8 +18,8 @@ exports.create = async (req, res) => {
 
 exports.bulkCreate = async (req, res) => {
   try {
-    const { records } = req.body;
-    const data = await creditTransactionsService.bulkCreate({ records });
+    const { records, account_id } = req.body;
+    const data = await creditTransactionsService.bulkCreate({ records, account_id });
 
     res.json({
       data,
