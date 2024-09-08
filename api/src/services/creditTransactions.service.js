@@ -51,12 +51,12 @@ exports.bulkCreate = async ({ records = [], account_id }) => {
     const creditTransactionsModel = models.credit_transactions;
 
     const toCreate = records.map((item) => {
-      const unique_code = createHashFromObj(item);
+      const unique_code = createHashFromObj({ ...item, account_id });
 
       return {
         ...item,
-        unique_code,
         account_id,
+        unique_code,
       };
     });
 
