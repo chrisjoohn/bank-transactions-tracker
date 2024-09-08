@@ -46,13 +46,26 @@ exports.findAll = async ({ filters = {} }) => {
   }
 };
 
-exports.findOne = async (id) => {
+exports.findOne = async (id, filters = {}) => {
   try {
     const accountsModel = models.accounts;
 
     const keyField = isNaN(id) ? 'unique_code' : 'id';
 
-    const data = await accountsModel.findOne({ where: { [keyField]: id } });
+    const whereCondition = {
+      [keyField]: id,
+    };
+
+    const filterKeys = Object.keys(filters);
+    for (const filterKey of filterKeys) {
+      switch (filterKey) {
+        default:
+          whereCondition[filterKey] = filters[filterKey];
+          break;
+      }
+    }
+
+    const data = await accountsModel.findOne({ where: whereCondition });
 
     return data;
   } catch (err) {
