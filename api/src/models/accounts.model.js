@@ -8,23 +8,23 @@ module.exports = (sequelize, DataTypes) => {
       super(sequelize, DataTypes);
 
       this.user_id = {
-	type: DataTypes.STRING(50),
-	allowNull: false,
+        type: DataTypes.STRING(50),
+        allowNull: false,
       };
 
       this.name = {
-	type: DataTypes.STRING(50),
+        type: DataTypes.STRING(50),
       };
 
       this.description = {
-	type: DataTypes.STRING(100),
+        type: DataTypes.STRING(100),
       };
 
       this.type = {
-	type: DataTypes.ENUM,
-	values: ['DEPOSIT', 'CREDIT'],
-	defaultValue: 'DEPOSIT',
-      }
+        type: DataTypes.ENUM,
+        values: ['DEPOSIT', 'CREDIT'],
+        defaultValue: 'DEPOSIT',
+      };
     }
   }
 
