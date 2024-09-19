@@ -1,0 +1,9 @@
+.btt-pill-group {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+
+	&.vertical {
+		flex-direction: column;
+	}
+}
