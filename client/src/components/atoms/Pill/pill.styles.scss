@@ -1,0 +1,11 @@
+.btt-pill {
+	cursor: pointer;
+	color: var(--primary-color);
+	padding: 8px 16px;
+	border-radius: 6px;
+
+
+	&:hover {
+		box-shadow: rgba(0, 0, 0, 0.2) 0px 20px 30px;
+	}
+}
