@@ -1,5 +1,15 @@
 // global stylings
 
+$font-sizes: (
+	2xs: 0.25rem,
+	xs: 0.5rem,
+	sm: 0.75rem,
+	md: 1rem,
+	lg: 1.25rem,
+	xl: 1.5rem,
+	2xl: 1.75rem
+);
+
 :root {
 	// colors
 	--primary-color: #27374D;
@@ -14,6 +24,11 @@
 	--black: #0f0f0f;
 
 	// spacings
+
+	// font sizes
+	@each $name, $size in $font-sizes {
+		--font-#{$name}: #{$size};
+	}
 }
 
 * {
@@ -33,4 +48,11 @@ body {
 	.pointer {
 		cursor: pointer;
 	}
+
+	@each $name, $size in $font-sizes {
+		.font-#{$name} {
+			font-size: #{$size};
+		}
+	}
+
 }
