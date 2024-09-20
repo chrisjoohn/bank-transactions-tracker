@@ -1,0 +1,31 @@
+.btt-avatar {
+	border-radius: 50%;
+	border: 2px solid black; // need to update border colors from global styles
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+
+	&.sm {
+		height: 40px;
+		width: 40px;
+	}
+
+	&.md {
+		height: 80px;
+		width: 80px;
+	}
+
+	&.lg {
+		height: 120px;
+		width: 120px;
+	}
+
+	.avatar_img {
+		height: 100%;
+		width: 100%;
+	}
+
+	.avatar_alt {}
+}
