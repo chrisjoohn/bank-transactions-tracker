@@ -59,7 +59,7 @@ export const Vertical: Story = {
   decorators: [
     (Story) => {
       return (
-        <div style={{ ...commonStyles, height: '100vh', width: '20%' }}>
+        <div style={{ ...commonStyles, height: 'calc(100vh - 2rem)', width: '20%' }}>
           <Story />
         </div>
       );
