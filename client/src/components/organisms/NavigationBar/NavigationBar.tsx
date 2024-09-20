@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import classNames from 'classnames';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 //components
 import PillGroup, { PillGroupProps } from '../../molecules/PillGroup';
@@ -30,11 +31,15 @@ const NavigationBar: FC<NavigationBarProps> = (props) => {
     avatarImgAlt,
   } = props;
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const pillGroupProps: PillGroupProps = {
     pills: navItems.map((item) => {
       return {
         label: item.label,
-        onClick: () => alert(item.path), // need to update this to do actual navigation
+        onClick: () => navigate(item.path),
+        active: location.pathname === item.path,
       };
     }),
     orientation,
