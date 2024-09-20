@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import NavigationBar from './NavigationBar';
+import NavigationBar, { NavigationBarProps } from './NavigationBar';
 
 const meta = {
   title: 'Organisms/Navigation Bar',
@@ -13,27 +13,26 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const commonArgs = {
-  pillGroupProps: {
-    pills: [
-      {
-        label: 'Dashboard',
-        active: true,
-      },
-      {
-        label: 'Accounts',
-      },
-      {
-        label: 'Reports',
-      },
-    ],
-  },
+const commonArgs: NavigationBarProps = {
+  navItems: [
+    {
+      label: 'Dashboard',
+      path: '',
+    },
+    {
+      label: 'Accounts',
+      path: 'accounts',
+    },
+    {
+      label: 'Reports',
+      path: 'reports',
+    },
+  ],
+
+  avatarImg:
+    'https://lh3.googleusercontent.com/a/ACg8ocL7WuvhQchy5AxBSS45UtdRa77eJzUzzE9pOMwz06UtyU5wfA=s96-c',
+  avatarImgAlt: 'CM',
   logo: 'Test',
-  avatarProps: {
-    imgSrc:
-      'https://lh3.googleusercontent.com/a/ACg8ocL7WuvhQchy5AxBSS45UtdRa77eJzUzzE9pOMwz06UtyU5wfA=s96-c',
-    altTxt: 'CM',
-  },
 };
 
 const commonStyles = {
@@ -59,7 +58,13 @@ export const Vertical: Story = {
   decorators: [
     (Story) => {
       return (
-        <div style={{ ...commonStyles, height: 'calc(100vh - 2rem)', width: '20%' }}>
+        <div
+          style={{
+            ...commonStyles,
+            height: 'calc(100vh - 2rem)',
+            width: '20%',
+          }}
+        >
           <Story />
         </div>
       );
