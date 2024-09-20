@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
 import NavigationBar, { NavigationBarProps } from './NavigationBar';
 
@@ -17,15 +18,15 @@ const commonArgs: NavigationBarProps = {
   navItems: [
     {
       label: 'Dashboard',
-      path: '',
+      path: '/',
     },
     {
       label: 'Accounts',
-      path: 'accounts',
+      path: '/accounts',
     },
     {
       label: 'Reports',
-      path: 'reports',
+      path: '/reports',
     },
   ],
 
@@ -40,6 +41,27 @@ const commonStyles = {
     'rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px',
 };
 
+const RouterDecorator = (Story: any) => {
+  return (
+    <MemoryRouter>
+      <Routes>
+        <Route
+          path='/'
+          element={<Story />}
+        />
+        <Route
+          path='/accounts'
+          element={<Story />}
+        />
+        <Route
+          path='/reports'
+          element={<Story />}
+        />
+      </Routes>
+    </MemoryRouter>
+  );
+};
+
 export const Base: Story = {
   args: commonArgs,
   decorators: [
@@ -50,6 +72,7 @@ export const Base: Story = {
         </div>
       );
     },
+    RouterDecorator,
   ],
 };
 
@@ -69,5 +92,6 @@ export const Vertical: Story = {
         </div>
       );
     },
+    RouterDecorator,
   ],
 };
