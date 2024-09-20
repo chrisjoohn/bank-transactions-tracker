@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import classNames from 'classnames';
 
 //components
 import PillGroup, { PillGroupProps } from '../../molecules/PillGroup';
@@ -8,16 +9,24 @@ export type NavigationBarProps = {
   pillGroupProps: PillGroupProps;
   avatarProps: AvatarProps;
   logo: string;
+
+  orientation?: 'vertical' | 'horizontal';
 };
 
 import './navigationBar.styles.scss';
 
 const NavigationBar: FC<NavigationBarProps> = (props) => {
-  const { pillGroupProps, avatarProps } = props;
+  const { pillGroupProps, avatarProps, orientation = 'horizontal' } = props;
+
+  const _pillGroupProps = {
+    ...pillGroupProps,
+    orientation,
+  };
+
   return (
-    <div className={`btt-navigation-bar`}>
+    <div className={classNames(`btt-navigation-bar`, orientation)}>
       <div className='left'>
-        <PillGroup {...pillGroupProps} />
+        <PillGroup {..._pillGroupProps} />
       </div>
       <div className='right'>
         <Avatar {...avatarProps} />
