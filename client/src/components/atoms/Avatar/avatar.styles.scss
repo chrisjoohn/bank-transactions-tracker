@@ -2,9 +2,7 @@
 	border-radius: 50%;
 	border: 2px solid black; // need to update border colors from global styles
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
+
 	overflow: hidden;
 
 	&.sm {
@@ -27,5 +25,14 @@
 		width: 100%;
 	}
 
-	.avatar_alt {}
+	.avatar_alt {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: var(--white);
+
+		background-color: var(--primary-color);
+		height: 100%;
+		width: 100%;
+	}
 }
