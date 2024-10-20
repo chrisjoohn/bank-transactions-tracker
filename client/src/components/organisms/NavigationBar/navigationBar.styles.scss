@@ -8,6 +8,8 @@
 
 	padding: 12px 24px; // to update spacing to css props
 
+	background-color: var(--gray-bg);
+
 	&.vertical {
 		flex-direction: column;
 		align-items: flex-start;
