@@ -1,17 +1,17 @@
 .btt-pill {
 	cursor: pointer;
-	color: var(--primary-color);
+	color: #0f0f0f;
 	padding: 8px 16px;
 	border-radius: 6px;
 
 
-	&:hover,
-	&.active {
-		box-shadow: rgba(0, 0, 0, 0.2) 0px 20px 30px;
+	&:hover {
+		background-color: var(--gray); // need to update this one as css props
 	}
 
 	&.active {
 		background-color: var(--primary-color);
-		color: var(--white);
+		color: var(--black);
+		background-color: var(--white);
 	}
 }
