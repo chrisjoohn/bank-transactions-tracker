@@ -1,4 +1,4 @@
-const PdfParse = require('pdf-parse');
+const bankStatementParser = require('../tools/parsers/bankStatementParser');
 
 const models = require('../models');
 
@@ -112,6 +112,16 @@ exports.delete = async (id) => {
     return data;
   } catch (err) {
     console.log('Error in delete debitTransactions service: ', err);
+    throw err;
+  }
+};
+
+exports.parseStatement = async (file) => {
+  try {
+    const data = await bankStatementParser(file.buffer);
+
+    return data;
+  } catch (err) {
     throw err;
   }
 };

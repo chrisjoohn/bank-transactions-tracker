@@ -75,3 +75,27 @@ exports.delete = async (req, res) => {
     });
   }
 };
+
+exports.parseStatement = async (req, res) => {
+  try {
+    const file = req.file;
+
+    if (!file) {
+      res.status(400).json({
+        message: `There's no file uploaded!`,
+      });
+      return;
+    }
+
+    const data = await debitTransactionsService.parseStatement(file);
+
+    res.json({
+      data,
+    });
+  } catch (err) {
+    // console.log('err', err);
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
