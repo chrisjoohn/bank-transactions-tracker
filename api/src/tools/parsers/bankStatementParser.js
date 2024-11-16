@@ -1,14 +1,10 @@
+/**
+ * IDEA: Maybe we can convert this into a class
+ */
+
 const pdfJsLib = require('pdfjs-dist');
 
-const colPositions = {
-  date: [30, 60],
-  desc: [60, 115],
-  ref: [195, 216],
-  details: [220, 360],
-  debitAmount: [400, 435],
-  creditAmount: [470, 500],
-};
-
+let colPositions = [];
 const sortObjKey = (obj) => {
   const sortedKeys = Object.keys(obj).sort((a, b) => Number(a) - Number(b));
 
@@ -167,6 +163,9 @@ module.exports = async (fileBuffer, options = {}) => {
   const pdfDocument = await loadingTask.promise;
 
   const numPages = pdfDocument.numPages;
+
+  const { colPositions: _colPositions } = options;
+  colPositions = _colPositions;
 
   // object to return
   const parsedDataPerPage = {};
