@@ -143,7 +143,7 @@ const parseDataPerPage = (pageTextContent, options = {}) => {
     }
 
     // check for keywords to skip
-    const skipLine = keywordsToSkip.every((keyword) =>
+    const skipLine = !!keywordsToSkip && keywordsToSkip.every((keyword) =>
       upperLineStr.includes(keyword)
     );
 
