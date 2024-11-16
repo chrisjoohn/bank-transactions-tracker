@@ -124,13 +124,23 @@ exports.parseStatement = async (file) => {
     const startKeywords = ['DATE', 'BALANCE', 'AMOUNT'];
     const endKeywords = ['BALANCETHISSTATEMENT'];
 
+    const colPositions = {
+      date: [30, 60],
+      description: [60, 115],
+      ref: [195, 216],
+      details: [220, 360],
+      debit_amount: [400, 435],
+      credit_amount: [470, 500],
+    };
+
     const options = {
       keywordsToSkip,
       startKeywords,
-      endKeywords
+      endKeywords,
+      colPositions,
     };
 
-    const data = await bankStatementParser(file.buffer, options);
+    const { data } = await bankStatementParser(file.buffer, options);
 
     return data;
   } catch (err) {
