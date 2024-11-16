@@ -169,6 +169,7 @@ module.exports = async (fileBuffer, options = {}) => {
 
   // object to return
   const parsedDataPerPage = {};
+  let _data = [];
 
   for (let pageNum = 1; pageNum <= numPages; pageNum++) {
     const page = await pdfDocument.getPage(pageNum);
@@ -177,7 +178,14 @@ module.exports = async (fileBuffer, options = {}) => {
     const parsedData = parseDataPerPage(pageTextContent, options);
 
     parsedDataPerPage[pageNum] = parsedData;
+    if (!!parsedData.length) {
+      _data = [..._data, ...parsedData];
+    }
   }
 
-  return parsedDataPerPage;
+
+  return {
+    data: _data,
+    parsedDataPerPage,
+  };
 };
