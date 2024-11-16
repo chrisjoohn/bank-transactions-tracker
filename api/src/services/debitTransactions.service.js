@@ -118,7 +118,19 @@ exports.delete = async (id) => {
 
 exports.parseStatement = async (file) => {
   try {
-    const data = await bankStatementParser(file.buffer);
+
+    // keywords
+    const keywordsToSkip = ['BEGINNING', 'BALANCE'];
+    const startKeywords = ['DATE', 'BALANCE', 'AMOUNT'];
+    const endKeywords = ['BALANCETHISSTATEMENT'];
+
+    const options = {
+      keywordsToSkip,
+      startKeywords,
+      endKeywords
+    };
+
+    const data = await bankStatementParser(file.buffer, options);
 
     return data;
   } catch (err) {
