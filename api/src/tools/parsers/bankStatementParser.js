@@ -1,10 +1,5 @@
 const pdfJsLib = require('pdfjs-dist');
 
-// keywords
-const keywordsToSkip = ['BEGINNING', 'BALANCE'];
-const startKeywords = ['DATE', 'BALANCE', 'AMOUNT'];
-const endKeywords = ['BALANCETHISSTATEMENT'];
-
 const colPositions = {
   date: [30, 60],
   desc: [60, 115],
@@ -100,7 +95,9 @@ const getPageData = (page) => {
  * TODO:
  *   - refactor this one. simplify complex logic
  */
-const parseDataPerPage = (pageTextContent) => {
+const parseDataPerPage = (pageTextContent, options = {}) => {
+  const { keywordsToSkip, startKeywords, endKeywords } = options;
+
   const pageData = getPageData(pageTextContent);
   const lines = Object.values(pageData);
 
@@ -163,7 +160,7 @@ const parseDataPerPage = (pageTextContent) => {
   return data;
 };
 
-module.exports = async (fileBuffer) => {
+module.exports = async (fileBuffer, options = {}) => {
   // read pdf file content
   const data = new Uint8Array(fileBuffer);
   const loadingTask = pdfJsLib.getDocument(data);
@@ -178,7 +175,7 @@ module.exports = async (fileBuffer) => {
     const page = await pdfDocument.getPage(pageNum);
     const pageTextContent = await page.getTextContent();
 
-    const parsedData = parseDataPerPage(pageTextContent);
+    const parsedData = parseDataPerPage(pageTextContent, options);
 
     parsedDataPerPage[pageNum] = parsedData;
   }
