@@ -25,7 +25,7 @@ exports.bulkCreate = async (req, res) => {
     // need to update finding accounts by user
     const accountDetails = await accountsService.findOne(account_id, { user_id });
 
-    if (!accountDetails) {
+    if (!accountDetails || accountDetails.type !== 'DEPOSIT') {
       res.status(400).json({
         message: 'Bad request: Account not found!'
       });
