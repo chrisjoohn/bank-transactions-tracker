@@ -1,4 +1,5 @@
 const debitTransactionsService = require('../services')['debitTransactionsService'];
+const accountsService = require('../services/accounts.service');
 
 exports.create = async (req, res) => {
   try {
@@ -15,6 +16,33 @@ exports.create = async (req, res) => {
     });
   }
 };
+
+exports.bulkCreate = async (req, res) => {
+  try {
+    const { records, account_id } = req.body;
+    const user_id = req.user.user_id;
+
+    // need to update finding accounts by user
+    const accountDetails = await accountsService.findOne(account_id, { user_id });
+
+    if (!accountDetails) {
+      res.status(400).json({
+        message: 'Bad request: Account not found!'
+      });
+    }
+
+    const data = await debitTransactionsService.bulkCreate({ records, account_id: accountDetails.id });
+
+    res.json({
+      data
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: err.message
+    })
+  }
+}
 
 exports.findAll = async (req, res) => {
   try {

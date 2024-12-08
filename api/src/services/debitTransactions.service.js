@@ -1,4 +1,5 @@
 const bankStatementParser = require('../tools/parsers/bankStatementParser');
+const { createHashFromObj } = require('../tools/createHash');
 
 const models = require('../models');
 
@@ -28,6 +29,33 @@ exports.create = async ({
     return data;
   } catch (err) {
     console.log('Error in create debitTransactions service: ', err);
+    throw err;
+  }
+};
+
+exports.bulkCreate = async ({ records = [], account_id }) => {
+  try {
+    if (!account_id) {
+      throw new Error("Account ID is required")
+    }
+
+    const debitTransactionsModel = models.debit_transactions;
+
+    const toCreate = records.map(item => {
+      const unique_code = createHashFromObj({ ...item, account_id });
+
+      return {
+        ...item,
+        account_id,
+        unique_code
+      }
+    });
+
+    const data = await debitTransactionsModel.bulkCreate(toCreate);
+
+    return data;
+
+  } catch (err) {
     throw err;
   }
 };
@@ -131,6 +159,7 @@ exports.parseStatement = async (file) => {
       details: [220, 360],
       debit_amount: [400, 435],
       credit_amount: [470, 500],
+      running_balance: [520, 580],
     };
 
     const options = {
