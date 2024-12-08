@@ -29,6 +29,7 @@ exports.bulkCreate = async (req, res) => {
       res.status(400).json({
         message: 'Bad request: Account not found!'
       });
+      return;
     }
 
     const data = await debitTransactionsService.bulkCreate({ records, account_id: accountDetails.id });
