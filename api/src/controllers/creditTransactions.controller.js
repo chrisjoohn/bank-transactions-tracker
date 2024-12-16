@@ -1,4 +1,5 @@
 const creditTransactionsService = require('../services')['creditTransactionsService'];
+const accountsService = require('../services/accounts.service');
 
 exports.create = async (req, res) => {
   try {
@@ -19,7 +20,18 @@ exports.create = async (req, res) => {
 exports.bulkCreate = async (req, res) => {
   try {
     const { records, account_id } = req.body;
-    const data = await creditTransactionsService.bulkCreate({ records, account_id });
+    const user_id = req.user.user_id;
+
+    const accountDetails = await accountsService.findOne(account_id, { user_id });
+
+    if (!accountDetails || accountDetails.type !== 'CREDIT') {
+      res.status(400).json({
+        message: 'Bad request: Account not found!'
+      });
+      return;
+    }
+
+    const data = await creditTransactionsService.bulkCreate({ records, account_id: accountDetails.id });
 
     res.json({
       data,

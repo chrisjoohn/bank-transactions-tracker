@@ -286,9 +286,9 @@ exports.parseStatement = async (file) => {
     const endKeywords = ['BALANCE', 'SUMMARY', 'S.I.P.'];
 
     const colPositions = {
-      transaction_date: [50, 95],
-      post_date: [140, 185],
-      description: [190, 380],
+      transaction_date: [50, 130],
+      post_date: [140, 200],
+      description: [210, 380],
       amount: [400, 550],
     }
 
