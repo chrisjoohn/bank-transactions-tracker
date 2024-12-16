@@ -1,11 +1,11 @@
-const creditTransactionsService = require('../services')['creditTransactionsService'];
+const debitTransactionsService = require('../services')['debitTransactionsService'];
 const accountsService = require('../services/accounts.service');
 
 exports.create = async (req, res) => {
   try {
     const postData = req.body;
 
-    const data = await creditTransactionsService.create(postData);
+    const data = await debitTransactionsService.create(postData);
 
     res.json({
       data,
@@ -22,32 +22,32 @@ exports.bulkCreate = async (req, res) => {
     const { records, account_id } = req.body;
     const user_id = req.user.user_id;
 
+    // need to update finding accounts by user
     const accountDetails = await accountsService.findOne(account_id, { user_id });
 
-    if (!accountDetails || accountDetails.type !== 'CREDIT') {
+    if (!accountDetails || accountDetails.type !== 'DEPOSIT') {
       res.status(400).json({
         message: 'Bad request: Account not found!'
       });
       return;
     }
 
-    const data = await creditTransactionsService.bulkCreate({ records, account_id: accountDetails.id });
+    const data = await debitTransactionsService.bulkCreate({ records, account_id: accountDetails.id });
 
     res.json({
-      data,
+      data
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({
-      message: err.message,
-    });
+      message: err.message
+    })
   }
-};
+}
 
 exports.findAll = async (req, res) => {
   try {
-    const { filters } = req.body;
-
-    const data = await creditTransactionsService.findAll({ filters, });
+    const data = await debitTransactionsService.findAll();
     res.json({
       data,
     });
@@ -61,7 +61,7 @@ exports.findAll = async (req, res) => {
 exports.findOne = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await creditTransactionsService.findOne(id);
+    const data = await debitTransactionsService.findOne(id);
 
     res.json({
       data,
@@ -78,7 +78,7 @@ exports.update = async (req, res) => {
     const { id } = req.params;
     const putData = req.body;
 
-    const data = await creditTransactionsService.update(id, putData);
+    const data = await debitTransactionsService.update(id, putData);
 
     res.json({
       data,
@@ -93,7 +93,7 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await creditTransactionsService.delete(id);
+    const data = await debitTransactionsService.delete(id);
 
     res.json({
       data,
@@ -116,12 +116,13 @@ exports.parseStatement = async (req, res) => {
       return;
     }
 
-    const data = await creditTransactionsService.parseStatement(file);
+    const data = await debitTransactionsService.parseStatement(file);
 
     res.json({
       data,
     });
   } catch (err) {
+    // console.log('err', err);
     res.status(500).json({
       message: err.message,
     });

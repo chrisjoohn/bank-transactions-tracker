@@ -1,8 +1,8 @@
 const { Op } = require('sequelize');
-const PdfParse = require('pdf-parse');
 const { parse, format } = require('date-fns');
 
 const { createHashFromObj } = require('../tools/createHash');
+const bankStatementParser = require('../tools/parsers/bankStatementParser');
 
 const models = require('../models');
 
@@ -281,20 +281,28 @@ const parseTransactionData = (data) => {
 };
 
 exports.parseStatement = async (file) => {
-  const pdfData = await PdfParse(file.buffer);
+  try {
+    const startKeywords = ['INSTALLMENT', 'AMORTIZATION'];
+    const endKeywords = ['BALANCE', 'SUMMARY', 'S.I.P.'];
 
-  const splittedPdfText = pdfData.text.split('\n');
+    const colPositions = {
+      transaction_date: [50, 130],
+      post_date: [140, 200],
+      description: [210, 380],
+      amount: [400, 550],
+    }
 
-  const initial = splittedPdfText.findIndex((item) =>
-    item.toLowerCase().includes('installmentamortization')
-  );
-  const end = splittedPdfText.findIndex((item) =>
-    item.toLowerCase().includes('balancesummary')
-  );
+    const options = {
+      colPositions,
+      startKeywords,
+      endKeywords,
+    };
 
-  const pdfTextArr = splittedPdfText.slice(initial + 1, end);
+    const { data } = await bankStatementParser(file.buffer, options);
 
-  const data = parseTransactionData(pdfTextArr);
-
-  return data;
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 };

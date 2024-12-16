@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "firebase-admin": "^12.4.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.9.7",
-    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^3.11.174",
     "sequelize": "^6.37.3"
   },
   "devDependencies": {
