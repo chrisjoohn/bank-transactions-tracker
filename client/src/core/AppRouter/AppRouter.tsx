@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
+import { MainLayout } from '../../layouts';
+
 const publicRoutes = createBrowserRouter([
   {
     path: '/',
@@ -11,27 +13,33 @@ const publicRoutes = createBrowserRouter([
 const securedRouter = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <>
-        <h1>Home</h1>
-      </>
-    ),
-  },
-  {
-    path: 'transactions',
-    element: (
-      <>
-        <h1>Transactions</h1>
-      </>
-    ),
-  },
-  {
-    path: 'reports',
-    element: (
-      <>
-        <h1>Reports</h1>
-      </>
-    ),
+    element: <MainLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <>
+            <h1>Homepage</h1>
+          </>
+        ),
+      },
+      {
+        path: 'transactions',
+        element: (
+          <>
+            <h1>Transactions</h1>
+          </>
+        ),
+      },
+      {
+        path: 'reports',
+        element: (
+          <>
+            <h1>Reports</h1>
+          </>
+        ),
+      },
+    ],
   },
 ]);
 
