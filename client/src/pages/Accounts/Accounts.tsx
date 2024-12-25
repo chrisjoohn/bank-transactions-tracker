@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 
-import { Card } from 'antd';
+import { Card, Spin } from 'antd';
 
 // redux APIs
 import { accountsApi } from '../../integration/apis';
@@ -17,7 +17,7 @@ const Accounts: FC<AccountsProps> = (props) => {
     <div className={classNames('btt-accounts')}>
       <div style={{ display: 'flex', gap: 20 }}>
         {isLoading ? (
-          <h1>Loading...</h1>
+          <Spin size='large' />
         ) : (
           data.map((item) => {
             return (
