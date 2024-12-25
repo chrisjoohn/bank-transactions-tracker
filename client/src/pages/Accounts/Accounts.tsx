@@ -3,44 +3,36 @@ import classNames from 'classnames';
 
 import { Card } from 'antd';
 
+// redux APIs
+import { accountsApi } from '../../integration/apis';
+
 import './accounts.styles.scss';
 
 export type AccountsProps = {};
 
-const accounts = [
-  {
-    name: 'Revenue Stream',
-    description: 'Account for inflow/outflow money',
-    type: 'DEPOSIT',
-  },
-  {
-    name: 'Gold CC',
-    description: 'CC account for testing',
-    type: 'CREDIT',
-  },
-  {
-    name: 'Travel Funds',
-    description: 'Account from excess funds',
-    type: 'DEPOSIT',
-  },
-];
-
 const Accounts: FC<AccountsProps> = (props) => {
+  const { isLoading, data = [] } = accountsApi.useGetAccountsQuery();
+
   return (
     <div className={classNames('btt-accounts')}>
       <div style={{ display: 'flex', gap: 20 }}>
-        {accounts.map((item) => {
-          return (
-            <Card
-              extra={item.type}
-              hoverable
-              style={{ flex: '1 1 0px' }}
-            >
-              <h3>{item.name}</h3>
-              <p>{item.description}</p>
-            </Card>
-          );
-        })}
+        {isLoading ? (
+          <h1>Loading...</h1>
+        ) : (
+          data.map((item) => {
+            return (
+              <Card
+                key={item.name}
+                extra={item.type}
+                hoverable
+                style={{ flex: '1 1 0px' }}
+              >
+                <h3>{item.name}</h3>
+                <p>{item.description}</p>
+              </Card>
+            );
+          })
+        )}
       </div>
     </div>
   );
