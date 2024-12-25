@@ -3,6 +3,8 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import { MainLayout } from '../../layouts';
 
+import { Accounts } from '../../pages';
+
 const publicRoutes = createBrowserRouter([
   {
     path: '/',
@@ -17,11 +19,7 @@ const securedRouter = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <>
-            <h1>Homepage</h1>
-          </>
-        ),
+        element: <Accounts />,
       },
       {
         path: 'transactions',
