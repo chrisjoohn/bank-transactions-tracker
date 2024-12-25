@@ -11,11 +11,11 @@ import 'firebaseui/dist/firebaseui.css';
 
 const App = () => {
   return (
-    <AppAuthenticator>
-      <Provider store={store}>
+    <Provider store={store}>
+      <AppAuthenticator>
         <AppRouter />
-      </Provider>
-    </AppAuthenticator>
+      </AppAuthenticator>
+    </Provider>
   );
 };
 
