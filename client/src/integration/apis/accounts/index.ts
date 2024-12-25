@@ -28,6 +28,7 @@ export const accountsApi = createApi({
   endpoints: (builder) => ({
     getAccounts: builder.query<Account[], void>({
       query: () => `/accounts`,
+      transformResponse: (response: { data: Account[] }) => response.data,
     }),
   }),
 });
