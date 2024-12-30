@@ -3,6 +3,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getAuth } from 'firebase/auth';
 
 export type Account = {
+  id: number;
+  unique_code: string;
   user_id: string;
   name: string;
   description: string;
