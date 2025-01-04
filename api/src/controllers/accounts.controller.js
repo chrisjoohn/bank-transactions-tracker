@@ -116,8 +116,8 @@ exports.update = async (req, res) => {
     const toUpdate = await accountsService.findOne(id, { user_id });
     if (!toUpdate) {
       res.status(400).json({
-        message: `Can't find record to update: ${id}`
-      })
+        message: `Can't find record to update: ${id}`,
+      });
       return;
     }
 
@@ -141,8 +141,8 @@ exports.delete = async (req, res) => {
     const toDelete = await accountsService.findOne(id, { user_id });
     if (!toDelete) {
       res.status(400).json({
-        message: `Can't find record to update: ${id}`
-      })
+        message: `Can't find record to update: ${id}`,
+      });
       return;
     }
 
