@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+
 const bankStatementParser = require('../tools/parsers/bankStatementParser');
 const { createHashFromObj } = require('../tools/createHash');
 
@@ -170,6 +172,46 @@ exports.parseStatement = async (file) => {
     const { data } = await bankStatementParser(file.buffer, options);
 
     return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.getTotalOutflow = async ({ account_id, dateRange }) => {
+  try {
+    const debitTransactionsModel = models.debit_transactions;
+
+    const totalOutflow = await debitTransactionsModel.sum('amount', {
+      where: {
+        account_id,
+        transaction_type: 'CREDIT',
+        transaction_date: {
+          [Op.between]: [dateRange.startDate, dateRange.endDate],
+        },
+      },
+    });
+
+    return totalOutflow;
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.getTotalInflow = async ({ account_id, dateRange }) => {
+  try {
+    const debitTransactionsModel = models.debit_transactions;
+
+    const totalInflow = await debitTransactionsModel.sum('amount', {
+      where: {
+        account_id,
+        transaction_type: 'DEPOSIT',
+        transaction_date: {
+          [Op.between]: [dateRange.startDate, dateRange.endDate],
+        },
+      },
+    });
+
+    return totalInflow;
   } catch (err) {
     throw err;
   }
