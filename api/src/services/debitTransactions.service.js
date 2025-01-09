@@ -36,25 +36,24 @@ exports.create = async ({
 exports.bulkCreate = async ({ records = [], account_id }) => {
   try {
     if (!account_id) {
-      throw new Error("Account ID is required")
+      throw new Error('Account ID is required');
     }
 
     const debitTransactionsModel = models.debit_transactions;
 
-    const toCreate = records.map(item => {
+    const toCreate = records.map((item) => {
       const unique_code = createHashFromObj({ ...item, account_id });
 
       return {
         ...item,
         account_id,
-        unique_code
-      }
+        unique_code,
+      };
     });
 
     const data = await debitTransactionsModel.bulkCreate(toCreate);
 
     return data;
-
   } catch (err) {
     throw err;
   }
@@ -146,7 +145,6 @@ exports.delete = async (id) => {
 
 exports.parseStatement = async (file) => {
   try {
-
     // keywords
     const keywordsToSkip = ['BEGINNING', 'BALANCE'];
     const startKeywords = ['DATE', 'BALANCE', 'AMOUNT'];
