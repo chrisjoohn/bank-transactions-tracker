@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { Spin, Button } from 'antd';
 
+import { Analytics, DateFilter } from './components';
+
 import { accountsApi } from '../../../integration/apis';
 
 const AccountDetails: FC = () => {
@@ -27,6 +29,19 @@ const AccountDetails: FC = () => {
       <Button onClick={() => navigate(-1)}>Back</Button>
       <h2>{name}</h2>
       <p>{description}</p>
+      <div className='date-filter'>
+        <DateFilter
+          onChange={(date) => {
+            console.log('date');
+          }}
+        />
+      </div>
+      <div className={classNames('simple-analytics')}>
+        <Analytics
+          inflow={0}
+          outflow={0}
+        />
+      </div>
     </div>
   );
 };
