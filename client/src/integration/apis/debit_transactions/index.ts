@@ -16,15 +16,17 @@ export type ParsedTrx = {
   description: string;
   details: string;
   ref: string;
-};
+} & (CreditTrx | DebitTrx);
 
 export type CreditTrx = {
   credit_amount: string;
-} & ParsedTrx;
+  debit_amount?: never;
+};
 
 export type DebitTrx = {
+  credit_amount?: never;
   debit_amount: string;
-} & ParsedTrx;
+};
 
 export const debitTransactionsApi = createApi({
   reducerPath: 'debit_transactions',
@@ -56,13 +58,13 @@ export const debitTransactionsApi = createApi({
     create: builder.query<DebitTransaction, void>({
       query: () => `/debit_transactions`,
     }),
-    parseStatement: builder.mutation<CreditTrx[] | DebitTrx[], FormData>({
+    parseStatement: builder.mutation<ParsedTrx[], FormData>({
       query: (formData) => ({
         url: `/debit_transactions/parse-statement`,
         method: 'POST',
         body: formData,
       }),
-      transformResponse: (response: { data: CreditTrx[] | DebitTrx[] }) => {
+      transformResponse: (response: { data: ParsedTrx[] }) => {
         console.log('response', response);
         return response.data;
       },
