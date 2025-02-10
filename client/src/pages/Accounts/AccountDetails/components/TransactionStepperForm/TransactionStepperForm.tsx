@@ -1,10 +1,22 @@
 import { FC, useState } from 'react';
+import { format, parse } from 'date-fns';
 
 import { InboxOutlined } from '@ant-design/icons';
 import { Button, Flex, Row, Steps, Table, Upload } from 'antd';
 import { debitTransactionsApi } from '../../../../../integration/apis';
 
-import type { ParsedTrx } from '../../../../../integration/apis/debit_transactions';
+import type {
+  DebitTransaction,
+  ParsedTrx,
+} from '../../../../../integration/apis/debit_transactions';
+
+type TableData = Omit<
+  DebitTransaction,
+  'id' | 'unique_code' | 'amount' | 'account_id' | 'transaction_type'
+> & {
+  amount: string;
+  transaction_type: 'INFLOW' | 'OUTFLOW' | 'INVALID';
+};
 
 import type { StepsProps, UploadProps } from 'antd';
 
@@ -46,6 +58,55 @@ const TransactionStepperForm: FC<TransactionStepperFormProps> = () => {
     }
   };
 
+  /**
+   * DOCS:
+   * param:
+   *  dateString: string i.e. Oct 25
+   *
+   * this function will return parsed dates with complete year
+   *  - setting year of months greater than current month to the previous year;
+   *  - and sets months equal or less than current month to current year;
+   *
+   * TODO:
+   * This is just a temp implem until date is parsed from statement
+   */
+  const _finalizeDate = (dateString: string): Date => {
+    const parsedDate = parse(dateString, 'MMM dd', new Date());
+    const parsedMonth = parsedDate.getMonth() + 1;
+
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentYear = now.getFullYear();
+
+    const yearToUse =
+      parsedMonth >= currentMonth ? currentYear - 1 : currentYear;
+
+    return new Date(yearToUse, parsedDate.getMonth(), parsedDate.getDate());
+  };
+
+  const _tableData: TableData[] = parsedTrx.map((item) => {
+    const description = `${item.description} ${item.details || ''}`;
+    let transaction_type: TableData['transaction_type'] = 'INVALID';
+    let amount = '0';
+
+    if (item.credit_amount) {
+      transaction_type = 'INFLOW';
+      amount = item.credit_amount;
+    }
+
+    if (item.debit_amount) {
+      transaction_type = 'OUTFLOW';
+      amount = item.debit_amount;
+    }
+
+    return {
+      transaction_date: format(_finalizeDate(item.date), 'MMM dd, yyyy'),
+      description,
+      transaction_type,
+      amount,
+    };
+  });
+
   return (
     <>
       <Row>
@@ -82,7 +143,7 @@ const TransactionStepperForm: FC<TransactionStepperFormProps> = () => {
         )}
         {currentStep === 1 && (
           <div>
-            <Table<ParsedTrx>
+            <Table<TableData>
               scroll={{
                 y: 500,
               }}
@@ -90,38 +151,26 @@ const TransactionStepperForm: FC<TransactionStepperFormProps> = () => {
               pagination={false}
               size='large'
               style={{ width: '100%' }}
-              dataSource={parsedTrx}
+              dataSource={_tableData}
               columns={[
                 {
                   title: 'Transaction Date',
-                  dataIndex: 'date',
+                  dataIndex: 'transaction_date',
                 },
                 {
                   title: 'Description',
-                  render: (_, data) => `${data.description} ${data.details}`
+                  dataIndex: 'description',
                 },
                 {
                   title: 'Transaction type',
-                  render: (_, data) => {
-                    if (data.credit_amount) {
-                      return 'CREDIT';
-                    }
-                    if (data.debit_amount) {
-                      return 'DEBIT';
-                    }
-
-                    return 'INVALID';
-                  },
+                  dataIndex: 'transaction_type',
                 },
                 {
                   title: 'Amount',
-                  render: (_, data) => {
-                    return data.credit_amount || data.debit_amount;
-                  },
+                  dataIndex: 'amount',
                 },
               ]}
             />
-
             <Button
               onClick={() => {
                 if (currentStep < stepItems.length - 1) {
