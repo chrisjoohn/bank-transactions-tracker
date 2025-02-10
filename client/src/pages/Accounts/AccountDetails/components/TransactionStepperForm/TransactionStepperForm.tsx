@@ -98,7 +98,7 @@ const TransactionStepperForm: FC<TransactionStepperFormProps> = () => {
                 },
                 {
                   title: 'Description',
-                  dataIndex: 'description',
+                  render: (_, data) => `${data.description} ${data.details}`
                 },
                 {
                   title: 'Transaction type',
