@@ -1,12 +1,13 @@
 import { FC, useState } from 'react';
 
 // components
-import { Modal, Button } from 'antd';
+import { Modal, Button, Card } from 'antd';
 
 import { TransactionStepperForm } from '../components';
 
 // type definitions
 import type { Account } from '../../../../integration/apis/accounts';
+import TransactionList from './TransactionList';
 
 export type TransactionsProps = {
   account: Account;
@@ -19,7 +20,21 @@ const Transactions: FC<TransactionsProps> = (props) => {
 
   return (
     <>
-      <Button onClick={() => setModalOpen(true)}>Add transactions</Button>
+      {/**
+       * Main render
+       */}
+      <Card>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button onClick={() => setModalOpen(true)}>Add transactions</Button>
+        </div>
+        <div className='transactions-list'>
+          <TransactionList account={account} />
+        </div>
+      </Card>
+
+      {/**
+       *  Modal component
+       */}
       <Modal
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
