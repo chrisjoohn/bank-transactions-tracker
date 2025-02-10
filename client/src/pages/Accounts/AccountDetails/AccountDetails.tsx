@@ -1,16 +1,24 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-import { Spin, Button } from 'antd';
+import { Spin } from 'antd';
 
-import { Analytics, DateFilter } from './components';
+// major components
+import Analytics from './Analytics';
+import Transactions from './Transactions';
 
+// reusable components
+import { DateFilter } from './components';
+
+// apis
 import { accountsApi } from '../../../integration/apis';
+
+// styles
+import './accountDetails.styles.scss';
 
 const AccountDetails: FC = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const { data, isFetching } = accountsApi.useGetAccountQuery(id || '');
 
@@ -26,9 +34,10 @@ const AccountDetails: FC = () => {
 
   return (
     <div className={classNames('btt-account-details')}>
-      <Button onClick={() => navigate(-1)}>Back</Button>
-      <h2>{name}</h2>
-      <p>{description}</p>
+      <div className='basic-details'>
+        <h2>{name}</h2>
+        <p>{description}</p>
+      </div>
       <div className='date-filter'>
         <DateFilter
           onChange={(date) => {
@@ -41,6 +50,9 @@ const AccountDetails: FC = () => {
           inflow={0}
           outflow={0}
         />
+      </div>
+      <div className='transactions'>
+        <Transactions account={data} />
       </div>
     </div>
   );
