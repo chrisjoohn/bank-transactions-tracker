@@ -5,10 +5,10 @@ import { getAuth } from 'firebase/auth';
 export type DebitTransaction = {
   id: number;
   unique_code: string;
-  //   user_id: string;
-  //   name: string;
-  //   description: string;
-  //   type: 'DEPOSIT' | 'CREDIT';
+  account_id: number;
+  transaction_date: string;
+  transaction_type: 'INFLOW' | 'OUTFLOW';
+  amount: number;
 };
 
 export type ParsedTrx = {
