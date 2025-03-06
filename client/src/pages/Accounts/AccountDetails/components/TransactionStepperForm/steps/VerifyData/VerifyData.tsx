@@ -52,6 +52,7 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
   };
 
   const _tableData: TableData[] = parsedData.map((item) => {
+    const { running_balance } = item;
     const description = `${item.description} ${item.details || ''}`;
     let transaction_type: TableData['transaction_type'] = 'INVALID';
     let amount = '0';
@@ -67,10 +68,11 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
     }
 
     return {
-      transaction_date: format(_finalizeDate(item.date), 'MMM dd, yyyy'),
+      transaction_date: format(_finalizeDate(item.date), 'yyyy-MM-dd'),
       description,
       transaction_type,
-      amount,
+      amount: parseFloat(amount.replace(',', '')).toFixed(2),
+      running_balance,
     };
   });
 
