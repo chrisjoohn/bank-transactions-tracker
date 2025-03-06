@@ -9,17 +9,18 @@ import type {
   DebitTransaction,
 } from '../../../../../../../integration/apis/debit_transactions';
 
-export type VerifyDataProps = {
-  parsedData: ParsedTrx[];
-  onSubmitCallback?: () => void;
-};
-
-type TableData = Omit<
+export type TableData = Omit<
   DebitTransaction,
   'id' | 'unique_code' | 'amount' | 'account_id' | 'transaction_type'
 > & {
   amount: string;
   transaction_type: 'INFLOW' | 'OUTFLOW' | 'INVALID';
+  running_balance: string,
+};
+
+export type VerifyDataProps = {
+  parsedData: ParsedTrx[];
+  onSubmitCallback?: ({ tableData }: { tableData: TableData[] }) => void;
 };
 
 const VerifyData: FC<VerifyDataProps> = (props) => {
@@ -111,7 +112,7 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
         <Flex justify='flex-end'>
           <Button
             type='primary'
-            onClick={onSubmitCallback}
+            onClick={() => onSubmitCallback({ tableData: _tableData })}
             style={{ marginTop: 20 }}
           >
             Submit
