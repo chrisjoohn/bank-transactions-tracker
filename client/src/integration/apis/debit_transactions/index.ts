@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { getAuth } from 'firebase/auth';
+import { TableData } from '../../../pages/Accounts/AccountDetails/components/TransactionStepperForm/steps/VerifyData/VerifyData';
 
 export type DebitTransaction = {
   id: number;
@@ -67,6 +68,19 @@ export const debitTransactionsApi = createApi({
       }),
       transformResponse: (response: { data: ParsedTrx[] }) => {
         console.log('response', response);
+        return response.data;
+      },
+    }),
+    bulkCreate: builder.mutation<
+      DebitTransaction[],
+      { records: TableData[]; account_id: number | string }
+    >({
+      query: (formData) => ({
+        url: `/debit_transactions/bulk`,
+        method: 'POST',
+        body: formData,
+      }),
+      transformResponse: (response: { data: DebitTransaction[] }) => {
         return response.data;
       },
     }),
