@@ -91,6 +91,7 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
           {
             title: 'Transaction Date',
             dataIndex: 'transaction_date',
+            render: (item) => format(item, 'MMM dd, yyyy')
           },
           {
             title: 'Description',
