@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       };
       this.transaction_type = {
         type: DataTypes.ENUM,
-        values: ['DEPOSIT', 'CREDIT'],
+        values: ['INFLOW', 'OUTFLOW'],
         defaultValue: 'DEPOSIT',
       };
       this.amount = {
