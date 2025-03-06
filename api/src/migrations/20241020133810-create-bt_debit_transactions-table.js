@@ -38,8 +38,8 @@ module.exports = {
       transaction_type: {
         allowNull: false,
         type: Sequelize.ENUM,
-        values: ['DEPOSIT', 'CREDIT'],
-        defaultValue: 'DEPOSIT',
+        values: ['INFLOW', 'OUTFLOW'],
+        defaultValue: 'INFLOW',
       },
       amount: {
         allowNull: false,
