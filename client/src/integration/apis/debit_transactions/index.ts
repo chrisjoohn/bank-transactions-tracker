@@ -16,6 +16,7 @@ export type ParsedTrx = {
   description: string;
   details: string;
   ref: string;
+  running_balance: string; // to update this one to be only on DebitTrx
 } & (CreditTrx | DebitTrx);
 
 export type CreditTrx = {
