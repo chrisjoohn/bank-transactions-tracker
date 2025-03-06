@@ -9,6 +9,7 @@ export type DebitTransaction = {
   account_id: number;
   transaction_date: string;
   transaction_type: 'INFLOW' | 'OUTFLOW';
+  description: string;
   amount: number;
 };
 
