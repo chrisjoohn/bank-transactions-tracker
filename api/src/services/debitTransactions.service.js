@@ -3,6 +3,8 @@ const { Op } = require('sequelize');
 const bankStatementParser = require('../tools/parsers/bankStatementParser');
 const { createHashFromObj } = require('../tools/createHash');
 
+const accountsService = require('./accounts.service');
+
 const models = require('../models');
 
 // required name to be used on exporting services on index
@@ -61,11 +63,40 @@ exports.bulkCreate = async ({ records = [], account_id }) => {
   }
 };
 
-exports.findAll = async () => {
+exports.findAll = async ({ filters = {} }) => {
   try {
     const debitTransactionsModel = models.debit_transactions;
 
-    const data = await debitTransactionsModel.findAll();
+    const whereCondition = {};
+    const filterKeys = Object.keys(filters);
+    for (const filterKey of filterKeys) {
+      switch (filterKey) {
+        case 'account_id':
+          const accountId = filters[filterKey];
+          const account = await accountsService.findOne(accountId);
+
+          if (!account) {
+            throw new Error(`Cannot find account: ${accountId}`);
+          }
+
+          whereCondition['account_id'] = {
+            [Op.eq]: account.id,
+          };
+          break;
+
+        case 'date_range':
+          const { start_date, end_date } = filters[filterKey];
+
+          whereCondition['transaction_date'] = {
+            [Op.between]: [start_date, end_date],
+          };
+          break;
+      }
+    }
+
+    const data = await debitTransactionsModel.findAll({
+      where: whereCondition,
+    });
     return data;
   } catch (err) {
     console.log('Error in find all debitTransactions service: ', err);
