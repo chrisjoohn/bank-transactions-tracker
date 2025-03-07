@@ -10,7 +10,7 @@ module.exports = (app) => {
 
   const upload = multer({ storage: multer.memoryStorage() });
 
-  router.get(`/${route}`, controller.findAll);
+  router.post(`/get/${route}/`, controller.findAll);
   router.get(`/${route}/:id`, controller.findOne);
   router.post(`/${route}`, controller.create);
   router.post(`/${route}/bulk`, controller.bulkCreate);
