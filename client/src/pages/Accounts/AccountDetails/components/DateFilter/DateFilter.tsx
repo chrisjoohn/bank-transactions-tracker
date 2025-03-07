@@ -17,7 +17,9 @@ export type DateFilterProps = {
   }) => void;
 };
 
-const DateFilter: FC<DateFilterProps> = () => {
+const DateFilter: FC<DateFilterProps> = (props) => {
+  const { onChange } = props;
+
   const [filterType, setFilterType] = useState<
     'month' | 'quarter' | 'year' | 'custom'
   >('month');
@@ -27,7 +29,8 @@ const DateFilter: FC<DateFilterProps> = () => {
       return;
     }
 
-    let startDate, endDate;
+    let startDate = '',
+      endDate = '';
 
     switch (filterType) {
       case 'month':
@@ -38,15 +41,15 @@ const DateFilter: FC<DateFilterProps> = () => {
         // Manually calculate quarter
         const month = date.month(); // 0-based index (0 = January, 11 = December)
         const quarter = Math.floor(month / 3) + 1; // Calculate the quarter (1 to 4)
-        console.log('quarter', quarter);
 
-        const startMonth = (quarter - 1) * 3;
+        const startMonth = (quarter - 1) * 3 + 1;
+
         startDate = date
           .set('month', startMonth - 1)
           .startOf('month')
           .format('YYYY-MM-DD');
         endDate = date
-          .set('month', startMonth + 2)
+          .set('month', startMonth + 1)
           .endOf('month')
           .format('YYYY-MM-DD');
         break;
@@ -56,15 +59,20 @@ const DateFilter: FC<DateFilterProps> = () => {
         endDate = date.endOf('year').format('YYYY-MM-DD');
         break;
     }
+
+    onChange({
+      startDate,
+      endDate,
+    });
   };
 
   const customDateChangeHandler: RangePickerProps['onChange'] = (
-    dates,
+    _,
     dateStrings
   ) => {
-    console.log({
-      dates,
-      dateStrings,
+    onChange({
+      startDate: dateStrings[0],
+      endDate: dateStrings[1],
     });
   };
 
