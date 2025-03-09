@@ -18,7 +18,7 @@ const Analytics: FC<AnalyticsProps> = (props) => {
         <Card bordered={false}>
           <Statistic
             title='Inflow'
-            value={inflow}
+            value={inflow.toFixed(2)}
             valueStyle={{ color: '#3f8600' }}
           />
         </Card>
@@ -27,7 +27,7 @@ const Analytics: FC<AnalyticsProps> = (props) => {
         <Card bordered={false}>
           <Statistic
             title='Outflow'
-            value={outflow}
+            value={outflow.toFixed(2)}
             valueStyle={{ color: '#cf1322' }}
           />
         </Card>
@@ -36,7 +36,7 @@ const Analytics: FC<AnalyticsProps> = (props) => {
         <Card bordered={false}>
           <Statistic
             title='Total'
-            value={total}
+            value={total.toFixed(2)}
             valueStyle={{ color: total > 0 ? '#3f8600' : '#cf1322' }}
           />
         </Card>
