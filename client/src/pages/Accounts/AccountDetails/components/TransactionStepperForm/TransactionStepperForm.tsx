@@ -8,8 +8,12 @@ import { debitTransactionsApi } from '../../../../../integration/apis';
 // type definitions
 import type { StepsProps, UploadProps } from 'antd';
 import type { ParsedTrx } from '../../../../../integration/apis/debit_transactions';
+import type { TableData } from './steps/VerifyData/VerifyData'; // TO DO: check if we can put this on a common types definition
+import type { Account } from '../../../../../integration/apis/accounts';
 
-export type TransactionStepperFormProps = {};
+export type TransactionStepperFormProps = {
+  accountId: Account['id'] | Account['unique_code'];
+};
 
 const stepItems: StepsProps['items'] = [
   {
@@ -26,11 +30,14 @@ const stepItems: StepsProps['items'] = [
   },
 ];
 
-const TransactionStepperForm: FC<TransactionStepperFormProps> = () => {
+const TransactionStepperForm: FC<TransactionStepperFormProps> = (props) => {
+  const { accountId } = props;
+
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [parsedTrx, setParsedTrx] = useState<ParsedTrx[]>([]);
 
   const [parseStatement] = debitTransactionsApi.useParseStatementMutation();
+  const [bulkCreate] = debitTransactionsApi.useBulkCreateMutation();
 
   const _customFileUploadHandler: UploadProps['customRequest'] = async (
     options
@@ -49,6 +56,14 @@ const TransactionStepperForm: FC<TransactionStepperFormProps> = () => {
     }
   };
 
+  const _postTransactionsHandler = async (tableData: TableData[]) => {
+    await bulkCreate({
+      records: tableData,
+      account_id: accountId,
+    });
+    setCurrentStep(currentStep + 1);
+  };
+
   return (
     <>
       <Row>
@@ -64,8 +79,8 @@ const TransactionStepperForm: FC<TransactionStepperFormProps> = () => {
         {currentStep === 1 && (
           <VerifyData
             parsedData={parsedTrx}
-            onSubmitCallback={() => {
-              setCurrentStep(currentStep + 1);
+            onSubmitCallback={({ tableData }) => {
+              _postTransactionsHandler(tableData);
             }}
           />
         )}
