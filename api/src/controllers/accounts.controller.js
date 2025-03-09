@@ -137,17 +137,17 @@ exports.transactionAnalytics = async (req, res) => {
     if (accountDetails.type === 'DEPOSIT') {
       const totalOutflow = await debitTransactionService.getTotalOutflow({
         account_id: accountDetails.id,
-        dateRange,
+        date_range: dateRange,
       });
       const totalInflow = await debitTransactionService.getTotalInflow({
         account_id: accountDetails.id,
-        dateRange: dateRange,
+        date_range: dateRange,
       });
 
       data = {
         totalOutflow: totalOutflow || 0,
         totalInflow: totalInflow || 0,
-        total: totalInflow + totalOutflow,
+        total: totalInflow - totalOutflow,
       };
     }
 
