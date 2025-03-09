@@ -1,6 +1,7 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { useParams } from 'react-router-dom';
+import { endOfMonth, format, startOfMonth } from 'date-fns';
 
 import { Spin } from 'antd';
 
@@ -19,6 +20,11 @@ import './accountDetails.styles.scss';
 
 const AccountDetails: FC = () => {
   const { id } = useParams();
+
+  const [dateFilter, setDateFilter] = useState({
+    start_date: format(startOfMonth(new Date()), 'yyyy-MM-dd'),
+    end_date: format(endOfMonth(new Date()), 'yyyy-MM-dd'),
+  });
 
   const { data, isFetching } = accountsApi.useGetAccountQuery(id || '');
 
@@ -41,7 +47,10 @@ const AccountDetails: FC = () => {
       <div className='date-filter'>
         <DateFilter
           onChange={(date) => {
-            console.log('date');
+            setDateFilter({
+              start_date: date.startDate,
+              end_date: date.endDate,
+            });
           }}
         />
       </div>
