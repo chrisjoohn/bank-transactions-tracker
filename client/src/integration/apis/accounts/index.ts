@@ -36,6 +36,21 @@ export const accountsApi = createApi({
       query: (id) => `/accounts/${id}`,
       transformResponse: (response: { data: Account }) => response.data,
     }),
+    getAccountTrxAnalytics: builder.query<
+      { data: { totalOutflow: number; totalInflow: number; total: number } },
+      {
+        id?: Account['id'] | Account['unique_code'];
+        date_range: { start_date: string; end_date: string };
+      }
+    >({
+      query: ({ id, date_range }) => ({
+        url: `/accounts/${id}/transactions/analytics`,
+        params: {
+          start_date: date_range.start_date,
+          end_date: date_range.end_date,
+        },
+      }),
+    }),
   }),
 });
 
