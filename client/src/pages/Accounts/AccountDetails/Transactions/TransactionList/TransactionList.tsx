@@ -1,11 +1,11 @@
+/**
+ * TO DO: check on how we can make this component reusable
+ */
 import { FC } from 'react';
 import { format } from 'date-fns';
 
 // components
-import { Flex, Empty, Spin, Table } from 'antd';
-
-// apis
-import { debitTransactionsApi } from '../../../../../integration/apis';
+import { Flex, Empty, Table } from 'antd';
 
 // type definitions
 import type { TransactionsProps } from '../Transactions';
@@ -16,12 +16,11 @@ export type TransactionListProps = {
   filters?: {
     date: string;
   };
+  listData: DebitTransaction[];
 };
 
 const TransactionList: FC<TransactionListProps> = (props) => {
-  const {} = props;
-
-  const { isLoading, data } = debitTransactionsApi.useFindAllQuery();
+  const { listData } = props;
 
   return (
     <Flex
@@ -29,10 +28,9 @@ const TransactionList: FC<TransactionListProps> = (props) => {
       justify='center'
       align='center'
     >
-      {isLoading && <Spin size='large' />}
-      {data ? (
+      {listData ? (
         <Table<DebitTransaction>
-          dataSource={data}
+          dataSource={listData}
           scroll={{
             y: 400,
           }}
@@ -40,7 +38,7 @@ const TransactionList: FC<TransactionListProps> = (props) => {
             {
               title: 'Transaction Date',
               dataIndex: 'transaction_date',
-            render: (item) => format(item, 'MMM dd, yyyy')
+              render: (item) => format(item, 'MMM dd, yyyy'),
             },
             {
               title: 'Description',
