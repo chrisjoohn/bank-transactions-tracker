@@ -31,6 +31,14 @@ const AccountDetails: FC = () => {
     date_range: dateFilter,
     id,
   });
+  const accountTransactions = accountsApi.useGetTransactionsQuery({
+    id: id || '',
+    requestBody: {
+      filters: {
+        date_range: dateFilter,
+      },
+    },
+  });
 
   if (isFetching) {
     return <Spin size='large' />;
@@ -65,7 +73,10 @@ const AccountDetails: FC = () => {
         />
       </div>
       <div className='transactions'>
-        <Transactions account={data} />
+        <Transactions
+          account={data}
+          listData={accountTransactions.data || []}
+        />
       </div>
     </div>
   );
