@@ -208,16 +208,16 @@ exports.parseStatement = async (file) => {
   }
 };
 
-exports.getTotalOutflow = async ({ account_id, dateRange }) => {
+exports.getTotalOutflow = async ({ account_id, date_range }) => {
   try {
     const debitTransactionsModel = models.debit_transactions;
 
     const totalOutflow = await debitTransactionsModel.sum('amount', {
       where: {
         account_id,
-        transaction_type: 'CREDIT',
+        transaction_type: 'OUTFLOW',
         transaction_date: {
-          [Op.between]: [dateRange.startDate, dateRange.endDate],
+          [Op.between]: [date_range.startDate, date_range.endDate],
         },
       },
     });
@@ -228,16 +228,16 @@ exports.getTotalOutflow = async ({ account_id, dateRange }) => {
   }
 };
 
-exports.getTotalInflow = async ({ account_id, dateRange }) => {
+exports.getTotalInflow = async ({ account_id, date_range }) => {
   try {
     const debitTransactionsModel = models.debit_transactions;
 
     const totalInflow = await debitTransactionsModel.sum('amount', {
       where: {
         account_id,
-        transaction_type: 'DEPOSIT',
+        transaction_type: 'INFLOW',
         transaction_date: {
-          [Op.between]: [dateRange.startDate, dateRange.endDate],
+          [Op.between]: [date_range.startDate, date_range.endDate],
         },
       },
     });
