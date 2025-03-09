@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { getAuth } from 'firebase/auth';
 import { TableData } from '../../../pages/Accounts/AccountDetails/components/TransactionStepperForm/steps/VerifyData/VerifyData';
+import { Account } from '../accounts';
 
 export type DebitTransaction = {
   id: number;
@@ -48,8 +49,23 @@ export const debitTransactionsApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    findAll: builder.query<DebitTransaction[], void>({
-      query: () => `/debit_transactions`,
+    findAll: builder.query<
+      DebitTransaction[],
+      {
+        filters?: {
+          account_id?: Account['id'] | Account['unique_code'];
+          date_range?: {
+            start_date: string;
+            end_date: string;
+          } | void;
+        };
+      }
+    >({
+      query: (requestBody) => ({
+        method: 'POST',
+        url: `/get/debit_transactions`,
+        body: requestBody,
+      }),
       transformResponse: (response: { data: DebitTransaction[] }) =>
         response.data,
     }),
