@@ -1,22 +1,28 @@
+/**
+ * TO DO:
+ * check if we should move API integration here
+ */
 import { FC, useState } from 'react';
 
 // components
 import { Modal, Button, Card } from 'antd';
 
+import TransactionList from './TransactionList';
 import { TransactionStepperForm } from '../components';
 
 // type definitions
 import type { Account } from '../../../../integration/apis/accounts';
-import TransactionList from './TransactionList';
+import type { DebitTransaction } from '../../../../integration/apis/debit_transactions';
 
 export type TransactionsProps = {
   account: Account;
+  listData: DebitTransaction[];
 };
 
 const Transactions: FC<TransactionsProps> = (props) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const { account } = props;
+  const { account, listData } = props;
 
   return (
     <>
@@ -28,7 +34,10 @@ const Transactions: FC<TransactionsProps> = (props) => {
           <Button onClick={() => setModalOpen(true)}>Add transactions</Button>
         </div>
         <div className='transactions-list'>
-          <TransactionList account={account} />
+          <TransactionList
+            account={account}
+            listData={listData}
+          />
         </div>
       </Card>
 
