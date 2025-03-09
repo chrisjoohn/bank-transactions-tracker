@@ -52,7 +52,10 @@ const Transactions: FC<TransactionsProps> = (props) => {
         width={1500}
       >
         <div style={{ marginTop: '40px' }}>
-          <TransactionStepperForm key={new Date().toString()} />
+          <TransactionStepperForm
+            key={new Date().toString()}
+            accountId={account.unique_code}
+          />
         </div>
       </Modal>
     </>
