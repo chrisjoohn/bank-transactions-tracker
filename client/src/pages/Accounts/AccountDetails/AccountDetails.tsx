@@ -27,6 +27,10 @@ const AccountDetails: FC = () => {
   });
 
   const { data, isFetching } = accountsApi.useGetAccountQuery(id || '');
+  const accountAnalytics = accountsApi.useGetAccountTrxAnalyticsQuery({
+    date_range: dateFilter,
+    id,
+  });
 
   if (isFetching) {
     return <Spin size='large' />;
@@ -56,8 +60,8 @@ const AccountDetails: FC = () => {
       </div>
       <div className={classNames('simple-analytics')}>
         <Analytics
-          inflow={0}
-          outflow={0}
+          inflow={accountAnalytics.data?.data.totalInflow || 0}
+          outflow={accountAnalytics.data?.data.totalOutflow || 0}
         />
       </div>
       <div className='transactions'>
