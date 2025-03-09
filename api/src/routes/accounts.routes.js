@@ -9,7 +9,7 @@ module.exports = (app) => {
 
   router.get(`/${route}`, controller.findAll);
   router.get(`/${route}/:id/transactions/analytics`, controller.transactionAnalytics);
-  router.get(`/${route}/:id/transactions`, controller.findTransactions);
+  router.post(`/${route}/:id/transactions`, controller.findTransactions);
   router.get(`/${route}/:id`, controller.findOne);
   router.post(`/${route}`, controller.create);
   router.put(`/${route}/:id`, controller.update);

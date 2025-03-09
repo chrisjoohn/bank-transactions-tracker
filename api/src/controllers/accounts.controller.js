@@ -50,6 +50,7 @@ exports.findTransactions = async (req, res) => {
   try {
     const { id } = req.params;
     const user_id = req.user.user_id;
+    const { filters } = req.body;
 
     const accountDetails = await accountsService.findOne(id, { user_id });
 
@@ -64,13 +65,19 @@ exports.findTransactions = async (req, res) => {
 
     if (accountDetails.type === 'CREDIT') {
       data = await creditTransactionService.findAll({
-        account_id: accountDetails.id,
+        filters: {
+          ...filters,
+          account_id: accountDetails.id,
+        },
       });
     }
 
     if (accountDetails.type === 'DEPOSIT') {
       data = await debitTransactionService.findAll({
-        account_id: accountDetails.id,
+        filters: {
+          ...filters,
+          account_id: accountDetails.id,
+        },
       });
     }
 
