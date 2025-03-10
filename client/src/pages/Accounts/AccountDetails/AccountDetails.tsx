@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { useParams } from 'react-router-dom';
 import { endOfMonth, format, startOfMonth } from 'date-fns';
@@ -26,29 +26,39 @@ const AccountDetails: FC = () => {
     end_date: format(endOfMonth(new Date()), 'yyyy-MM-dd'),
   });
 
-  const { data, isFetching } = accountsApi.useGetAccountQuery(id || '');
-  const accountAnalytics = accountsApi.useGetAccountTrxAnalyticsQuery({
-    date_range: dateFilter,
-    id,
-  });
-  const accountTransactions = accountsApi.useGetTransactionsQuery({
-    id: id || '',
-    requestBody: {
-      filters: {
-        date_range: dateFilter,
-      },
-    },
-  });
+  const accountDetails = accountsApi.useGetAccountQuery(id || '');
+  const [getAccountAnalytics, accountAnalytics] = accountsApi.useLazyGetAccountTrxAnalyticsQuery();
+  const [getAccountTransactions, accountTransactions] = accountsApi.useLazyGetTransactionsQuery();
 
-  if (isFetching) {
+  useEffect(() => {
+    if (!accountDetails.data?.id) {
+      return;
+    }
+
+    getAccountAnalytics({
+      date_range: dateFilter,
+      id: accountDetails.data.id,
+    });
+
+    getAccountTransactions({
+      id: accountDetails.data.id,
+      requestBody: {
+        filters: {
+          date_range: dateFilter,
+        },
+      },
+    });
+  }, [accountDetails.data]);
+
+  if (accountDetails.isFetching) {
     return <Spin size='large' />;
   }
 
-  if (!data) {
+  if (!accountDetails.data) {
     return <h2>Error 404: Account Not Found</h2>;
   }
 
-  const { name, description } = data;
+  const { name, description } = accountDetails.data;
 
   return (
     <div className={classNames('btt-account-details')}>
@@ -74,7 +84,7 @@ const AccountDetails: FC = () => {
       </div>
       <div className='transactions'>
         <Transactions
-          account={data}
+          account={accountDetails.data}
           listData={accountTransactions.data || []}
         />
       </div>
