@@ -58,7 +58,7 @@ const AccountDetails: FC = () => {
         },
       },
     });
-  }, [accountDetails.data]);
+  }, [accountDetails.data, dateFilter]);
 
   if (accountDetails.isFetching) {
     return <Spin size='large' />;
