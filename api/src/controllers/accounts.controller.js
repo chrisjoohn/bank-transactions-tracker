@@ -1,3 +1,5 @@
+const { startOfMonth, endOfMonth } = require('date-fns');
+
 const accountsService = require('../services')['accountsService'];
 const debitTransactionService = require('../services/debitTransactions.service');
 const creditTransactionService = require('../services/creditTransactions.service');
@@ -48,6 +50,7 @@ exports.findTransactions = async (req, res) => {
   try {
     const { id } = req.params;
     const user_id = req.user.user_id;
+    const { filters } = req.body;
 
     const accountDetails = await accountsService.findOne(id, { user_id });
 
@@ -62,13 +65,19 @@ exports.findTransactions = async (req, res) => {
 
     if (accountDetails.type === 'CREDIT') {
       data = await creditTransactionService.findAll({
-        account_id: accountDetails.id,
+        filters: {
+          ...filters,
+          account_id: accountDetails.id,
+        },
       });
     }
 
     if (accountDetails.type === 'DEPOSIT') {
       data = await debitTransactionService.findAll({
-        account_id: accountDetails.id,
+        filters: {
+          ...filters,
+          account_id: accountDetails.id,
+        },
       });
     }
 
@@ -83,6 +92,84 @@ exports.findTransactions = async (req, res) => {
       message: 'Bad request',
     });
   } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+exports.transactionAnalytics = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { start_date, end_date } = req.query;
+
+    const user_id = req.user.user_id;
+    const accountDetails = await accountsService.findOne(id, { user_id });
+
+    if (!accountDetails) {
+      res.status(400).json({
+        message: 'Bad request: Account not found!',
+      });
+      return;
+    }
+
+    let data;
+
+    const defaultStartDate = startOfMonth(new Date());
+    const defaultEndDate = endOfMonth(new Date());
+
+    let dateRange = {
+      startDate: defaultStartDate,
+      endDate: defaultEndDate,
+    };
+
+    /**
+     * TODO:
+     * Add validation of date_range here
+     */
+    if (start_date && end_date) {
+      dateRange = {
+        startDate: start_date,
+        endDate: end_date,
+      };
+    }
+
+    if (accountDetails.type === 'CREDIT') {
+      res.status(400).json({
+        message: 'Not yet handled',
+      });
+      return;
+    }
+
+    if (accountDetails.type === 'DEPOSIT') {
+      const totalOutflow = await debitTransactionService.getTotalOutflow({
+        account_id: accountDetails.id,
+        date_range: dateRange,
+      });
+      const totalInflow = await debitTransactionService.getTotalInflow({
+        account_id: accountDetails.id,
+        date_range: dateRange,
+      });
+
+      data = {
+        totalOutflow: totalOutflow || 0,
+        totalInflow: totalInflow || 0,
+        total: totalInflow - totalOutflow,
+      };
+    }
+
+    if (!data) {
+      res.status(400).json({
+        message: 'Bad request',
+      });
+      return;
+    }
+
+    res.json({
+      data,
+    });
+  } catch (err) {
+    console.log('err', err);
     res.status(500).json({
       message: err.message,
     });

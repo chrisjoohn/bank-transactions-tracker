@@ -5,6 +5,9 @@ import { MainLayout } from '../../layouts';
 
 import { Accounts } from '../../pages';
 
+import AccountDetails from '../../pages/Accounts/AccountDetails';
+import AccountsList from '../../pages/Accounts/AccountsList';
+
 const publicRoutes = createBrowserRouter([
   {
     path: '/',
@@ -18,8 +21,18 @@ const securedRouter = createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
-        index: true,
+        path: '/',
         element: <Accounts />,
+        children: [
+          {
+            path: '/',
+            element: <AccountsList />,
+          },
+          {
+            path: ':id',
+            element: <AccountDetails />,
+          },
+        ],
       },
       {
         path: 'transactions',

@@ -1,7 +1,7 @@
 {
   "name": "client",
   "private": true,
-  "version": "2.1.0",
+  "version": "2.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,9 +12,11 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.5.2",
     "@reduxjs/toolkit": "^2.5.0",
     "antd": "^5.22.5",
     "classnames": "^2.5.1",
+    "date-fns": "^4.1.0",
     "firebase": "^10.12.1",
     "firebaseui": "^6.1.0",
     "react": "^18.2.0",
