@@ -8,7 +8,7 @@ import { Flex, Empty, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
 import type { TransactionsProps } from '../Transactions';
-import type { DebitTransaction } from '../../../../../integration/apis/debit_transactions';
+import type { DebitTransaction } from '../../../../../integration/apis/debitTransactions';
 import type { CreditTransaction } from '../../../../../integration/apis/creditTransactions';
 
 export type TransactionListProps = {

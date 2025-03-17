@@ -7,7 +7,7 @@ import { Table, Flex, Button } from 'antd';
 import type {
   ParsedTrx,
   DebitTransaction,
-} from '../../../../../../../integration/apis/debit_transactions';
+} from '../../../../../../../integration/apis/debitTransactions';
 
 export type TableData = Omit<
   DebitTransaction,
