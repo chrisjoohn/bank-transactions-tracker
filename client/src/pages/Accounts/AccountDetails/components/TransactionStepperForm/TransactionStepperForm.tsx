@@ -1,3 +1,8 @@
+/**
+ * TODO:
+ * Check if we should put this inside AccountDetails/Transactions/ directory
+ * as it's usage is very specific to it
+ */
 import { FC, useState } from 'react';
 
 import { Flex, Result, Row, Steps } from 'antd';
