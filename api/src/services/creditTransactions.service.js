@@ -91,6 +91,13 @@ exports.findAll = async ({ filters = {} }) => {
             [Op.eq]: account.id,
           };
           break;
+
+        case 'date_range':
+          const { start_date, end_date } = filters[filterKey];
+          whereCondition['transaction_date'] = {
+            [Op.between]: [start_date, end_date],
+          };
+          break;
       }
     }
 
