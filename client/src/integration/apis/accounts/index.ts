@@ -1,7 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { getAuth } from 'firebase/auth';
-import { DebitTransaction } from '../debit_transactions';
+
+// type definitinos
+import type { DebitTransaction } from '../debit_transactions';
+import type { CreditTransaction } from '../creditTransactions';
 
 export type Account = {
   id: number;
@@ -38,7 +41,7 @@ export const accountsApi = createApi({
       transformResponse: (response: { data: Account }) => response.data,
     }),
     getTransactions: builder.query<
-      DebitTransaction[], // TO DO: Add CreditTransaction[] type here once created
+      DebitTransaction[] | CreditTransaction[],
       {
         id: Account['id'] | Account['unique_code'];
         requestBody: {
@@ -51,9 +54,9 @@ export const accountsApi = createApi({
         method: 'POST',
         body: requestBody,
       }),
-      transformResponse: (
-        response: { data: DebitTransaction[] } // TO DO: Add CreditTransaction[] type here once created
-      ) => response.data,
+      transformResponse: (response: {
+        data: DebitTransaction[] | CreditTransaction[];
+      }) => response.data,
     }),
     getAccountTrxAnalytics: builder.query<
       { data: { totalOutflow: number; totalInflow: number; total: number } },
