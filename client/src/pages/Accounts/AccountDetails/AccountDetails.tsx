@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { useParams } from 'react-router-dom';
 import { endOfMonth, format, startOfMonth } from 'date-fns';
 
-import { Spin, Result } from 'antd';
+import { Spin } from 'antd';
 
 // major components
 import Analytics from './Analytics';
@@ -27,20 +27,16 @@ const AccountDetails: FC = () => {
   });
 
   const accountDetails = accountsApi.useGetAccountQuery(id || '');
+  /**
+   * TODO:
+   * Move these data fetching APIs to the child components
+   */
   const [getAccountAnalytics, accountAnalytics] =
     accountsApi.useLazyGetAccountTrxAnalyticsQuery();
   const [getAccountTransactions, accountTransactions] =
     accountsApi.useLazyGetTransactionsQuery();
 
   useEffect(() => {
-    /**
-     * TO DO:
-     * This one's on hold cause components are not yet ready for CREDIT account transactions
-     */
-    if (accountDetails.data?.type === 'CREDIT') {
-      return;
-    }
-
     if (!accountDetails.data?.id) {
       return;
     }
@@ -66,16 +62,6 @@ const AccountDetails: FC = () => {
 
   if (!accountDetails.data) {
     return <h2>Error 404: Account Not Found</h2>;
-  }
-
-  if (accountDetails.data.type === 'CREDIT') {
-    return (
-      <Result
-        status='403'
-        title='Oops'
-        subTitle='This part is under construction'
-      />
-    );
   }
 
   const { name, description } = accountDetails.data;
