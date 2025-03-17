@@ -35,7 +35,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
         </div>
         <div className='transactions-list'>
           <TransactionList
-            account={account}
+            accountType={account.type}
             listData={listData}
           />
         </div>
