@@ -1,8 +1,4 @@
-/**
- * TO DO:
- * check if we should move API integration here
- */
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 // components
 import { Modal, Button, Card } from 'antd';
@@ -10,20 +6,42 @@ import { Modal, Button, Card } from 'antd';
 import TransactionList from './TransactionList';
 import { TransactionStepperForm } from '../components';
 
+// APIs
+import { accountsApi } from '../../../../integration/apis/accounts';
+
 // type definitions
 import type { Account } from '../../../../integration/apis/accounts';
-import type { DebitTransaction } from '../../../../integration/apis/debit_transactions';
-import type { CreditTransaction } from '../../../../integration/apis/creditTransactions';
 
 export type TransactionsProps = {
   account: Account;
-  listData: DebitTransaction[] | CreditTransaction[];
+  dateFilter: {
+    start_date: string;
+    end_date: string;
+  };
 };
 
 const Transactions: FC<TransactionsProps> = (props) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const { account, listData } = props;
+  const { account, dateFilter } = props;
+
+  const [getAccountTransactions, accountTransactions] =
+    accountsApi.useLazyGetTransactionsQuery();
+
+  useEffect(() => {
+    if (!account.id) {
+      return;
+    }
+
+    getAccountTransactions({
+      id: account.id,
+      requestBody: {
+        filters: {
+          date_range: dateFilter,
+        },
+      },
+    });
+  }, [account.id, dateFilter]);
 
   return (
     <>
@@ -37,7 +55,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
         <div className='transactions-list'>
           <TransactionList
             accountType={account.type}
-            listData={listData}
+            listData={accountTransactions.data}
           />
         </div>
       </Card>

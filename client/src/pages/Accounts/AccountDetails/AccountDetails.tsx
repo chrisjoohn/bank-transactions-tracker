@@ -33,8 +33,6 @@ const AccountDetails: FC = () => {
    */
   const [getAccountAnalytics, accountAnalytics] =
     accountsApi.useLazyGetAccountTrxAnalyticsQuery();
-  const [getAccountTransactions, accountTransactions] =
-    accountsApi.useLazyGetTransactionsQuery();
 
   useEffect(() => {
     if (!accountDetails.data?.id) {
@@ -44,15 +42,6 @@ const AccountDetails: FC = () => {
     getAccountAnalytics({
       date_range: dateFilter,
       id: accountDetails.data.id,
-    });
-
-    getAccountTransactions({
-      id: accountDetails.data.id,
-      requestBody: {
-        filters: {
-          date_range: dateFilter,
-        },
-      },
     });
   }, [accountDetails.data, dateFilter]);
 
@@ -91,7 +80,7 @@ const AccountDetails: FC = () => {
       <div className='transactions'>
         <Transactions
           account={accountDetails.data}
-          listData={accountTransactions.data || []}
+          dateFilter={dateFilter}
         />
       </div>
     </div>
