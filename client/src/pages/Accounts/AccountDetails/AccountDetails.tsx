@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { useParams } from 'react-router-dom';
 import { endOfMonth, format, startOfMonth } from 'date-fns';
@@ -27,23 +27,6 @@ const AccountDetails: FC = () => {
   });
 
   const accountDetails = accountsApi.useGetAccountQuery(id || '');
-  /**
-   * TODO:
-   * Move these data fetching APIs to the child components
-   */
-  const [getAccountAnalytics, accountAnalytics] =
-    accountsApi.useLazyGetAccountTrxAnalyticsQuery();
-
-  useEffect(() => {
-    if (!accountDetails.data?.id) {
-      return;
-    }
-
-    getAccountAnalytics({
-      date_range: dateFilter,
-      id: accountDetails.data.id,
-    });
-  }, [accountDetails.data, dateFilter]);
 
   if (accountDetails.isFetching) {
     return <Spin size='large' />;
@@ -73,8 +56,8 @@ const AccountDetails: FC = () => {
       </div>
       <div className={classNames('simple-analytics')}>
         <Analytics
-          inflow={accountAnalytics.data?.data.totalInflow || 0}
-          outflow={accountAnalytics.data?.data.totalOutflow || 0}
+          account={accountDetails.data}
+          dateFilter={dateFilter}
         />
       </div>
       <div className='transactions'>
