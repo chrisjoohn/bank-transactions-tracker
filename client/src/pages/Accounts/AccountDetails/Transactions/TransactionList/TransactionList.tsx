@@ -13,7 +13,7 @@ import type { CreditTransaction } from '../../../../../integration/apis/creditTr
 
 export type TransactionListProps = {
   accountType: TransactionsProps['account']['type'];
-  listData: DebitTransaction[] | CreditTransaction[];
+  listData: DebitTransaction[] | CreditTransaction[] | undefined;
 };
 
 const debitTrxColumns: ColumnsType<DebitTransaction> = [
