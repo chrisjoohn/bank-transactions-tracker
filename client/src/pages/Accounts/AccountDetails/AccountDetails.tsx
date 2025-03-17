@@ -27,6 +27,10 @@ const AccountDetails: FC = () => {
   });
 
   const accountDetails = accountsApi.useGetAccountQuery(id || '');
+  /**
+   * TODO:
+   * Move these data fetching APIs to the child components
+   */
   const [getAccountAnalytics, accountAnalytics] =
     accountsApi.useLazyGetAccountTrxAnalyticsQuery();
   const [getAccountTransactions, accountTransactions] =
