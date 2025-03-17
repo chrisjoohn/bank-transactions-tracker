@@ -3,8 +3,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getAuth } from 'firebase/auth';
 
 // type definitinos
-import type { DebitTransaction } from '../debit_transactions';
-import type { CreditTransaction } from '../creditTransactions';
+import type { DebitTransaction } from './debitTransactions';
+import type { CreditTransaction } from './creditTransactions';
 
 export type Account = {
   id: number;

@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { getAuth } from 'firebase/auth';
-import { TableData } from '../../../pages/Accounts/AccountDetails/components/TransactionStepperForm/steps/VerifyData/VerifyData';
-import { Account } from '../accounts';
+import { TableData } from '../../pages/Accounts/AccountDetails/components/TransactionStepperForm/steps/VerifyData/VerifyData';
+import { Account } from './accounts';
 
 export type DebitTransaction = {
   id: number;

@@ -7,7 +7,7 @@ import { debitTransactionsApi } from '../../../../../integration/apis';
 
 // type definitions
 import type { StepsProps, UploadProps } from 'antd';
-import type { ParsedTrx } from '../../../../../integration/apis/debit_transactions';
+import type { ParsedTrx } from '../../../../../integration/apis/debitTransactions';
 import type { TableData } from './steps/VerifyData/VerifyData'; // TO DO: check if we can put this on a common types definition
 import type { Account } from '../../../../../integration/apis/accounts';
 
