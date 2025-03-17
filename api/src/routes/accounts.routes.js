@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 
 const router = express.Router();
 
@@ -7,10 +8,13 @@ module.exports = (app) => {
 
   const controller = require(`../controllers/accounts.controller`);
 
+  const upload = multer({ storage: multer.memoryStorage() });
+
   router.get(`/${route}/:id/transactions/analytics`, controller.transactionAnalytics);
   router.get(`/${route}/:id`, controller.findOne);
   router.get(`/${route}`, controller.findAll);
 
+  router.post(`/${route}/:id/parse-statement`, upload.single('file'), controller.parseStatement);
   router.post(`/${route}/:id/transactions`, controller.findTransactions);
   router.post(`/${route}`, controller.create);
 
