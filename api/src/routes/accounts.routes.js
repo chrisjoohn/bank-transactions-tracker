@@ -7,12 +7,15 @@ module.exports = (app) => {
 
   const controller = require(`../controllers/accounts.controller`);
 
-  router.get(`/${route}`, controller.findAll);
   router.get(`/${route}/:id/transactions/analytics`, controller.transactionAnalytics);
-  router.post(`/${route}/:id/transactions`, controller.findTransactions);
   router.get(`/${route}/:id`, controller.findOne);
+  router.get(`/${route}`, controller.findAll);
+
+  router.post(`/${route}/:id/transactions`, controller.findTransactions);
   router.post(`/${route}`, controller.create);
+
   router.put(`/${route}/:id`, controller.update);
+
   router.delete(`/${route}/:id`, controller.delete);
 
   app.use(`/`, router);
