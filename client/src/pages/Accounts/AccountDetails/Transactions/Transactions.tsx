@@ -13,10 +13,11 @@ import { TransactionStepperForm } from '../components';
 // type definitions
 import type { Account } from '../../../../integration/apis/accounts';
 import type { DebitTransaction } from '../../../../integration/apis/debit_transactions';
+import type { CreditTransaction } from '../../../../integration/apis/creditTransactions';
 
 export type TransactionsProps = {
   account: Account;
-  listData: DebitTransaction[];
+  listData: DebitTransaction[] | CreditTransaction[];
 };
 
 const Transactions: FC<TransactionsProps> = (props) => {
@@ -35,7 +36,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
         </div>
         <div className='transactions-list'>
           <TransactionList
-            account={account}
+            accountType={account.type}
             listData={listData}
           />
         </div>

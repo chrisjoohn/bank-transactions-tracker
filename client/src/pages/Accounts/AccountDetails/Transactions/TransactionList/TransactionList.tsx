@@ -1,6 +1,3 @@
-/**
- * TO DO: check on how we can make this component reusable
- */
 import { FC } from 'react';
 import { format } from 'date-fns';
 
@@ -8,19 +5,88 @@ import { format } from 'date-fns';
 import { Flex, Empty, Table } from 'antd';
 
 // type definitions
+import type { ColumnsType } from 'antd/es/table';
+
 import type { TransactionsProps } from '../Transactions';
 import type { DebitTransaction } from '../../../../../integration/apis/debit_transactions';
+import type { CreditTransaction } from '../../../../../integration/apis/creditTransactions';
 
 export type TransactionListProps = {
-  account: TransactionsProps['account'];
-  filters?: {
-    date: string;
-  };
-  listData: DebitTransaction[];
+  accountType: TransactionsProps['account']['type'];
+  listData: DebitTransaction[] | CreditTransaction[];
 };
 
+const debitTrxColumns: ColumnsType<DebitTransaction> = [
+  {
+    title: 'Transaction Date',
+    dataIndex: 'transaction_date',
+    render: (item) => format(item, 'MMM dd, yyyy'),
+  },
+  {
+    title: 'Description',
+    dataIndex: 'description',
+  },
+  {
+    title: 'Transaction Type',
+    dataIndex: 'transaction_type',
+  },
+  {
+    title: 'Amount',
+    dataIndex: 'amount',
+  },
+];
+
+const creditTrxColumns: ColumnsType<CreditTransaction> = [
+  {
+    title: 'Transaction Date',
+    dataIndex: 'transaction_date',
+    render: (item) => format(item, 'MMM dd, yyyy'),
+  },
+
+  {
+    title: 'Post Date',
+    dataIndex: 'post_date',
+    render: (item) => format(item, 'MMM dd, yyyy'),
+  },
+  {
+    title: 'Description',
+    dataIndex: 'description',
+  },
+  {
+    title: 'Amount',
+    dataIndex: 'amount',
+  },
+];
+
 const TransactionList: FC<TransactionListProps> = (props) => {
-  const { listData } = props;
+  const { accountType, listData } = props;
+
+  const tableRender = () => {
+    const commonTblProps = {
+      scroll: {
+        y: 400,
+      },
+    };
+    if (accountType === 'CREDIT') {
+      return (
+        <Table<CreditTransaction>
+          dataSource={listData as CreditTransaction[]}
+          columns={creditTrxColumns}
+          {...commonTblProps}
+        />
+      );
+    }
+
+    if (accountType === 'DEPOSIT') {
+      return (
+        <Table<DebitTransaction>
+          dataSource={listData as DebitTransaction[]}
+          columns={debitTrxColumns}
+          {...commonTblProps}
+        />
+      );
+    }
+  };
 
   return (
     <Flex
@@ -28,35 +94,7 @@ const TransactionList: FC<TransactionListProps> = (props) => {
       justify='center'
       align='center'
     >
-      {listData ? (
-        <Table<DebitTransaction>
-          dataSource={listData}
-          scroll={{
-            y: 400,
-          }}
-          columns={[
-            {
-              title: 'Transaction Date',
-              dataIndex: 'transaction_date',
-              render: (item) => format(item, 'MMM dd, yyyy'),
-            },
-            {
-              title: 'Description',
-              dataIndex: 'description',
-            },
-            {
-              title: 'Transaction Type',
-              dataIndex: 'transaction_type',
-            },
-            {
-              title: 'Amount',
-              dataIndex: 'amount',
-            },
-          ]}
-        />
-      ) : (
-        <Empty />
-      )}
+      {listData ? tableRender() : <Empty />}
     </Flex>
   );
 };
