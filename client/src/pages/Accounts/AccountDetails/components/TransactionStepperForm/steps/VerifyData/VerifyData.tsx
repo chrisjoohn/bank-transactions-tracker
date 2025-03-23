@@ -1,30 +1,38 @@
-import { FC } from 'react';
-import { format, parse } from 'date-fns';
+import { FC, useContext } from 'react';
+import { parse } from 'date-fns';
 
-import { Table, Flex, Button } from 'antd';
+import { TransactionStepperFormContext } from '../../TransactionStepperFormContext';
+
+import { Flex, Button } from 'antd';
+
+// components
+import DebitTransactions from './DebitTransactions';
+import CreditTransactions from './CreditTransactions';
 
 // type definitions
 import type {
-  ParsedTrx,
-  DebitTransaction,
-} from '../../../../../../../integration/apis/debitTransactions';
-
-export type TableData = Omit<
-  DebitTransaction,
-  'id' | 'unique_code' | 'amount' | 'account_id' | 'transaction_type'
-> & {
-  amount: string;
-  transaction_type: 'INFLOW' | 'OUTFLOW' | 'INVALID';
-  running_balance: string,
-};
+  ParsedCreditTrx,
+  ParsedDebitTrx,
+} from '../../../../../../../integration/types';
+import type { Account } from '../../../../../../../integration/apis/accounts';
 
 export type VerifyDataProps = {
-  parsedData: ParsedTrx[];
-  onSubmitCallback?: ({ tableData }: { tableData: TableData[] }) => void;
+  account: Account;
+  // accountType: Account['type'];
 };
 
 const VerifyData: FC<VerifyDataProps> = (props) => {
-  const { parsedData, onSubmitCallback } = props;
+  const { account } = props;
+  const { id: accountId, type: accountType } = account;
+
+  const { parsedTransactions } = useContext(TransactionStepperFormContext);
+  const { data: parsedData } = parsedTransactions || {};
+
+  const bulkCreateTransactions = async (data: any[]) => {
+    console.log('this part is under construction');
+    // TODO: call accountsApi.bulkCreateTransactions here
+    // might need to add the API endpoint first
+  };
 
   /**
    * DOCS:
@@ -38,8 +46,11 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
    * TODO:
    * This is just a temp implem until date is parsed from statement
    */
-  const _finalizeDate = (dateString: string): Date => {
-    const parsedDate = parse(dateString, 'MMM dd', new Date());
+  const finalizeDate = (
+    dateString: string,
+    dateFormat: string = 'MMM dd'
+  ): Date => {
+    const parsedDate = parse(dateString, dateFormat, new Date());
     const parsedMonth = parsedDate.getMonth() + 1;
 
     const now = new Date();
@@ -52,74 +63,49 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
     return new Date(yearToUse, parsedDate.getMonth(), parsedDate.getDate());
   };
 
-  const _tableData: TableData[] = parsedData.map((item) => {
-    const { running_balance } = item;
-    const description = `${item.description} ${item.details || ''}`;
-    let transaction_type: TableData['transaction_type'] = 'INVALID';
-    let amount = '0';
-
-    if (item.credit_amount) {
-      transaction_type = 'INFLOW';
-      amount = item.credit_amount;
-    }
-
-    if (item.debit_amount) {
-      transaction_type = 'OUTFLOW';
-      amount = item.debit_amount;
-    }
-
-    return {
-      transaction_date: format(_finalizeDate(item.date), 'yyyy-MM-dd'),
-      description,
-      transaction_type,
-      amount: parseFloat(amount.replace(',', '')).toFixed(2),
-      running_balance,
+  const _tableRender = () => {
+    const commonTblProps = {
+      scroll: {
+        y: 500,
+      },
+      sticky: true,
+      style: { width: '100%' },
     };
-  });
+
+    if (accountType === 'CREDIT') {
+      return (
+        <CreditTransactions
+          finalizeDate={finalizeDate}
+          parsedData={parsedData as ParsedCreditTrx[]}
+          commonTblProps={commonTblProps}
+        />
+      );
+    }
+
+    if (accountType === 'DEPOSIT') {
+      return (
+        <DebitTransactions
+          finalizeDate={finalizeDate}
+          parsedData={parsedData as ParsedDebitTrx[]}
+          commonTblProps={commonTblProps}
+        />
+      );
+    }
+  };
 
   return (
-    <div>
-      <Table<TableData>
-        scroll={{
-          y: 500,
-        }}
-        sticky
-        pagination={false}
-        size='large'
-        style={{ width: '100%' }}
-        dataSource={_tableData}
-        columns={[
-          {
-            title: 'Transaction Date',
-            dataIndex: 'transaction_date',
-            render: (item) => format(item, 'MMM dd, yyyy')
-          },
-          {
-            title: 'Description',
-            dataIndex: 'description',
-          },
-          {
-            title: 'Transaction type',
-            dataIndex: 'transaction_type',
-          },
-          {
-            title: 'Amount',
-            dataIndex: 'amount',
-          },
-        ]}
-      />
-      {onSubmitCallback && (
-        <Flex justify='flex-end'>
-          <Button
-            type='primary'
-            onClick={() => onSubmitCallback({ tableData: _tableData })}
-            style={{ marginTop: 20 }}
-          >
-            Submit
-          </Button>
-        </Flex>
-      )}
-    </div>
+    <>
+      {_tableRender()}
+      <Flex justify='flex-end'>
+        <Button
+          type='primary'
+          onClick={() => bulkCreateTransactions([])}
+          style={{ marginTop: 20 }}
+        >
+          Submit
+        </Button>
+      </Flex>
+    </>
   );
 };
 
