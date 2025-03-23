@@ -1,3 +1,5 @@
+import { Editable } from '../types';
+
 export type CreditTransaction = {
   id: number;
   unique_code: string;
@@ -8,3 +10,8 @@ export type CreditTransaction = {
   post_date: string;
   amount: number;
 };
+
+export type EditableCreditTransaction = Editable<
+  CreditTransaction,
+  'id' | 'unique_code' | 'account_id'
+>;

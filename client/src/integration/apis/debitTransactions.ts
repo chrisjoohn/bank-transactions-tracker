@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getAuth } from 'firebase/auth';
 import { TableData } from '../../pages/Accounts/AccountDetails/components/TransactionStepperForm/steps/VerifyData/VerifyData';
 import { Account } from './accounts';
+import type { Editable, ParsedDebitTrx } from '../types';
 
 export type DebitTransaction = {
   id: number;
@@ -14,23 +15,10 @@ export type DebitTransaction = {
   amount: number;
 };
 
-export type ParsedTrx = {
-  date: string;
-  description: string;
-  details: string;
-  ref: string;
-  running_balance: string; // to update this one to be only on DebitTrx
-} & (CreditTrx | DebitTrx);
-
-export type CreditTrx = {
-  credit_amount: string;
-  debit_amount?: never;
-};
-
-export type DebitTrx = {
-  credit_amount?: never;
-  debit_amount: string;
-};
+export type EditableDebitTransaction = Editable<
+  DebitTransaction,
+  'id' | 'unique_code' | 'account_id'
+>;
 
 export const debitTransactionsApi = createApi({
   reducerPath: 'debit_transactions',
