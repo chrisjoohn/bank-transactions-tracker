@@ -1,17 +1,44 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
+
+import { TransactionStepperFormContext } from '../../TransactionStepperFormContext';
 
 // components
 import { Flex, Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 
+import { accountsApi } from '../../../../../../../integration/apis';
+
 // type definitions
 import type { UploadProps } from 'antd';
+import { Account } from '../../../../../../../integration/apis/accounts';
+
 export type UploadStatementProps = {
-  fileUploadHandler: UploadProps['customRequest'];
+  accountId: Account['id'];
 };
 
 const UploadStatement: FC<UploadStatementProps> = (props) => {
-  const { fileUploadHandler } = props;
+  const { accountId } = props;
+
+  const [parseStatement] = accountsApi.useLazyParseStatementQuery();
+
+  const { formControls, parsedTransactions } = useContext(
+    TransactionStepperFormContext
+  );
+
+  const _fileUploadHandler: UploadProps['customRequest'] = async (options) => {
+    const { file } = options;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const data = await parseStatement({ id: accountId, formData }).unwrap();
+      parsedTransactions?.setData(data);
+      formControls?.nextStep();
+    } catch (err) {
+      console.log('err', err);
+    }
+  };
 
   return (
     <Flex
@@ -22,7 +49,7 @@ const UploadStatement: FC<UploadStatementProps> = (props) => {
       <Upload.Dragger
         name='file'
         accept='.pdf'
-        customRequest={fileUploadHandler}
+        customRequest={_fileUploadHandler}
         showUploadList={false}
       >
         <p className='ant-upload-drag-icon'>
