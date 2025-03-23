@@ -16,3 +16,5 @@ export type ParsedDebitTrx = {
 };
 
 export type ParsedTrx = ParsedDebitTrx | ParsedCreditTrx;
+
+export type Editable<T, K extends keyof T> = Omit<T, K>
