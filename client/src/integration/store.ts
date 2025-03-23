@@ -9,6 +9,9 @@ export const store = configureStore({
     [APIs.debitTransactionsApi.reducerPath]: APIs.debitTransactionsApi.reducer
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(APIs.accountsApi.middleware, APIs.debitTransactionsApi.middleware);
+    return getDefaultMiddleware({ serializableCheck: false }).concat(
+      APIs.accountsApi.middleware,
+      APIs.debitTransactionsApi.middleware
+    );
   },
 });
