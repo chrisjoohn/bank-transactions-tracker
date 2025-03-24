@@ -1,34 +1,42 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useContext } from 'react';
 import { format } from 'date-fns';
 
+// components
 import { Table } from 'antd';
 
-import { ColumnsType } from 'antd/es/table';
+// context
+import { TransactionStepperFormContext } from '../../../TransactionStepperFormContext';
 
-// types
+// type definitions
+import type { ColumnsType } from 'antd/es/table';
+
 import type { ParsedCreditTrx } from '../../../../../../../../integration/types';
 import type { EditableCreditTransaction } from '../../../../../../../../integration/apis/creditTransactions';
 
 export type CreditTransactionsProps = {
-  parsedData: ParsedCreditTrx[];
   finalizeDate: (dateString: string, dateFormat: string) => Date;
   commonTblProps?: object;
 };
 
 const CreditTransactions: FC<CreditTransactionsProps> = (props) => {
-  const { parsedData, finalizeDate, commonTblProps } = props;
+  const { finalizeDate, commonTblProps } = props;
 
-  const [creditTransactions, _setCreditTransactions] = useState<
-    EditableCreditTransaction[] | null
-  >(null);
+  const { parsedTransactions, normalizedTransactions } = useContext(
+    TransactionStepperFormContext
+  );
+
+  const { data: parsedData } = parsedTransactions || {};
+  const { data: creditTransactions } = normalizedTransactions || {};
 
   useEffect(() => {
     // transform data just once
-    if (creditTransactions) {
+    if ((creditTransactions || []).length > 0) {
       return;
     }
 
-    const _creditTrx: EditableCreditTransaction[] = parsedData.map((item) => {
+    const _creditTrx: EditableCreditTransaction[] = (
+      parsedData as ParsedCreditTrx[]
+    ).map((item) => {
       return {
         description: item.description,
         transaction_date: format(
@@ -43,7 +51,7 @@ const CreditTransactions: FC<CreditTransactionsProps> = (props) => {
       };
     });
 
-    _setCreditTransactions(_creditTrx);
+    normalizedTransactions?.setData(_creditTrx);
   }, []);
 
   const creditTrxColumns: ColumnsType<EditableCreditTransaction> = [
@@ -73,7 +81,7 @@ const CreditTransactions: FC<CreditTransactionsProps> = (props) => {
       <Table<EditableCreditTransaction>
         {...commonTblProps}
         pagination={false}
-        dataSource={creditTransactions || []}
+        dataSource={(creditTransactions as EditableCreditTransaction[]) || []}
         columns={creditTrxColumns}
       />
     </>

@@ -1,34 +1,42 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useContext } from 'react';
 import { format } from 'date-fns';
 
+// componentes
 import { Table } from 'antd';
 
-import type { ColumnsType } from 'antd/es/table';
+// context
+import { TransactionStepperFormContext } from '../../../TransactionStepperFormContext';
 
 // type definitions
+import type { ColumnsType } from 'antd/es/table';
+
 import type { ParsedDebitTrx } from '../../../../../../../../integration/types';
 import type { EditableDebitTransaction } from '../../../../../../../../integration/apis/debitTransactions';
 
 export type DebitTransactionsProps = {
-  parsedData: ParsedDebitTrx[];
   finalizeDate: (dateString: string) => Date;
   commonTblProps?: object;
 };
 
 const DebitTransactions: FC<DebitTransactionsProps> = (props) => {
-  const { parsedData, finalizeDate, commonTblProps } = props;
+  const { finalizeDate, commonTblProps } = props;
 
-  const [debitTransactions, _setDebitTransactions] = useState<
-    EditableDebitTransaction[] | null
-  >(null);
+  const { parsedTransactions, normalizedTransactions } = useContext(
+    TransactionStepperFormContext
+  );
+
+  const { data: parsedData } = parsedTransactions || {};
+  const { data: debitTransactions } = normalizedTransactions || {};
 
   useEffect(() => {
-    if (debitTransactions) {
+    if ((debitTransactions || []).length > 0) {
       return;
     }
 
     // transform data here
-    const _debitTrx: EditableDebitTransaction[] = parsedData.map((item) => {
+    const _debitTrx: EditableDebitTransaction[] = (
+      parsedData as ParsedDebitTrx[]
+    ).map((item) => {
       return {
         transaction_date: format(finalizeDate(item.date), 'MMM dd, yyyy'),
         description: `${item.description} ${item.details}`.trim(),
@@ -39,7 +47,7 @@ const DebitTransactions: FC<DebitTransactionsProps> = (props) => {
       };
     });
 
-    _setDebitTransactions(_debitTrx);
+    normalizedTransactions?.setData(_debitTrx);
   }, []);
 
   const debitTrxColumns: ColumnsType<EditableDebitTransaction> = [
@@ -67,7 +75,7 @@ const DebitTransactions: FC<DebitTransactionsProps> = (props) => {
     <Table<EditableDebitTransaction>
       {...commonTblProps}
       pagination={false}
-      dataSource={debitTransactions || []}
+      dataSource={(debitTransactions as EditableDebitTransaction[]) || []}
       columns={debitTrxColumns}
     />
   );
