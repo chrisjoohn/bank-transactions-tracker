@@ -15,20 +15,22 @@ import type { Account } from '../../../../../../../integration/apis/accounts';
 
 export type VerifyDataProps = {
   account: Account;
-  // accountType: Account['type'];
 };
 
 const VerifyData: FC<VerifyDataProps> = (props) => {
   const { account } = props;
   const { id: accountId, type: accountType } = account;
 
-  const { parsedTransactions } = useContext(TransactionStepperFormContext);
-  const { data: parsedData } = parsedTransactions || {};
+  const { formControls, normalizedTransactions } = useContext(
+    TransactionStepperFormContext
+  );
 
-  const bulkCreateTransactions = async (data: any[]) => {
+  const bulkCreateTransactions = async () => {
+    console.log('data: ', normalizedTransactions?.data);
     console.log('this part is under construction');
     // TODO: call accountsApi.bulkCreateTransactions here
     // might need to add the API endpoint first
+    formControls?.nextStep();
   };
 
   /**
