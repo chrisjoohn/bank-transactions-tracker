@@ -1,6 +1,7 @@
 import { FC, useContext } from 'react';
 import { parse } from 'date-fns';
 
+// context
 import { TransactionStepperFormContext } from '../../TransactionStepperFormContext';
 
 import { Flex, Button } from 'antd';
@@ -10,10 +11,6 @@ import DebitTransactions from './DebitTransactions';
 import CreditTransactions from './CreditTransactions';
 
 // type definitions
-import type {
-  ParsedCreditTrx,
-  ParsedDebitTrx,
-} from '../../../../../../../integration/types';
 import type { Account } from '../../../../../../../integration/apis/accounts';
 
 export type VerifyDataProps = {
@@ -76,7 +73,6 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
       return (
         <CreditTransactions
           finalizeDate={finalizeDate}
-          parsedData={parsedData as ParsedCreditTrx[]}
           commonTblProps={commonTblProps}
         />
       );
@@ -86,7 +82,6 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
       return (
         <DebitTransactions
           finalizeDate={finalizeDate}
-          parsedData={parsedData as ParsedDebitTrx[]}
           commonTblProps={commonTblProps}
         />
       );
@@ -99,7 +94,7 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
       <Flex justify='flex-end'>
         <Button
           type='primary'
-          onClick={() => bulkCreateTransactions([])}
+          onClick={bulkCreateTransactions}
           style={{ marginTop: 20 }}
         >
           Submit
