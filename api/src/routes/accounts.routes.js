@@ -15,7 +15,8 @@ module.exports = (app) => {
   router.get(`/${route}`, controller.findAll);
 
   router.post(`/${route}/:id/parse-statement`, upload.single('file'), controller.parseStatement);
-  router.post(`/${route}/:id/transactions`, controller.findTransactions);
+  router.post(`/${route}/:id/transactions/bulk-create`, controller.bulkCreateTransactions);
+  router.post(`/${route}/:id/transactions`, controller.findTransactions); // find account transactions
   router.post(`/${route}`, controller.create);
 
   router.put(`/${route}/:id`, controller.update);
