@@ -328,7 +328,7 @@ exports.bulkCreateTransactions = async (req, res) => {
     }
 
     res.json({
-      data: [],
+      data,
     });
   } catch (err) {
     res.status(500).json({
