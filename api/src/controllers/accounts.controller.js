@@ -244,3 +244,41 @@ exports.delete = async (req, res) => {
     });
   }
 };
+
+exports.parseStatement = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user_id } = req.user;
+    const file = req.file;
+
+    const account = await accountsService.findOne(id, { user_id });
+    if (!account) {
+      res.status(400).json({
+        message: 'Bad request: Account not found!',
+      });
+      return;
+    }
+
+    let parsedData = null;
+
+    if (account.type === 'DEPOSIT') {
+      parsedData = await debitTransactionService.parseStatement(file);
+    }
+
+    if (account.type === 'CREDIT') {
+      parsedData = await creditTransactionService.parseStatement(file);
+    }
+
+    if (!parsedData) {
+      throw 'Error in parsing statement';
+    }
+
+    res.json({
+      data: parsedData,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};

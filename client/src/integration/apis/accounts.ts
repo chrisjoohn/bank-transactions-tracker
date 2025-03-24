@@ -5,6 +5,7 @@ import { getAuth } from 'firebase/auth';
 // type definitinos
 import type { DebitTransaction } from './debitTransactions';
 import type { CreditTransaction } from './creditTransactions';
+import type { ParsedTrx } from '../types';
 
 export type Account = {
   id: number;
@@ -72,6 +73,19 @@ export const accountsApi = createApi({
           end_date: date_range.end_date,
         },
       }),
+    }),
+    parseStatement: builder.query<
+      ParsedTrx[],
+      { id: Account['id'] | Account['unique_code']; formData: FormData }
+    >({
+      query: ({ id, formData }) => ({
+        url: `/accounts/${id}/parse-statement`,
+        method: 'POST',
+        body: formData,
+      }),
+      transformResponse: (response: { data: ParsedTrx[] }) => {
+        return response.data;
+      },
     }),
   }),
 });

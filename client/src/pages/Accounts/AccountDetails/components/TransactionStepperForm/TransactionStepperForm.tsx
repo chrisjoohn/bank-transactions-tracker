@@ -1,68 +1,27 @@
-import { FC, useState } from 'react';
+/**
+ * TODO:
+ * Check if we should put this inside AccountDetails/Transactions/ directory
+ * as it's usage is very specific to it
+ */
+import { FC, useContext } from 'react';
+
+import { TransactionStepperFormContext } from './TransactionStepperFormContext';
 
 import { Flex, Result, Row, Steps } from 'antd';
 import { UploadStatement, VerifyData } from './steps';
 
-import { debitTransactionsApi } from '../../../../../integration/apis';
-
 // type definitions
-import type { StepsProps, UploadProps } from 'antd';
-import type { ParsedTrx } from '../../../../../integration/apis/debitTransactions';
-import type { TableData } from './steps/VerifyData/VerifyData'; // TO DO: check if we can put this on a common types definition
 import type { Account } from '../../../../../integration/apis/accounts';
 
 export type TransactionStepperFormProps = {
-  accountId: Account['id'] | Account['unique_code'];
+  account: Account;
 };
 
-const stepItems: StepsProps['items'] = [
-  {
-    title: 'Upload statement',
-    description: 'Parse bank statements',
-  },
-  {
-    title: 'Verify data',
-    description: 'Verify data parsed from our parser',
-  },
-  {
-    title: 'Finish',
-    description: 'You are all set!',
-  },
-];
-
 const TransactionStepperForm: FC<TransactionStepperFormProps> = (props) => {
-  const { accountId } = props;
+  const { account } = props;
 
-  const [currentStep, setCurrentStep] = useState<number>(0);
-  const [parsedTrx, setParsedTrx] = useState<ParsedTrx[]>([]);
-
-  const [parseStatement] = debitTransactionsApi.useParseStatementMutation();
-  const [bulkCreate] = debitTransactionsApi.useBulkCreateMutation();
-
-  const _customFileUploadHandler: UploadProps['customRequest'] = async (
-    options
-  ) => {
-    const { file } = options;
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const data = await parseStatement(formData).unwrap();
-      setParsedTrx(data);
-      setCurrentStep(currentStep + 1);
-    } catch (err) {
-      console.log('err', err);
-    }
-  };
-
-  const _postTransactionsHandler = async (tableData: TableData[]) => {
-    await bulkCreate({
-      records: tableData,
-      account_id: accountId,
-    });
-    setCurrentStep(currentStep + 1);
-  };
+  const { formControls } = useContext(TransactionStepperFormContext);
+  const { stepItems = [], currentStep = 0 } = formControls || {};
 
   return (
     <>
@@ -73,17 +32,8 @@ const TransactionStepperForm: FC<TransactionStepperFormProps> = (props) => {
         />
       </Row>
       <Row style={{ marginTop: 20 }}>
-        {currentStep === 0 && (
-          <UploadStatement fileUploadHandler={_customFileUploadHandler} />
-        )}
-        {currentStep === 1 && (
-          <VerifyData
-            parsedData={parsedTrx}
-            onSubmitCallback={({ tableData }) => {
-              _postTransactionsHandler(tableData);
-            }}
-          />
-        )}
+        {currentStep === 0 && <UploadStatement accountId={account.id} />}
+        {currentStep === 1 && <VerifyData account={account} />}
         {currentStep === 2 && (
           <Flex
             justify='center'
