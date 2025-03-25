@@ -38,7 +38,7 @@ const DebitTransactions: FC<DebitTransactionsProps> = (props) => {
       parsedData as ParsedDebitTrx[]
     ).map((item) => {
       return {
-        transaction_date: format(finalizeDate(item.date), 'MMM dd, yyyy'),
+        transaction_date: format(finalizeDate(item.date), 'yyyy-MM-dd'),
         description: `${item.description} ${item.details}`.trim(),
         transaction_type: item.debit_amount ? 'OUTFLOW' : 'INFLOW',
         amount: parseFloat(
@@ -54,6 +54,7 @@ const DebitTransactions: FC<DebitTransactionsProps> = (props) => {
     {
       title: 'Transaction Date',
       dataIndex: 'transaction_date',
+      render: (value) => format(value, 'MMM dd, yyyy'),
     },
     {
       title: 'Description',
