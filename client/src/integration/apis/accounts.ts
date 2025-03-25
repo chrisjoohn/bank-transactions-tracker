@@ -3,8 +3,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getAuth } from 'firebase/auth';
 
 // type definitinos
-import type { DebitTransaction } from './debitTransactions';
-import type { CreditTransaction } from './creditTransactions';
+import type {
+  DebitTransaction,
+  EditableDebitTransaction,
+} from './debitTransactions';
+import type {
+  CreditTransaction,
+  EditableCreditTransaction,
+} from './creditTransactions';
 import type { ParsedTrx } from '../types';
 
 export type Account = {
@@ -84,6 +90,26 @@ export const accountsApi = createApi({
         body: formData,
       }),
       transformResponse: (response: { data: ParsedTrx[] }) => {
+        return response.data;
+      },
+    }),
+    bulkCreateTransactions: builder.mutation<
+      CreditTransaction[] | DebitTransaction[],
+      {
+        id: Account['id'] | Account['unique_code'];
+        records: EditableDebitTransaction[] | EditableCreditTransaction[];
+      }
+    >({
+      query: ({ id, records }) => ({
+        url: `/accounts/${id}/transactions/bulk-create`,
+        method: 'POST',
+        body: {
+          records,
+        },
+      }),
+      transformResponse: (response: {
+        data: CreditTransaction[] | DebitTransaction[];
+      }) => {
         return response.data;
       },
     }),
