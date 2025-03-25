@@ -44,6 +44,7 @@ const DebitTransactions: FC<DebitTransactionsProps> = (props) => {
         amount: parseFloat(
           (item.credit_amount || item.debit_amount || '0').replace(',', '')
         ),
+        running_balance: item.running_balance,
       };
     });
 

@@ -17,7 +17,9 @@ export type DebitTransaction = {
 export type EditableDebitTransaction = Editable<
   DebitTransaction,
   'id' | 'unique_code' | 'account_id'
->;
+> & {
+  running_balance?: string; // TODO: to recheck this one as it's just a temp implem
+};
 
 export const debitTransactionsApi = createApi({
   reducerPath: 'debit_transactions',
