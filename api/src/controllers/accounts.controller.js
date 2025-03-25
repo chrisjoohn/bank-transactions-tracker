@@ -309,7 +309,7 @@ exports.bulkCreateTransactions = async (req, res) => {
           account_id: account.id,
         });
         break;
-      case 'DEBIT':
+      case 'DEPOSIT':
         data = await debitTransactionService.bulkCreate({
           records,
           account_id: account.id,
