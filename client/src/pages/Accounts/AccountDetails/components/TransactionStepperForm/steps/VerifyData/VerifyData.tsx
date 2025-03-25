@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { parse } from 'date-fns';
 
 // context
@@ -11,7 +11,10 @@ import DebitTransactions from './DebitTransactions';
 import CreditTransactions from './CreditTransactions';
 
 // type definitions
-import type { Account } from '../../../../../../../integration/apis/accounts';
+import {
+  accountsApi,
+  type Account,
+} from '../../../../../../../integration/apis/accounts';
 
 export type VerifyDataProps = {
   account: Account;
@@ -19,19 +22,32 @@ export type VerifyDataProps = {
 
 const VerifyData: FC<VerifyDataProps> = (props) => {
   const { account } = props;
-  const { id: accountId, type: accountType } = account;
+  const { type: accountType } = account;
 
   const { formControls, normalizedTransactions } = useContext(
     TransactionStepperFormContext
   );
 
-  const bulkCreateTransactions = async () => {
-    console.log('data: ', normalizedTransactions?.data);
-    console.log('this part is under construction');
-    // TODO: call accountsApi.bulkCreateTransactions here
-    // might need to add the API endpoint first
-    formControls?.nextStep();
+  const [bulkCreateTransactions, bulkCreateState] = accountsApi.useBulkCreateTransactionsMutation();
+
+  const _bulkCreateTransactions = async () => {
+    if (normalizedTransactions?.data === undefined) {
+      return;
+    }
+
+    bulkCreateTransactions({
+      records: normalizedTransactions?.data,
+      id: account.unique_code,
+    });
+
+    // TODO: implement error handling here
   };
+
+  useEffect(() => {
+    if (bulkCreateState.isSuccess) {
+      formControls?.nextStep();
+    }
+  }, [bulkCreateState.isSuccess]);
 
   /**
    * DOCS:
@@ -96,7 +112,7 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
       <Flex justify='flex-end'>
         <Button
           type='primary'
-          onClick={bulkCreateTransactions}
+          onClick={_bulkCreateTransactions}
           style={{ marginTop: 20 }}
         >
           Submit
