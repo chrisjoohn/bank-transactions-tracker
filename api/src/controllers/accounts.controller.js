@@ -282,3 +282,57 @@ exports.parseStatement = async (req, res) => {
     });
   }
 };
+
+exports.bulkCreateTransactions = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user_id } = req.user;
+    const { records } = req.body;
+
+    const account = await accountsService.findOne(id, { user_id }); // TODO: check if we can incorporate that we'll always just query user data without passing filters
+
+    if (!account) {
+      // TODO: check if we can create a generic one for this one
+      // so that we're not doing this everytime
+      res.status(400).json({
+        message: 'Bad request: Account not found!',
+      });
+      return;
+    }
+
+    let data = null;
+
+    switch (account.type) {
+      case 'CREDIT':
+        data = await creditTransactionService.bulkCreate({
+          records,
+          account_id: account.id,
+        });
+        break;
+      case 'DEPOSIT':
+        data = await debitTransactionService.bulkCreate({
+          records,
+          account_id: account.id,
+        });
+        break;
+
+      default:
+        break;
+    }
+
+    if (!data) {
+      res.status(400).json({
+        message: 'Bad request',
+      });
+      return;
+    }
+
+    res.json({
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};

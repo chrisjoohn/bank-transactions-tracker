@@ -41,11 +41,11 @@ const CreditTransactions: FC<CreditTransactionsProps> = (props) => {
         description: item.description,
         transaction_date: format(
           finalizeDate(item.transaction_date, 'MMMM dd'),
-          'MMM dd, yyyy'
+          'yyyy-MM-dd'
         ),
         post_date: format(
           finalizeDate(item.post_date, 'MMMM dd'),
-          'MMM dd, yyyy'
+          'yyyy-MM-dd'
         ),
         amount: parseFloat(item.amount.replace(',', '')),
       };
@@ -58,11 +58,13 @@ const CreditTransactions: FC<CreditTransactionsProps> = (props) => {
     {
       title: 'Transaction Date',
       dataIndex: 'transaction_date',
+      render: (value) => format(value, 'MMM dd, yyyy'),
     },
 
     {
       title: 'Post Date',
       dataIndex: 'post_date',
+      render: (value) => format(value, 'MMM dd, yyyy'),
     },
     {
       title: 'Description',
