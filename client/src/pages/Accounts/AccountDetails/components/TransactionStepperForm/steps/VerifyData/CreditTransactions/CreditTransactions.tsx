@@ -21,9 +21,7 @@ export type CreditTransactionsProps = {
 const CreditTransactions: FC<CreditTransactionsProps> = (props) => {
   const { finalizeDate, commonTblProps } = props;
 
-  const { parsedTransactions, normalizedTransactions } = useContext(
-    TransactionStepperFormContext
-  );
+  const { parsedTransactions, normalizedTransactions } = useContext(TransactionStepperFormContext);
 
   const { data: parsedData } = parsedTransactions || {};
   const { data: creditTransactions } = normalizedTransactions || {};
@@ -34,22 +32,16 @@ const CreditTransactions: FC<CreditTransactionsProps> = (props) => {
       return;
     }
 
-    const _creditTrx: EditableCreditTransaction[] = (
-      parsedData as ParsedCreditTrx[]
-    ).map((item) => {
-      return {
-        description: item.description,
-        transaction_date: format(
-          finalizeDate(item.transaction_date, 'MMMM dd'),
-          'yyyy-MM-dd'
-        ),
-        post_date: format(
-          finalizeDate(item.post_date, 'MMMM dd'),
-          'yyyy-MM-dd'
-        ),
-        amount: parseFloat(item.amount.replace(',', '')),
-      };
-    });
+    const _creditTrx: EditableCreditTransaction[] = (parsedData as ParsedCreditTrx[]).map(
+      (item) => {
+        return {
+          description: item.description,
+          transaction_date: format(finalizeDate(item.transaction_date, 'MMMM dd'), 'yyyy-MM-dd'),
+          post_date: format(finalizeDate(item.post_date, 'MMMM dd'), 'yyyy-MM-dd'),
+          amount: parseFloat(item.amount.replace(',', '')),
+        };
+      }
+    );
 
     normalizedTransactions?.setData(_creditTrx);
   }, []);

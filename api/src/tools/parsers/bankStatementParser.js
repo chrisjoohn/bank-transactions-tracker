@@ -139,9 +139,8 @@ const parseDataPerPage = (pageTextContent, options = {}) => {
     }
 
     // check for keywords to skip
-    const skipLine = !!keywordsToSkip && keywordsToSkip.every((keyword) =>
-      upperLineStr.includes(keyword)
-    );
+    const skipLine =
+      !!keywordsToSkip && keywordsToSkip.every((keyword) => upperLineStr.includes(keyword));
 
     // if line contains keywords to skip, we'll skip
     if (skipLine) {
@@ -182,7 +181,6 @@ module.exports = async (fileBuffer, options = {}) => {
       _data = [..._data, ...parsedData];
     }
   }
-
 
   return {
     data: _data,

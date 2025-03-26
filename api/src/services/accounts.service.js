@@ -81,7 +81,7 @@ exports.update = async (id, { name, description, type }) => {
     const putData = {
       name,
       description,
-      type
+      type,
     };
 
     const keyField = isNaN(id) ? 'unique_code' : 'id';

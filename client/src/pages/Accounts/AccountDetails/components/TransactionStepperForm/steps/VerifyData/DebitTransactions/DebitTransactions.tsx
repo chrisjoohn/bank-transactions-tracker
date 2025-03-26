@@ -21,9 +21,7 @@ export type DebitTransactionsProps = {
 const DebitTransactions: FC<DebitTransactionsProps> = (props) => {
   const { finalizeDate, commonTblProps } = props;
 
-  const { parsedTransactions, normalizedTransactions } = useContext(
-    TransactionStepperFormContext
-  );
+  const { parsedTransactions, normalizedTransactions } = useContext(TransactionStepperFormContext);
 
   const { data: parsedData } = parsedTransactions || {};
   const { data: debitTransactions } = normalizedTransactions || {};
@@ -34,16 +32,12 @@ const DebitTransactions: FC<DebitTransactionsProps> = (props) => {
     }
 
     // transform data here
-    const _debitTrx: EditableDebitTransaction[] = (
-      parsedData as ParsedDebitTrx[]
-    ).map((item) => {
+    const _debitTrx: EditableDebitTransaction[] = (parsedData as ParsedDebitTrx[]).map((item) => {
       return {
         transaction_date: format(finalizeDate(item.date), 'yyyy-MM-dd'),
         description: `${item.description} ${item.details}`.trim(),
         transaction_type: item.debit_amount ? 'OUTFLOW' : 'INFLOW',
-        amount: parseFloat(
-          (item.credit_amount || item.debit_amount || '0').replace(',', '')
-        ),
+        amount: parseFloat((item.credit_amount || item.debit_amount || '0').replace(',', '')),
         running_balance: item.running_balance,
       };
     });

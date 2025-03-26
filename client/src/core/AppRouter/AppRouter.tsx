@@ -11,7 +11,7 @@ import AccountsList from '../../pages/Accounts/AccountsList';
 const publicRoutes = createBrowserRouter([
   {
     path: '/',
-    element: <div id='firebaseui-auth-container'></div>, // this div id is important and is used by firebase
+    element: <div id="firebaseui-auth-container"></div>, // this div id is important and is used by firebase
   },
 ]);
 
@@ -57,9 +57,7 @@ const securedRouter = createBrowserRouter([
 const AppRouter: FC<{ authenticated?: boolean }> = (props) => {
   const { authenticated = false } = props;
 
-  return (
-    <RouterProvider router={authenticated ? securedRouter : publicRoutes} />
-  );
+  return <RouterProvider router={authenticated ? securedRouter : publicRoutes} />;
 };
 
 export default AppRouter;

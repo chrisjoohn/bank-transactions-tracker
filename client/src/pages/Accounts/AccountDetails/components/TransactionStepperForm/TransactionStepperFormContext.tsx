@@ -19,9 +19,7 @@ interface TransactionStepperFormContextType {
   };
   normalizedTransactions: {
     data: EditableCreditTransaction[] | EditableDebitTransaction[];
-    setData: (
-      data: EditableCreditTransaction[] | EditableDebitTransaction[]
-    ) => void;
+    setData: (data: EditableCreditTransaction[] | EditableDebitTransaction[]) => void;
   };
 }
 
@@ -48,9 +46,7 @@ export const TransactionStepperFormContextWrapper: React.FC<{
   children: React.ReactNode;
 }> = ({ children }: { children: React.ReactNode }) => {
   const [currentStep, _setCurrentStep] = useState<number>(0);
-  const [parsedTransactions, _setParsedTransactions] = useState<ParsedTrx[]>(
-    []
-  );
+  const [parsedTransactions, _setParsedTransactions] = useState<ParsedTrx[]>([]);
   const [normalizedTransactions, _setNormalizedTransactions] = useState<
     EditableCreditTransaction[] | EditableDebitTransaction[]
   >([]);
@@ -78,9 +74,7 @@ export const TransactionStepperFormContextWrapper: React.FC<{
     _setParsedTransactions(data);
   };
 
-  const setNormalizedTrx = (
-    data: EditableCreditTransaction[] | EditableDebitTransaction[]
-  ) => {
+  const setNormalizedTrx = (data: EditableCreditTransaction[] | EditableDebitTransaction[]) => {
     _setNormalizedTransactions(data);
   };
 

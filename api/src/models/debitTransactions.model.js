@@ -28,10 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  let Model = sequelize.define(
-    'bt_debit_transactions',
-    new DebitTransactions()
-  );
+  let Model = sequelize.define('bt_debit_transactions', new DebitTransactions());
 
   Model.associate = (models) => {};
 

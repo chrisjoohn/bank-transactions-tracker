@@ -25,8 +25,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
 
   const { account, dateFilter } = props;
 
-  const [getAccountTransactions, accountTransactions] =
-    accountsApi.useLazyGetTransactionsQuery();
+  const [getAccountTransactions, accountTransactions] = accountsApi.useLazyGetTransactionsQuery();
 
   useEffect(() => {
     if (!account.id) {
@@ -52,11 +51,8 @@ const Transactions: FC<TransactionsProps> = (props) => {
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button onClick={() => setModalOpen(true)}>Add transactions</Button>
         </div>
-        <div className='transactions-list'>
-          <TransactionList
-            accountType={account.type}
-            listData={accountTransactions.data}
-          />
+        <div className="transactions-list">
+          <TransactionList accountType={account.type} listData={accountTransactions.data} />
         </div>
       </Card>
 
@@ -71,10 +67,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
         width={1500}
       >
         <div style={{ marginTop: '40px' }}>
-          <TransactionStepperForm
-            key={new Date().toString()}
-            account={account}
-          />
+          <TransactionStepperForm key={new Date().toString()} account={account} />
         </div>
       </Modal>
     </>

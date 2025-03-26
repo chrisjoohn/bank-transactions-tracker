@@ -26,24 +26,14 @@ const TransactionStepperForm: FC<TransactionStepperFormProps> = (props) => {
   return (
     <>
       <Row>
-        <Steps
-          items={stepItems}
-          current={currentStep}
-        />
+        <Steps items={stepItems} current={currentStep} />
       </Row>
       <Row style={{ marginTop: 20 }}>
         {currentStep === 0 && <UploadStatement accountId={account.id} />}
         {currentStep === 1 && <VerifyData account={account} />}
         {currentStep === 2 && (
-          <Flex
-            justify='center'
-            align='center'
-            style={{ width: '100%' }}
-          >
-            <Result
-              status='success'
-              title='Successfully created transactions'
-            />
+          <Flex justify="center" align="center" style={{ width: '100%' }}>
+            <Result status="success" title="Successfully created transactions" />
           </Flex>
         )}
       </Row>

@@ -27,23 +27,26 @@ exports.bulkCreate = async (req, res) => {
 
     if (!accountDetails || accountDetails.type !== 'DEPOSIT') {
       res.status(400).json({
-        message: 'Bad request: Account not found!'
+        message: 'Bad request: Account not found!',
       });
       return;
     }
 
-    const data = await debitTransactionsService.bulkCreate({ records, account_id: accountDetails.id });
+    const data = await debitTransactionsService.bulkCreate({
+      records,
+      account_id: accountDetails.id,
+    });
 
     res.json({
-      data
+      data,
     });
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: err.message
-    })
+      message: err.message,
+    });
   }
-}
+};
 
 exports.findAll = async (req, res) => {
   try {

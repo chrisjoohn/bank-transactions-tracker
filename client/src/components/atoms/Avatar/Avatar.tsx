@@ -15,22 +15,14 @@ const Avatar: FC<AvatarProps> = (props) => {
 
   const renderContent = () => {
     if (imgSrc) {
-      return (
-        <img
-          className='avatar_img'
-          src={imgSrc}
-        />
-      );
+      return <img className="avatar_img" src={imgSrc} />;
     }
 
-    return <div className='avatar_alt'>{altTxt}</div>;
+    return <div className="avatar_alt">{altTxt}</div>;
   };
 
   return (
-    <div
-      className={classNames(`btt-avatar`, size, onClick && 'pointer')}
-      onClick={onClick}
-    >
+    <div className={classNames(`btt-avatar`, size, onClick && 'pointer')} onClick={onClick}>
       {renderContent()}
     </div>
   );

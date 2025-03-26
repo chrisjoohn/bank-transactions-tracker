@@ -13,7 +13,7 @@ const AccountsList: FC = () => {
   return (
     <div style={{ display: 'flex', gap: 20 }}>
       {isLoading ? (
-        <Spin size='large' />
+        <Spin size="large" />
       ) : (
         data.map((item) => {
           return (

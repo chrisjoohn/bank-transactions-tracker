@@ -49,7 +49,6 @@ module.exports = {
         defaultValue: 0,
       },
 
-
       created_by: {
         type: Sequelize.INTEGER,
       },
@@ -65,9 +64,7 @@ module.exports = {
       updated_at: {
         allowNull: false,
         type: 'TIMESTAMP',
-        defaultValue: Sequelize.literal(
-          'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
-        ),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },
 
       archived_by: {

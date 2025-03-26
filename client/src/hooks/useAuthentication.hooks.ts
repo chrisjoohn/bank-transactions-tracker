@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import * as firebaseui from 'firebaseui';
-import {
-  getAuth,
-  User,
-  EmailAuthProvider,
-  GoogleAuthProvider,
-} from 'firebase/auth';
+import { getAuth, User, EmailAuthProvider, GoogleAuthProvider } from 'firebase/auth';
 
 type AuthState = 'loggedIn' | 'loggedOut' | 'loading';
 
@@ -21,14 +16,10 @@ const useAuthentication = (): {
     if (authState !== 'loggedOut') {
       return;
     }
-    const ui =
-      firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
+    const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
 
     const authConfig = {
-      signInOptions: [
-        EmailAuthProvider.PROVIDER_ID,
-        GoogleAuthProvider.PROVIDER_ID,
-      ],
+      signInOptions: [EmailAuthProvider.PROVIDER_ID, GoogleAuthProvider.PROVIDER_ID],
       signInFlow: 'popup',
     };
     ui.start('#firebaseui-auth-container', authConfig);

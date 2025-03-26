@@ -35,7 +35,7 @@ const MainLayout: FC<MainLayoutProps> = (props) => {
         <div className={classNames('navigation')}>
           <Menu
             items={menuItems}
-            mode='inline'
+            mode="inline"
             onClick={(item) => {
               if (item.key === 'accounts') {
                 navigate('/');

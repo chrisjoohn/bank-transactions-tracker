@@ -26,12 +26,15 @@ exports.bulkCreate = async (req, res) => {
 
     if (!accountDetails || accountDetails.type !== 'CREDIT') {
       res.status(400).json({
-        message: 'Bad request: Account not found!'
+        message: 'Bad request: Account not found!',
       });
       return;
     }
 
-    const data = await creditTransactionsService.bulkCreate({ records, account_id: accountDetails.id });
+    const data = await creditTransactionsService.bulkCreate({
+      records,
+      account_id: accountDetails.id,
+    });
 
     res.json({
       data,
@@ -47,7 +50,7 @@ exports.findAll = async (req, res) => {
   try {
     const { filters } = req.body;
 
-    const data = await creditTransactionsService.findAll({ filters, });
+    const data = await creditTransactionsService.findAll({ filters });
     res.json({
       data,
     });

@@ -14,10 +14,7 @@ export type PillProps = {
 const NavItem: FC<PillProps> = (props) => {
   const { label, onClick, active, size = 'md' } = props;
   return (
-    <div
-      className={classNames(`btt-pill`, active && 'active', `.font-${size}`)}
-      onClick={onClick}
-    >
+    <div className={classNames(`btt-pill`, active && 'active', `.font-${size}`)} onClick={onClick}>
       {label}
     </div>
   );

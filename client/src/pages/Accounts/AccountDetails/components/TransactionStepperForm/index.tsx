@@ -1,6 +1,4 @@
-import TransactionStepperForm, {
-  TransactionStepperFormProps,
-} from './TransactionStepperForm';
+import TransactionStepperForm, { TransactionStepperFormProps } from './TransactionStepperForm';
 import { TransactionStepperFormContextWrapper } from './TransactionStepperFormContext';
 
 export default (props: TransactionStepperFormProps) => (
