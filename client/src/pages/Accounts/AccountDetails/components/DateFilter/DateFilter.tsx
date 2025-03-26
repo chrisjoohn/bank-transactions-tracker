@@ -101,6 +101,7 @@ const DateFilter: FC<DateFilterProps> = (props) => {
             className='date-picker'
             format={'MMM YYYY'}
             defaultValue={dayjs()}
+            allowClear={false}
           />
         )}
         {filterType === 'quarter' && (
@@ -108,18 +109,21 @@ const DateFilter: FC<DateFilterProps> = (props) => {
             picker='quarter'
             onChange={dateChangeHandler}
             className='date-picker'
+            allowClear={false}
           />
         )}
         {filterType === 'year' && (
           <DatePicker.YearPicker
             onChange={dateChangeHandler}
             className='date-picker'
+            allowClear={false}
           />
         )}
         {filterType === 'custom' && (
           <DatePicker.RangePicker
             onChange={customDateChangeHandler}
             className='date-picker'
+            allowClear={false}
           />
         )}
       </Col>
