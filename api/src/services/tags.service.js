@@ -3,7 +3,6 @@ const models = require('../models');
 // required name to be used on exporting services on index
 exports.serviceName = 'tagsService';
 
-
 exports.create = async ({ name, user_id }) => {
   try {
     const tagsModel = models.tags;

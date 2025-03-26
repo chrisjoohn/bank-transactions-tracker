@@ -1,5 +1,5 @@
 const express = require('express');
-const multer = require('multer')
+const multer = require('multer');
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ module.exports = (app) => {
   router.get(`/${route}/:id`, controller.findOne);
   router.post(`/${route}`, controller.create);
   router.post(`/${route}/bulk`, controller.bulkCreate);
-  router.post(`/${route}/statement-upload`, upload.single('file'), controller.parseStatement)
+  router.post(`/${route}/statement-upload`, upload.single('file'), controller.parseStatement);
   router.put(`/${route}/:id`, controller.update);
   router.delete(`/${route}/:id`, controller.delete);
 

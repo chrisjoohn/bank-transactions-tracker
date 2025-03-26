@@ -21,10 +21,9 @@ export const Base: Story = {
   },
 };
 
-
 export const Active: Story = {
   args: {
     label: 'Dashboard',
     active: true,
-  }
-}
+  },
+};

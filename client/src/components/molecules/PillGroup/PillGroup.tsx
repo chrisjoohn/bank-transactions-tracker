@@ -3,7 +3,7 @@ import { FC } from 'react';
 import Pill from '../../atoms/Pill';
 import type { PillProps } from '../../atoms/Pill';
 
-import './pillGroup.styles.scss'
+import './pillGroup.styles.scss';
 
 export type PillGroupProps = {
   orientation?: 'vertical' | 'horizontal';

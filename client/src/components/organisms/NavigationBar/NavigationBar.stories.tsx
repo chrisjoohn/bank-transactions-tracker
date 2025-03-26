@@ -37,26 +37,16 @@ const commonArgs: NavigationBarProps = {
 };
 
 const commonStyles = {
-  boxShadow:
-    'rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px',
+  boxShadow: 'rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px',
 };
 
 const RouterDecorator = (Story: any) => {
   return (
     <MemoryRouter>
       <Routes>
-        <Route
-          path='/'
-          element={<Story />}
-        />
-        <Route
-          path='/accounts'
-          element={<Story />}
-        />
-        <Route
-          path='/reports'
-          element={<Story />}
-        />
+        <Route path="/" element={<Story />} />
+        <Route path="/accounts" element={<Story />} />
+        <Route path="/reports" element={<Story />} />
       </Routes>
     </MemoryRouter>
   );

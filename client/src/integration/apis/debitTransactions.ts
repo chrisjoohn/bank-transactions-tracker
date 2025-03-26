@@ -55,13 +55,11 @@ export const debitTransactionsApi = createApi({
         url: `/get/debit_transactions`,
         body: requestBody,
       }),
-      transformResponse: (response: { data: DebitTransaction[] }) =>
-        response.data,
+      transformResponse: (response: { data: DebitTransaction[] }) => response.data,
     }),
     findOne: builder.query<DebitTransaction, number | string>({
       query: (id) => `/debit_transactions/${id}`,
-      transformResponse: (response: { data: DebitTransaction }) =>
-        response.data,
+      transformResponse: (response: { data: DebitTransaction }) => response.data,
     }),
     create: builder.query<DebitTransaction, void>({
       query: () => `/debit_transactions`,

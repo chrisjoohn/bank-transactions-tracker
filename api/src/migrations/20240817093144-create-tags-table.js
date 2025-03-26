@@ -1,6 +1,6 @@
 'use strict';
 
-const TABLE_NAME='bt_tags';
+const TABLE_NAME = 'bt_tags';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -45,9 +45,7 @@ module.exports = {
       updated_at: {
         allowNull: false,
         type: 'TIMESTAMP',
-        defaultValue: Sequelize.literal(
-          'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
-        ),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },
 
       archived_by: {

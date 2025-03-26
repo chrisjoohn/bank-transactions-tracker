@@ -4,7 +4,7 @@ const TABLE_NAME = 'bt_debit_transactions';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable(TABLE_NAME, {
       id: {
         type: Sequelize.INTEGER,
@@ -60,9 +60,7 @@ module.exports = {
       updated_at: {
         allowNull: false,
         type: 'TIMESTAMP',
-        defaultValue: Sequelize.literal(
-          'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
-        ),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },
       archived_by: {
         type: Sequelize.INTEGER,
@@ -70,10 +68,10 @@ module.exports = {
       archived_at: {
         type: 'TIMESTAMP',
       },
-    })
+    });
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.dropTable(TABLE_NAME);
-  }
+  },
 };

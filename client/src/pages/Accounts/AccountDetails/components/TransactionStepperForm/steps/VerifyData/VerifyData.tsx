@@ -11,10 +11,7 @@ import DebitTransactions from './DebitTransactions';
 import CreditTransactions from './CreditTransactions';
 
 // type definitions
-import {
-  accountsApi,
-  type Account,
-} from '../../../../../../../integration/apis/accounts';
+import { accountsApi, type Account } from '../../../../../../../integration/apis/accounts';
 
 export type VerifyDataProps = {
   account: Account;
@@ -24,9 +21,7 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
   const { account } = props;
   const { type: accountType } = account;
 
-  const { formControls, normalizedTransactions } = useContext(
-    TransactionStepperFormContext
-  );
+  const { formControls, normalizedTransactions } = useContext(TransactionStepperFormContext);
 
   const [bulkCreateTransactions, bulkCreateState] = accountsApi.useBulkCreateTransactionsMutation();
 
@@ -61,10 +56,7 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
    * TODO:
    * This is just a temp implem until date is parsed from statement
    */
-  const finalizeDate = (
-    dateString: string,
-    dateFormat: string = 'MMM dd'
-  ): Date => {
+  const finalizeDate = (dateString: string, dateFormat: string = 'MMM dd'): Date => {
     const parsedDate = parse(dateString, dateFormat, new Date());
     const parsedMonth = parsedDate.getMonth() + 1;
 
@@ -72,8 +64,7 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
     const currentMonth = now.getMonth() + 1;
     const currentYear = now.getFullYear();
 
-    const yearToUse =
-      parsedMonth >= currentMonth ? currentYear - 1 : currentYear;
+    const yearToUse = parsedMonth >= currentMonth ? currentYear - 1 : currentYear;
 
     return new Date(yearToUse, parsedDate.getMonth(), parsedDate.getDate());
   };
@@ -88,33 +79,19 @@ const VerifyData: FC<VerifyDataProps> = (props) => {
     };
 
     if (accountType === 'CREDIT') {
-      return (
-        <CreditTransactions
-          finalizeDate={finalizeDate}
-          commonTblProps={commonTblProps}
-        />
-      );
+      return <CreditTransactions finalizeDate={finalizeDate} commonTblProps={commonTblProps} />;
     }
 
     if (accountType === 'DEPOSIT') {
-      return (
-        <DebitTransactions
-          finalizeDate={finalizeDate}
-          commonTblProps={commonTblProps}
-        />
-      );
+      return <DebitTransactions finalizeDate={finalizeDate} commonTblProps={commonTblProps} />;
     }
   };
 
   return (
     <>
       {_tableRender()}
-      <Flex justify='flex-end'>
-        <Button
-          type='primary'
-          onClick={_bulkCreateTransactions}
-          style={{ marginTop: 20 }}
-        >
+      <Flex justify="flex-end">
+        <Button type="primary" onClick={_bulkCreateTransactions} style={{ marginTop: 20 }}>
           Submit
         </Button>
       </Flex>

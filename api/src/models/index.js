@@ -20,7 +20,7 @@ if (config.use_env_variable) {
       createdAt: 'created_at',
       updatedAt: 'updated_at',
       deletedAt: 'archived_at',
-    }
+    },
   });
 }
 
@@ -34,10 +34,7 @@ fs.readdirSync(__dirname)
     );
   })
   .forEach((file) => {
-    const model = require(path.join(__dirname, file))(
-      sequelize,
-      Sequelize.DataTypes
-    );
+    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
     const dbPrefix = 'bt_';
     const modelName = model.name.substring(dbPrefix.length);
 

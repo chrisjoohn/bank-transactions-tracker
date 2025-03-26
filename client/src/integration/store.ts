@@ -6,7 +6,7 @@ export const store = configureStore({
   reducer: {
     // add reducers here
     [APIs.accountsApi.reducerPath]: APIs.accountsApi.reducer,
-    [APIs.debitTransactionsApi.reducerPath]: APIs.debitTransactionsApi.reducer
+    [APIs.debitTransactionsApi.reducerPath]: APIs.debitTransactionsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({ serializableCheck: false }).concat(

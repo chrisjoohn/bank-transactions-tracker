@@ -11,12 +11,7 @@ const accountsService = require('./accounts.service');
 // required name to be used on exporting services on index
 exports.serviceName = 'creditTransactionsService';
 
-exports.create = async ({
-  account_id,
-  description,
-  transaction_date,
-  post_date,
-}) => {
+exports.create = async ({ account_id, description, transaction_date, post_date }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
 
@@ -45,7 +40,7 @@ exports.create = async ({
 exports.bulkCreate = async ({ records = [], account_id }) => {
   try {
     if (!account_id) {
-      throw new Error("Account ID is required");
+      throw new Error('Account ID is required');
     }
 
     const creditTransactionsModel = models.credit_transactions;
@@ -128,10 +123,7 @@ exports.findOne = async (id) => {
   }
 };
 
-exports.update = async (
-  id,
-  { account_id, description, transaction_date, post_date }
-) => {
+exports.update = async (id, { account_id, description, transaction_date, post_date }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
 
@@ -216,9 +208,7 @@ const extractBillerAndAmount = (billerAndAmountStr) => {
   let amount;
   let biller;
 
-  const amountMatch = billerAndAmountStr.match(
-    /(\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\.\d{2})$/
-  );
+  const amountMatch = billerAndAmountStr.match(/(\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\.\d{2})$/);
 
   if (!amountMatch) {
     throw 'Amount not found';
@@ -277,10 +267,7 @@ const parseTransactionData = (data) => {
         parse(transactionDate, 'MMMMd', new Date(transactionYear, 0, 1)),
         dateFormat
       ),
-      post_date: format(
-        parse(postDate, 'MMMMd', new Date(transactionYear, 0, 1)),
-        dateFormat
-      ),
+      post_date: format(parse(postDate, 'MMMMd', new Date(transactionYear, 0, 1)), dateFormat),
       amount: parseFloat(amount.replace(',', '')),
       description: biller,
     };
@@ -297,7 +284,7 @@ exports.parseStatement = async (file) => {
       post_date: [140, 200],
       description: [210, 380],
       amount: [400, 550],
-    }
+    };
 
     const options = {
       colPositions,

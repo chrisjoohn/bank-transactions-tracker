@@ -1,9 +1,9 @@
 .btt-pill-group {
-	display: flex;
-	flex-direction: row;
-	gap: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
 
-	&.vertical {
-		flex-direction: column;
-	}
+  &.vertical {
+    flex-direction: column;
+  }
 }

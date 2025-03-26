@@ -18,8 +18,7 @@ export type AnalyticsProps = {
 const Analytics: FC<AnalyticsProps> = (props) => {
   const { account, dateFilter } = props;
 
-  const [getAccountAnalytics, accountAnalytics] =
-    accountsApi.useLazyGetAccountTrxAnalyticsQuery();
+  const [getAccountAnalytics, accountAnalytics] = accountsApi.useLazyGetAccountTrxAnalyticsQuery();
 
   useEffect(() => {
     if (!account.id) {
@@ -42,7 +41,7 @@ const Analytics: FC<AnalyticsProps> = (props) => {
   }
 
   if (accountAnalytics.isUninitialized || accountAnalytics.isLoading) {
-    return <Spin size='large' />;
+    return <Spin size="large" />;
   }
 
   if (!accountAnalytics.data) {
@@ -56,7 +55,7 @@ const Analytics: FC<AnalyticsProps> = (props) => {
       <Col span={8}>
         <Card bordered={false}>
           <Statistic
-            title='Inflow'
+            title="Inflow"
             value={totalInflow.toFixed(2)}
             valueStyle={{ color: '#3f8600' }}
           />
@@ -65,7 +64,7 @@ const Analytics: FC<AnalyticsProps> = (props) => {
       <Col span={8}>
         <Card bordered={false}>
           <Statistic
-            title='Outflow'
+            title="Outflow"
             value={totalOutflow.toFixed(2)}
             valueStyle={{ color: '#cf1322' }}
           />
@@ -74,7 +73,7 @@ const Analytics: FC<AnalyticsProps> = (props) => {
       <Col span={8}>
         <Card bordered={false}>
           <Statistic
-            title='Total'
+            title="Total"
             value={total.toFixed(2)}
             valueStyle={{ color: total > 0 ? '#3f8600' : '#cf1322' }}
           />

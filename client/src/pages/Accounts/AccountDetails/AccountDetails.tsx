@@ -1,3 +1,6 @@
+/**
+ * TODO: Check if we should also implement React context here
+ */
 import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { useParams } from 'react-router-dom';
@@ -29,7 +32,7 @@ const AccountDetails: FC = () => {
   const accountDetails = accountsApi.useGetAccountQuery(id || '');
 
   if (accountDetails.isFetching) {
-    return <Spin size='large' />;
+    return <Spin size="large" />;
   }
 
   if (!accountDetails.data) {
@@ -40,11 +43,11 @@ const AccountDetails: FC = () => {
 
   return (
     <div className={classNames('btt-account-details')}>
-      <div className='basic-details'>
+      <div className="basic-details">
         <h2>{name}</h2>
         <p>{description}</p>
       </div>
-      <div className='date-filter'>
+      <div className="date-filter">
         <DateFilter
           onChange={(date) => {
             setDateFilter({
@@ -55,16 +58,10 @@ const AccountDetails: FC = () => {
         />
       </div>
       <div className={classNames('simple-analytics')}>
-        <Analytics
-          account={accountDetails.data}
-          dateFilter={dateFilter}
-        />
+        <Analytics account={accountDetails.data} dateFilter={dateFilter} />
       </div>
-      <div className='transactions'>
-        <Transactions
-          account={accountDetails.data}
-          dateFilter={dateFilter}
-        />
+      <div className="transactions">
+        <Transactions account={accountDetails.data} dateFilter={dateFilter} />
       </div>
     </div>
   );

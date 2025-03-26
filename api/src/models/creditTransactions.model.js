@@ -30,10 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  let Model = sequelize.define(
-    'bt_credit_transactions',
-    new CreditTransactions()
-  );
+  let Model = sequelize.define('bt_credit_transactions', new CreditTransactions());
 
   Model.associate = (models) => {};
 

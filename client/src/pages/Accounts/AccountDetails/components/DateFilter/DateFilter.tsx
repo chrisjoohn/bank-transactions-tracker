@@ -9,21 +9,13 @@ import type { RangePickerProps } from 'antd/es/date-picker';
 import './dateFilter.styles.scss';
 
 export type DateFilterProps = {
-  onChange: ({
-    startDate,
-    endDate,
-  }: {
-    startDate: string;
-    endDate: string;
-  }) => void;
+  onChange: ({ startDate, endDate }: { startDate: string; endDate: string }) => void;
 };
 
 const DateFilter: FC<DateFilterProps> = (props) => {
   const { onChange } = props;
 
-  const [filterType, setFilterType] = useState<
-    'month' | 'quarter' | 'year' | 'custom'
-  >('month');
+  const [filterType, setFilterType] = useState<'month' | 'quarter' | 'year' | 'custom'>('month');
 
   const dateChangeHandler: DatePickerProps['onChange'] = (date) => {
     if (!date) {
@@ -67,10 +59,7 @@ const DateFilter: FC<DateFilterProps> = (props) => {
     });
   };
 
-  const customDateChangeHandler: RangePickerProps['onChange'] = (
-    _,
-    dateStrings
-  ) => {
+  const customDateChangeHandler: RangePickerProps['onChange'] = (_, dateStrings) => {
     onChange({
       startDate: dateStrings[0],
       endDate: dateStrings[1],
@@ -78,27 +67,24 @@ const DateFilter: FC<DateFilterProps> = (props) => {
   };
 
   return (
-    <Row
-      gutter={8}
-      className='btt-account-details-date-filter'
-    >
+    <Row gutter={8} className="btt-account-details-date-filter">
       <Col span={2}>
         <Select
           value={filterType}
           onChange={(value) => setFilterType(value)}
-          className='filter-type'
+          className="filter-type"
         >
-          <Select.Option value='month'>Month</Select.Option>
-          <Select.Option value='quarter'>Quarter</Select.Option>
-          <Select.Option value='year'>Year</Select.Option>
-          <Select.Option value='custom'>Custom</Select.Option>
+          <Select.Option value="month">Month</Select.Option>
+          <Select.Option value="quarter">Quarter</Select.Option>
+          <Select.Option value="year">Year</Select.Option>
+          <Select.Option value="custom">Custom</Select.Option>
         </Select>
       </Col>
       <Col span={6}>
         {filterType === 'month' && (
           <DatePicker.MonthPicker
             onChange={dateChangeHandler}
-            className='date-picker'
+            className="date-picker"
             format={'MMM YYYY'}
             defaultValue={dayjs()}
             allowClear={false}
@@ -106,23 +92,23 @@ const DateFilter: FC<DateFilterProps> = (props) => {
         )}
         {filterType === 'quarter' && (
           <DatePicker
-            picker='quarter'
+            picker="quarter"
             onChange={dateChangeHandler}
-            className='date-picker'
+            className="date-picker"
             allowClear={false}
           />
         )}
         {filterType === 'year' && (
           <DatePicker.YearPicker
             onChange={dateChangeHandler}
-            className='date-picker'
+            className="date-picker"
             allowClear={false}
           />
         )}
         {filterType === 'custom' && (
           <DatePicker.RangePicker
             onChange={customDateChangeHandler}
-            className='date-picker'
+            className="date-picker"
             allowClear={false}
           />
         )}

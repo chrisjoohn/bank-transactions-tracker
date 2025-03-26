@@ -8,7 +8,6 @@ const dbConfig = {
   dialect: 'mysql',
 };
 
-
 module.exports = {
   development: dbConfig,
   test: dbConfig,

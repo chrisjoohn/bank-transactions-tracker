@@ -89,11 +89,7 @@ const TransactionList: FC<TransactionListProps> = (props) => {
   };
 
   return (
-    <Flex
-      style={{ width: '100%' }}
-      justify='center'
-      align='center'
-    >
+    <Flex style={{ width: '100%' }} justify="center" align="center">
       {listData ? tableRender() : <Empty />}
     </Flex>
   );

@@ -1,58 +1,56 @@
 // global stylings
 
 $font-sizes: (
-	2xs: 0.25rem,
-	xs: 0.5rem,
-	sm: 0.75rem,
-	md: 1rem,
-	lg: 1.25rem,
-	xl: 1.5rem,
-	2xl: 1.75rem
+  2xs: 0.25rem,
+  xs: 0.5rem,
+  sm: 0.75rem,
+  md: 1rem,
+  lg: 1.25rem,
+  xl: 1.5rem,
+  2xl: 1.75rem,
 );
 
 :root {
-	// colors
-	--primary-color: #27374D;
-	--secondary-color: #526D82;
-	--tertiary-color: #9DB2BF;
+  // colors
+  --primary-color: #27374d;
+  --secondary-color: #526d82;
+  --tertiary-color: #9db2bf;
 
-	// background
-	--gray-bg: #f8f7fa;
+  // background
+  --gray-bg: #f8f7fa;
 
-	--white: #ffffff;
-	--gray: #f1f0f3;
-	--black: #0f0f0f;
+  --white: #ffffff;
+  --gray: #f1f0f3;
+  --black: #0f0f0f;
 
-	// spacings
+  // spacings
 
-	// font sizes
-	@each $name, $size in $font-sizes {
-		--font-#{$name}: #{$size};
-	}
+  // font sizes
+  @each $name, $size in $font-sizes {
+    --font-#{$name}: #{$size};
+  }
 }
 
 * {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-	margin: 0;
+  margin: 0;
 
-	font-size: 1rem;
-	font-family: "Roboto", sans-serif;
-	font-weight: 400;
-	font-style: normal;
-	font-kerning: none;
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-kerning: none;
 
+  .pointer {
+    cursor: pointer;
+  }
 
-	.pointer {
-		cursor: pointer;
-	}
-
-	@each $name, $size in $font-sizes {
-		.font-#{$name} {
-			font-size: #{$size};
-		}
-	}
-
+  @each $name, $size in $font-sizes {
+    .font-#{$name} {
+      font-size: #{$size};
+    }
+  }
 }

@@ -8,14 +8,14 @@ module.exports = (sequelize, DataTypes) => {
       super(sequelize, DataTypes);
 
       this.tag_id = {
-	type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       };
 
       this.credit_transaction_id = {
-	type: DataTypes.INTEGER,
-	allowNull: false,
-      }
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      };
     }
   }
 

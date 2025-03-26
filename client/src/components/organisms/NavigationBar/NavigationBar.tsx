@@ -52,10 +52,10 @@ const NavigationBar: FC<NavigationBarProps> = (props) => {
 
   return (
     <div className={classNames(`btt-navigation-bar`, orientation)}>
-      <div className='left'>
+      <div className="left">
         <PillGroup {...pillGroupProps} />
       </div>
-      <div className='right'>
+      <div className="right">
         <Avatar {...avatarProps} />
       </div>
     </div>
