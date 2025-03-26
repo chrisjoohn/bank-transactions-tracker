@@ -195,3 +195,22 @@ exports.parseStatement = async (file) => {
     throw err;
   }
 };
+
+exports.getTotalOutflow = async ({ account_id, date_range }) => {
+  try {
+    const creditTransactionsModel = models.credit_transactions;
+
+    const totalOutflow = await creditTransactionsModel.sum('amount', {
+      where: {
+        account_id,
+        transaction_date: {
+          [Op.between]: [date_range.startDate, date_range.endDate],
+        },
+      },
+    });
+
+    return totalOutflow;
+  } catch (err) {
+    throw err;
+  }
+};
