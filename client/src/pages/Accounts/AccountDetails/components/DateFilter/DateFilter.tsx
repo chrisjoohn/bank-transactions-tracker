@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 
 import { DatePicker, Select, Row, Col } from 'antd';
+import dayjs from 'dayjs';
 
 import type { DatePickerProps } from 'antd';
 import type { RangePickerProps } from 'antd/es/date-picker';
@@ -99,6 +100,8 @@ const DateFilter: FC<DateFilterProps> = (props) => {
             onChange={dateChangeHandler}
             className='date-picker'
             format={'MMM YYYY'}
+            defaultValue={dayjs()}
+            allowClear={false}
           />
         )}
         {filterType === 'quarter' && (
@@ -106,18 +109,21 @@ const DateFilter: FC<DateFilterProps> = (props) => {
             picker='quarter'
             onChange={dateChangeHandler}
             className='date-picker'
+            allowClear={false}
           />
         )}
         {filterType === 'year' && (
           <DatePicker.YearPicker
             onChange={dateChangeHandler}
             className='date-picker'
+            allowClear={false}
           />
         )}
         {filterType === 'custom' && (
           <DatePicker.RangePicker
             onChange={customDateChangeHandler}
             className='date-picker'
+            allowClear={false}
           />
         )}
       </Col>
