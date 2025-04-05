@@ -55,6 +55,8 @@ const creditTrxColumns: ColumnsType<CreditTransaction> = [
   {
     title: 'Amount',
     dataIndex: 'amount',
+    align: 'right',
+    render: (value) => value.toFixed(2),
   },
 ];
 
