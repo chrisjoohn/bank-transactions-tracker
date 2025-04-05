@@ -169,111 +169,6 @@ exports.delete = async (id) => {
   }
 };
 
-/**
- * @param {string} transactionStr
- * e.g. BeyondTheBox-UptwnBTa:23/241,478.75
- *
- * returns an object
- * {
- *  transactionDate: string;
- *  postDate: string;
- * }
- */
-const extractDates = (transactionStr) => {
-  const datePattern = /([A-Za-z]+\d{1,2})/g; // Matches "August28" or "July29"
-  let transactionDate;
-  let postDate;
-
-  // Extract transaction date and post date
-  const dateMatches = transactionStr.match(datePattern);
-  if (dateMatches && dateMatches.length >= 2) {
-    transactionDate = dateMatches[0];
-    postDate = dateMatches[1];
-  }
-
-  return {
-    transactionDate,
-    postDate,
-  };
-};
-
-/**
- * @param {string} billerAndAmountStr
- * @returns {
- *  amount: string;
- *  biller: string;
- * }
- */
-const extractBillerAndAmount = (billerAndAmountStr) => {
-  let amount;
-  let biller;
-
-  const amountMatch = billerAndAmountStr.match(/(\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\.\d{2})$/);
-
-  if (!amountMatch) {
-    throw 'Amount not found';
-  }
-
-  amount = amountMatch[0];
-
-  /**
-   * CUSTOM extracting
-   * TODO: Refactor this custom cleaners
-   */
-  // for items with :21/24<amount>
-  if (billerAndAmountStr.includes(':')) {
-    amount = billerAndAmountStr.split(':')[1].slice(5);
-  }
-
-  // for items with `0` as prefix. e.g. BpSunlif082923500016,000.00
-  if (amount.startsWith(0)) {
-    amount = amount.slice(1);
-  }
-
-  // Extract the biller part by removing the amount from the input
-  biller = billerAndAmountStr.slice(0, -amount.length).trim();
-
-  return {
-    amount,
-    biller,
-  };
-};
-
-/**
- * @param {String[]} data
- * @returns  {
- *  transaction_date: string;
- *  post_date: string;
- *  amount: number;
- *  description: string
- * }
- */
-const parseTransactionData = (data) => {
-  return data.map((item) => {
-    // Extract transaction and post dates
-    const { transactionDate, postDate } = extractDates(item);
-
-    // Extract biller and amount
-    const datesString = `${transactionDate}${postDate}`;
-    const billerAndAmountStr = item.substring(datesString.length);
-
-    const { amount, biller } = extractBillerAndAmount(billerAndAmountStr);
-
-    const transactionYear = new Date().getFullYear();
-    const dateFormat = 'yyyy-MM-dd';
-
-    return {
-      transaction_date: format(
-        parse(transactionDate, 'MMMMd', new Date(transactionYear, 0, 1)),
-        dateFormat
-      ),
-      post_date: format(parse(postDate, 'MMMMd', new Date(transactionYear, 0, 1)), dateFormat),
-      amount: parseFloat(amount.replace(',', '')),
-      description: biller,
-    };
-  });
-};
-
 exports.parseStatement = async (file) => {
   try {
     const startKeywords = ['INSTALLMENT', 'AMORTIZATION'];
@@ -297,6 +192,25 @@ exports.parseStatement = async (file) => {
     return data;
   } catch (err) {
     console.log(err);
+    throw err;
+  }
+};
+
+exports.getTotalOutflow = async ({ account_id, date_range }) => {
+  try {
+    const creditTransactionsModel = models.credit_transactions;
+
+    const totalOutflow = await creditTransactionsModel.sum('amount', {
+      where: {
+        account_id,
+        transaction_date: {
+          [Op.between]: [date_range.startDate, date_range.endDate],
+        },
+      },
+    });
+
+    return totalOutflow;
+  } catch (err) {
     throw err;
   }
 };

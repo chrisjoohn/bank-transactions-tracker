@@ -5,7 +5,6 @@ import useAuthentication from '../../hooks/useAuthentication.hooks';
 const AppAuthenticator: FC<{ children: ReactNode }> = (props) => {
   const { children } = props;
   const { authState, currentUser } = useAuthentication();
-  console.log('currentUser', currentUser);
 
   if (authState === 'loading') {
     return <h1>Loading...</h1>; // update UI

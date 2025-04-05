@@ -135,10 +135,16 @@ exports.transactionAnalytics = async (req, res) => {
     }
 
     if (accountDetails.type === 'CREDIT') {
-      res.status(400).json({
-        message: 'Not yet handled',
+      const totalOutflow = await creditTransactionService.getTotalOutflow({
+        account_id: accountDetails.id,
+        date_range: dateRange,
       });
-      return;
+
+      data = {
+        totalOutflow: totalOutflow || 0,
+        totalInflow: 0,
+        total: totalOutflow * -1,
+      };
     }
 
     if (accountDetails.type === 'DEPOSIT') {
