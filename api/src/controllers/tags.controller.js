@@ -3,8 +3,9 @@ const tagsService = require('../services')['tagsService'];
 exports.create = async (req, res) => {
   try {
     const postData = req.body;
+    const user_id = req.user.user_id;
 
-    const data = await tagsService.create(postData);
+    const data = await tagsService.create({ ...postData, user_id });
 
     res.json({
       data,
