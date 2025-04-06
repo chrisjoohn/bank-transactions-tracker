@@ -7,11 +7,13 @@ export const store = configureStore({
     // add reducers here
     [APIs.accountsApi.reducerPath]: APIs.accountsApi.reducer,
     [APIs.debitTransactionsApi.reducerPath]: APIs.debitTransactionsApi.reducer,
+    [APIs.tagsApi.reducerPath]: APIs.tagsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({ serializableCheck: false }).concat(
       APIs.accountsApi.middleware,
-      APIs.debitTransactionsApi.middleware
+      APIs.debitTransactionsApi.middleware,
+      APIs.tagsApi.middleware
     );
   },
 });
