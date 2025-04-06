@@ -18,11 +18,7 @@ const Tags: FC = () => {
         showIcon
       />
       <br />
-      <TagForm
-        submitHandler={(tagName) => {
-          console.warn('To implement this one...');
-        }}
-      />
+      <TagForm />
     </>
   );
 };
