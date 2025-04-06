@@ -2,17 +2,20 @@ import { FC, useState } from 'react';
 
 import { Input, Button, Row, Col } from 'antd';
 
+import { tagsApi } from '../../../../integration/apis';
+
 import type { InputProps } from 'antd';
 
 export type TagFormProps = {
   value?: string; // could be undefined if to be used for update
-  submitHandler: (tagName: string) => void;
 };
 
 import './tagForm.styles.scss';
 
 const TagForm: FC<TagFormProps> = (props) => {
-  const { value, submitHandler } = props;
+  const { value } = props;
+
+  const [createTag, createState] = tagsApi.useCreateTagMutation();
 
   const [tagName, setTagName] = useState<string>(value || '');
 
@@ -20,9 +23,11 @@ const TagForm: FC<TagFormProps> = (props) => {
     setTagName(e.target.value);
   };
 
-  const _submitHandler = () => {
+  const _submitHandler = async () => {
     setTagName(''); // reset input
-    submitHandler(tagName);
+    await createTag({
+      name: tagName,
+    });
   };
 
   return (
@@ -31,7 +36,9 @@ const TagForm: FC<TagFormProps> = (props) => {
         <Input placeholder="Add tag" value={tagName} onChange={_inputChangeHandler} />
       </Col>
       <Col span={8}>
-        <Button onClick={_submitHandler}>Submit</Button>
+        <Button onClick={_submitHandler} disabled={createState.isLoading}>
+          Submit
+        </Button>
       </Col>
     </Row>
   );
