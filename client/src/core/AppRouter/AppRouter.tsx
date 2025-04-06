@@ -3,7 +3,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import { MainLayout } from '../../layouts';
 
-import { Accounts } from '../../pages';
+import { Accounts, Tags } from '../../pages';
 
 import AccountDetails from '../../pages/Accounts/AccountDetails';
 import AccountsList from '../../pages/Accounts/AccountsList';
@@ -33,6 +33,10 @@ const securedRouter = createBrowserRouter([
             element: <AccountDetails />,
           },
         ],
+      },
+      {
+        path: 'tags',
+        element: <Tags />,
       },
       {
         path: 'transactions',
