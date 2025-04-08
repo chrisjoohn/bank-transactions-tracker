@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { Alert } from 'antd';
 
-import { TagForm } from './components';
+import { TagForm, TagList } from './components';
 
 export type TagsProps = {};
 
@@ -19,6 +19,8 @@ const Tags: FC = () => {
       />
       <br />
       <TagForm />
+      <br />
+      <TagList />
     </>
   );
 };
