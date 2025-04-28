@@ -2,22 +2,17 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { getAuth } from 'firebase/auth';
 import { Account } from './accounts';
-import type { Editable, ParsedDebitTrx } from '../types';
+import type { BaseEntityType, Editable, ParsedDebitTrx } from '../types';
 
-export type DebitTransaction = {
-  id: number;
-  unique_code: string;
+export interface DebitTransaction extends BaseEntityType {
   account_id: number;
   transaction_date: string;
   transaction_type: 'INFLOW' | 'OUTFLOW';
   description: string;
   amount: number;
-};
+}
 
-export type EditableDebitTransaction = Editable<
-  DebitTransaction,
-  'id' | 'unique_code' | 'account_id'
-> & {
+export type EditableDebitTransaction = Editable<DebitTransaction, 'account_id'> & {
   running_balance?: string; // TODO: to recheck this one as it's just a temp implem
 };
 

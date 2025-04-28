@@ -5,16 +5,14 @@ import { getAuth } from 'firebase/auth';
 // type definitinos
 import type { DebitTransaction, EditableDebitTransaction } from './debitTransactions';
 import type { CreditTransaction, EditableCreditTransaction } from './creditTransactions';
-import type { ParsedTrx } from '../types';
+import type { BaseEntityType, ParsedTrx } from '../types';
 
-export type Account = {
-  id: number;
-  unique_code: string;
+export interface Account extends BaseEntityType {
   user_id: string;
   name: string;
   description: string;
   type: 'DEPOSIT' | 'CREDIT';
-};
+}
 
 export const accountsApi = createApi({
   reducerPath: 'accounts',
