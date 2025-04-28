@@ -50,7 +50,7 @@ exports.findTransactions = async (req, res) => {
   try {
     const { id } = req.params;
     const user_id = req.user.user_id;
-    const { filters } = req.body;
+    const { filters, includes } = req.body;
 
     const accountDetails = await accountsService.findOne(id, { user_id });
 
@@ -69,6 +69,7 @@ exports.findTransactions = async (req, res) => {
           ...filters,
           account_id: accountDetails.id,
         },
+        includes,
       });
     }
 
