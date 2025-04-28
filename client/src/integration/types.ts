@@ -1,3 +1,17 @@
+export interface BaseEntityType {
+  id: number;
+  unique_code: string;
+
+  created_at: string;
+  created_by: number;
+
+  updated_at: string;
+  updated_by: number;
+
+  archived_at: string;
+  acrhived_by: number;
+}
+
 export type ParsedCreditTrx = {
   transaction_date: string;
   post_date: string;
@@ -17,4 +31,8 @@ export type ParsedDebitTrx = {
 
 export type ParsedTrx = ParsedDebitTrx | ParsedCreditTrx;
 
-export type Editable<T, K extends keyof T> = Omit<T, K>;
+export type Editable<
+  T extends BaseEntityType,
+  K extends keyof T = never
+> = Partial<BaseEntityType> & Omit<T, keyof BaseEntityType | K> & Partial<Pick<T, K>>;
+
