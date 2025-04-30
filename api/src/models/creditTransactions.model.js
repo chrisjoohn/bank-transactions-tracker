@@ -32,7 +32,13 @@ module.exports = (sequelize, DataTypes) => {
 
   let Model = sequelize.define('bt_credit_transactions', new CreditTransactions());
 
-  Model.associate = (models) => {};
+  Model.associate = (models) => {
+    Model.hasMany(models.credit_transaction_tags, {
+      foreignKey: 'credit_transaction_id',
+      sourceKey: 'id',
+      as: 'tags',
+    });
+  };
 
   return Model;
 };
