@@ -132,14 +132,29 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
   }
 };
 
-exports.findOne = async (id) => {
+exports.findOne = async (id, { includes = {} }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
+
+    const include = [];
+    const includeKeys = Object.keys(includes);
+    for (const includeKey of includeKeys) {
+      switch (includeKey) {
+        case 'tags':
+          const tagInclude = {
+            model: models.credit_transaction_tags,
+            as: 'tags',
+          };
+          include.push(tagInclude);
+          break;
+      }
+    }
 
     const keyField = isNaN(id) ? 'unique_code' : 'id';
 
     const data = await creditTransactionsModel.findOne({
       where: { [keyField]: id },
+      include,
     });
 
     return data;
