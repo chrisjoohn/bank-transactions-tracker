@@ -65,8 +65,13 @@ exports.findTransaction = async (req, res) => {
 
     let data = null;
 
+    // TODO: check on how we could put this as param
+    const includes = {
+      tags: {},
+    };
+
     if (accountDetails.type === 'CREDIT') {
-      data = await creditTransactionService.findOne(transactionId);
+      data = await creditTransactionService.findOne(transactionId, { includes });
     }
 
     if (accountDetails.type === 'DEPOSIT') {
