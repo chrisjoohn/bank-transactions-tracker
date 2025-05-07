@@ -10,9 +10,13 @@ module.exports = (app) => {
 
   const upload = multer({ storage: multer.memoryStorage() });
 
+  /**
+   * TODO: move transaction-related endpoints here to transactions endpoint
+   */
   router.get(`/${route}/:id/transactions/analytics`, controller.transactionAnalytics);
   router.get(`/${route}/:id`, controller.findOne);
   router.get(`/${route}`, controller.findAll);
+  router.get(`/${route}/:id/transactions/:transactionId`, controller.findTransaction);
 
   router.post(`/${route}/:id/parse-statement`, upload.single('file'), controller.parseStatement);
   router.post(`/${route}/:id/transactions/bulk-create`, controller.bulkCreateTransactions);

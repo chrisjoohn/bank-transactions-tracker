@@ -46,6 +46,50 @@ exports.findAll = async (req, res) => {
   }
 };
 
+exports.findTransaction = async (req, res) => {
+  try {
+    const { id, transactionId } = req.params;
+    const user_id = req.user.user_id;
+
+    const accountDetails = await accountsService.findOne(id, { user_id });
+
+    /**
+     * TODO: update these to just be thrown from API services and be caught and error parsed
+     */
+    if (!accountDetails) {
+      res.status(400).json({
+        message: 'Bad request: Account not found!',
+      });
+      return;
+    }
+
+    let data = null;
+
+    if (accountDetails.type === 'CREDIT') {
+      data = await creditTransactionService.findOne(transactionId);
+    }
+
+    if (accountDetails.type === 'DEPOSIT') {
+      data = await debitTransactionService.findOne(transactionId);
+    }
+
+    if (data) {
+      res.json({
+        data,
+      });
+      return;
+    }
+
+    res.status(401).json({
+      message: 'Bad request',
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
 exports.findTransactions = async (req, res) => {
   try {
     const { id } = req.params;
