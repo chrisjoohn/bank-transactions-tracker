@@ -45,6 +45,7 @@ export const accountsApi = createApi({
         id: Account['id'] | Account['unique_code'];
         requestBody: {
           filters: { date_range?: { start_date: string; end_date: string } };
+          includes?: { [includeKey: string]: {} };
         };
       }
     >({
