@@ -21,6 +21,7 @@ export type EditableDebitTransaction = Editable<DebitTransaction, 'account_id'> 
 
 export const debitTransactionsApi = createApi({
   reducerPath: 'debit_transactions',
+  tagTypes: ['DebitTransactions'],
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8080',
     prepareHeaders: async (headers) => {
@@ -73,6 +74,7 @@ export const debitTransactionsApi = createApi({
       query: (id) => `/debit_transactions/${id}`,
       transformResponse: (response: { data: DebitTransaction }) => response.data,
     }),
+    // TODO: fix this one
     create: builder.query<DebitTransaction, void>({
       query: () => `/debit_transactions`,
     }),
