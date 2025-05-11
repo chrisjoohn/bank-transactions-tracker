@@ -468,3 +468,43 @@ exports.createTransactionTag = async (req, res) => {
     });
   }
 };
+
+exports.deleteTransactionTag = async (req, res) => {
+  try {
+    const { id, transactionTagId } = req.params;
+    const { user_id } = req.user;
+
+    const account = await accountsService.findOne(id, { user_id });
+
+    if (!account) {
+      res.status(400).json({
+        message: 'Bad request: Account not found!',
+      });
+      return;
+    }
+
+    let data = null;
+
+    switch (account.type) {
+      case 'CREDIT':
+        data = await creditTransactionTagService.delete(transactionTagId);
+        break;
+      case 'DEPOSIT':
+        break;
+    }
+
+    if (!data) {
+      res.status(400).json({
+        message: 'Bad request',
+      });
+    }
+
+    res.json({
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};

@@ -26,6 +26,10 @@ module.exports = (app) => {
 
   router.put(`/${route}/:id`, controller.update);
 
+  router.delete(
+    `/${route}/:id/transaction-tags/:transactionTagId`,
+    controller.deleteTransactionTag
+  );
   router.delete(`/${route}/:id`, controller.delete);
 
   app.use(`/`, router);
