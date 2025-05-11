@@ -32,12 +32,20 @@ const Transactions: FC<TransactionsProps> = (props) => {
       return;
     }
 
+    let includes = undefined;
+    if (account.type === 'CREDIT') {
+      includes = {
+        tags: {},
+      };
+    }
+
     getAccountTransactions({
       id: account.id,
       requestBody: {
         filters: {
           date_range: dateFilter,
         },
+        includes,
       },
     });
   }, [account.id, dateFilter]);
