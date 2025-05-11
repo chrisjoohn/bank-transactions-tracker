@@ -21,7 +21,13 @@ module.exports = (sequelize, DataTypes) => {
 
   let Model = sequelize.define('bt_credit_transaction_tags', new CreditTransactionTags());
 
-  Model.associate = (models) => {};
+  Model.associate = (models) => {
+    Model.hasOne(models.tags, {
+      foreignKey: 'id',
+      sourceKey: 'tag_id',
+      as: 'tag',
+    });
+  };
 
   return Model;
 };

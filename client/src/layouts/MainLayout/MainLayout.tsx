@@ -18,6 +18,10 @@ const menuItems: MenuItem[] = [
     label: 'Accounts',
   },
   {
+    key: 'tags',
+    label: 'Tags',
+  },
+  {
     key: 'reports',
     label: 'Reports',
   },

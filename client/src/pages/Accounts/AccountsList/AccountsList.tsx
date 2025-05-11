@@ -11,7 +11,7 @@ const AccountsList: FC = () => {
 
   const navigate = useNavigate();
   return (
-    <div style={{ display: 'flex', gap: 20 }}>
+    <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
       {isLoading ? (
         <Spin size="large" />
       ) : (
@@ -21,7 +21,7 @@ const AccountsList: FC = () => {
               key={item.name}
               extra={item.type}
               hoverable
-              style={{ flex: '1 1 0px' }}
+              style={{ flex: '0 0 calc(33.33% - 20px)' }}
               onClick={() => navigate(`/${item.unique_code}`)}
             >
               <h3>{item.name}</h3>

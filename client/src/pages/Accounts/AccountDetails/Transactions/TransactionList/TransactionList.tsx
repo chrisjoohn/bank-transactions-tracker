@@ -1,8 +1,9 @@
 import { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
 // components
-import { Flex, Empty, Table } from 'antd';
+import { Flex, Empty, Table, Button, Tag } from 'antd';
 
 // type definitions
 import type { ColumnsType } from 'antd/es/table';
@@ -12,11 +13,19 @@ import type { DebitTransaction } from '../../../../../integration/apis/debitTran
 import type { CreditTransaction } from '../../../../../integration/apis/creditTransactions';
 
 export type TransactionListProps = {
-  accountType: TransactionsProps['account']['type'];
+  account: TransactionsProps['account'];
   listData: DebitTransaction[] | CreditTransaction[] | undefined;
 };
 
 const debitTrxColumns: ColumnsType<DebitTransaction> = [
+  {
+    title: 'ID',
+    render: (_, record) => (
+      <Button type="link" onClick={() => alert('This part is under construction.')}>
+        {record.unique_code.slice(0, 6)}
+      </Button>
+    ),
+  },
   {
     title: 'Transaction Date',
     dataIndex: 'transaction_date',
@@ -36,7 +45,30 @@ const debitTrxColumns: ColumnsType<DebitTransaction> = [
   },
 ];
 
-const creditTrxColumns: ColumnsType<CreditTransaction> = [
+const creditTrxColumns = ({
+  recordClickHandler,
+}: {
+  recordClickHandler: ({
+    transactionId,
+  }: {
+    transactionId: CreditTransaction['unique_code'];
+  }) => void;
+}): ColumnsType<CreditTransaction> => [
+  {
+    title: 'ID',
+    render: (_, record) => (
+      <Button
+        type="link"
+        onClick={() => {
+          recordClickHandler({
+            transactionId: record.unique_code,
+          });
+        }}
+      >
+        {record.unique_code.slice(0, 6)}
+      </Button>
+    ),
+  },
   {
     title: 'Transaction Date',
     dataIndex: 'transaction_date',
@@ -53,6 +85,19 @@ const creditTrxColumns: ColumnsType<CreditTransaction> = [
     dataIndex: 'description',
   },
   {
+    title: 'Tags',
+    render: (_, record) => {
+      const tags = record?.tags || [];
+      if (tags.length === 0) {
+        return '-';
+      }
+
+      return tags.map((item) => {
+        return <Tag>{item.tag?.name}</Tag>;
+      });
+    },
+  },
+  {
     title: 'Amount',
     dataIndex: 'amount',
     align: 'right',
@@ -61,7 +106,12 @@ const creditTrxColumns: ColumnsType<CreditTransaction> = [
 ];
 
 const TransactionList: FC<TransactionListProps> = (props) => {
-  const { accountType, listData } = props;
+  const { listData, account } = props;
+  const navigate = useNavigate();
+
+  const _transactionClickHandler = ({ transactionId }: { transactionId: string }) => {
+    navigate(`/transactions/${account.unique_code}/${transactionId}`);
+  };
 
   const tableRender = () => {
     const commonTblProps = {
@@ -69,17 +119,19 @@ const TransactionList: FC<TransactionListProps> = (props) => {
         y: 400,
       },
     };
-    if (accountType === 'CREDIT') {
+    if (account.type === 'CREDIT') {
       return (
         <Table<CreditTransaction>
           dataSource={listData as CreditTransaction[]}
-          columns={creditTrxColumns}
+          columns={creditTrxColumns({
+            recordClickHandler: _transactionClickHandler,
+          })}
           {...commonTblProps}
         />
       );
     }
 
-    if (accountType === 'DEPOSIT') {
+    if (account.type === 'DEPOSIT') {
       return (
         <Table<DebitTransaction>
           dataSource={listData as DebitTransaction[]}

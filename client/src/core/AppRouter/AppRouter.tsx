@@ -3,10 +3,12 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import { MainLayout } from '../../layouts';
 
-import { Accounts } from '../../pages';
+import { Accounts, Tags, Transactions } from '../../pages';
 
 import AccountDetails from '../../pages/Accounts/AccountDetails';
 import AccountsList from '../../pages/Accounts/AccountsList';
+
+import TransactionDetails from '../../pages/Transactions/TransactionDetails';
 
 const publicRoutes = createBrowserRouter([
   {
@@ -35,12 +37,18 @@ const securedRouter = createBrowserRouter([
         ],
       },
       {
+        path: 'tags',
+        element: <Tags />,
+      },
+      {
         path: 'transactions',
-        element: (
-          <>
-            <h1>Transactions</h1>
-          </>
-        ),
+        element: <Transactions />,
+        children: [
+          {
+            path: ':accountId/:transactionId',
+            element: <TransactionDetails />,
+          },
+        ],
       },
       {
         path: 'reports',

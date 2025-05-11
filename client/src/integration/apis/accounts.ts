@@ -5,19 +5,18 @@ import { getAuth } from 'firebase/auth';
 // type definitinos
 import type { DebitTransaction, EditableDebitTransaction } from './debitTransactions';
 import type { CreditTransaction, EditableCreditTransaction } from './creditTransactions';
-import type { ParsedTrx } from '../types';
+import type { BaseEntityType, ParsedTrx } from '../types';
 
-export type Account = {
-  id: number;
-  unique_code: string;
+export interface Account extends BaseEntityType {
   user_id: string;
   name: string;
   description: string;
   type: 'DEPOSIT' | 'CREDIT';
-};
+}
 
 export const accountsApi = createApi({
   reducerPath: 'accounts',
+  tagTypes: ['Accounts', 'Transactions'],
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8080',
     prepareHeaders: async (headers) => {
@@ -47,6 +46,7 @@ export const accountsApi = createApi({
         id: Account['id'] | Account['unique_code'];
         requestBody: {
           filters: { date_range?: { start_date: string; end_date: string } };
+          includes?: { [includeKey: string]: {} };
         };
       }
     >({
@@ -57,6 +57,30 @@ export const accountsApi = createApi({
       }),
       transformResponse: (response: { data: DebitTransaction[] | CreditTransaction[] }) =>
         response.data,
+      providesTags: (result, error, arg) => {
+        return result
+          ? [
+              ...result.map((item) => ({
+                type: 'Transactions' as const,
+                id: item.unique_code,
+              })),
+              { type: 'Transactions', id: JSON.stringify(arg) },
+            ]
+          : [{ type: 'Transactions', id: JSON.stringify(arg) }];
+      },
+    }),
+    getTransaction: builder.query<
+      DebitTransaction | CreditTransaction,
+      { id: Account['unique_code']; transactionId: string }
+    >({
+      query: ({ id, transactionId }) => ({
+        url: `/accounts/${id}/transactions/${transactionId}`,
+      }),
+      transformResponse: (response: { data: DebitTransaction | CreditTransaction }) =>
+        response.data,
+      providesTags: (result) => {
+        return [{ type: 'Transactions', id: result?.unique_code }];
+      },
     }),
     getAccountTrxAnalytics: builder.query<
       { data: { totalOutflow: number; totalInflow: number; total: number } },

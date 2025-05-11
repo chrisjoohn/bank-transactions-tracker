@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+
 const models = require('../models');
 
 // required name to be used on exporting services on index
@@ -21,13 +23,29 @@ exports.create = async ({ name, user_id }) => {
   }
 };
 
-exports.findAll = async () => {
+exports.findAll = async ({ filters = {} } = {}) => {
   try {
     const tagsModel = models.tags;
 
-    const data = await tagsModel.findAll();
+    const whereCondition = {};
+    const filterKeys = Object.keys(filters);
+    for (const filterKey of filterKeys) {
+      switch (filterKey) {
+        case 'user_id':
+          const user_id = filters[filterKey];
+          whereCondition['user_id'] = {
+            [Op.eq]: user_id,
+          };
+          break;
+      }
+    }
+
+    const data = await tagsModel.findAll({
+      where: whereCondition,
+    });
     return data;
   } catch (err) {
+    console.log(err);
     console.log('Error in find all tags service: ', err);
     throw err;
   }

@@ -2,27 +2,26 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { getAuth } from 'firebase/auth';
 import { Account } from './accounts';
-import type { Editable, ParsedDebitTrx } from '../types';
+import type { BaseEntityType, Editable, ParsedDebitTrx } from '../types';
+import { Tag } from './tags';
 
-export type DebitTransaction = {
-  id: number;
-  unique_code: string;
+export interface DebitTransaction extends BaseEntityType {
   account_id: number;
   transaction_date: string;
   transaction_type: 'INFLOW' | 'OUTFLOW';
   description: string;
   amount: number;
-};
+  
+  tags?: Tag[];
+}
 
-export type EditableDebitTransaction = Editable<
-  DebitTransaction,
-  'id' | 'unique_code' | 'account_id'
-> & {
+export type EditableDebitTransaction = Editable<DebitTransaction, 'account_id'> & {
   running_balance?: string; // TODO: to recheck this one as it's just a temp implem
 };
 
 export const debitTransactionsApi = createApi({
   reducerPath: 'debit_transactions',
+  tagTypes: ['DebitTransactions'],
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8080',
     prepareHeaders: async (headers) => {
@@ -56,11 +55,26 @@ export const debitTransactionsApi = createApi({
         body: requestBody,
       }),
       transformResponse: (response: { data: DebitTransaction[] }) => response.data,
+      providesTags: (result, error, arg) => {
+        return result
+          ? [
+              ...result.map(({ id }) => ({
+                type: 'DebitTransactions' as const,
+                id,
+              })),
+              {
+                type: 'DebitTransactions',
+                id: JSON.stringify(arg),
+              },
+            ]
+          : [{ type: 'DebitTransactions', id: JSON.stringify(arg) }];
+      },
     }),
     findOne: builder.query<DebitTransaction, number | string>({
       query: (id) => `/debit_transactions/${id}`,
       transformResponse: (response: { data: DebitTransaction }) => response.data,
     }),
+    // TODO: fix this one
     create: builder.query<DebitTransaction, void>({
       query: () => `/debit_transactions`,
     }),

@@ -10,10 +10,15 @@ module.exports = (app) => {
 
   const upload = multer({ storage: multer.memoryStorage() });
 
+  /**
+   * TODO: move transaction-related endpoints here to transactions endpoint
+   */
   router.get(`/${route}/:id/transactions/analytics`, controller.transactionAnalytics);
   router.get(`/${route}/:id`, controller.findOne);
   router.get(`/${route}`, controller.findAll);
+  router.get(`/${route}/:id/transactions/:transactionId`, controller.findTransaction);
 
+  router.post(`/${route}/:id/transaction-tags`, controller.createTransactionTag);
   router.post(`/${route}/:id/parse-statement`, upload.single('file'), controller.parseStatement);
   router.post(`/${route}/:id/transactions/bulk-create`, controller.bulkCreateTransactions);
   router.post(`/${route}/:id/transactions`, controller.findTransactions); // find account transactions
@@ -21,6 +26,10 @@ module.exports = (app) => {
 
   router.put(`/${route}/:id`, controller.update);
 
+  router.delete(
+    `/${route}/:id/transaction-tags/:transactionTagId`,
+    controller.deleteTransactionTag
+  );
   router.delete(`/${route}/:id`, controller.delete);
 
   app.use(`/`, router);

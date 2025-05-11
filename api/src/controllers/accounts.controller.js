@@ -3,6 +3,8 @@ const { startOfMonth, endOfMonth } = require('date-fns');
 const accountsService = require('../services')['accountsService'];
 const debitTransactionService = require('../services/debitTransactions.service');
 const creditTransactionService = require('../services/creditTransactions.service');
+const creditTransactionTagService = require('../services/creditTransactionTags.service');
+const tagService = require('../services/tags.service');
 
 exports.create = async (req, res) => {
   try {
@@ -46,11 +48,60 @@ exports.findAll = async (req, res) => {
   }
 };
 
+exports.findTransaction = async (req, res) => {
+  try {
+    const { id, transactionId } = req.params;
+    const user_id = req.user.user_id;
+
+    const accountDetails = await accountsService.findOne(id, { user_id });
+
+    /**
+     * TODO: update these to just be thrown from API services and be caught and error parsed
+     */
+    if (!accountDetails) {
+      res.status(400).json({
+        message: 'Bad request: Account not found!',
+      });
+      return;
+    }
+
+    let data = null;
+
+    // TODO: check on how we could put this as param
+    const includes = {
+      tags: {},
+    };
+
+    if (accountDetails.type === 'CREDIT') {
+      data = await creditTransactionService.findOne(transactionId, { includes });
+    }
+
+    if (accountDetails.type === 'DEPOSIT') {
+      data = await debitTransactionService.findOne(transactionId);
+    }
+
+    if (data) {
+      res.json({
+        data,
+      });
+      return;
+    }
+
+    res.status(401).json({
+      message: 'Bad request',
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
 exports.findTransactions = async (req, res) => {
   try {
     const { id } = req.params;
     const user_id = req.user.user_id;
-    const { filters } = req.body;
+    const { filters, includes } = req.body;
 
     const accountDetails = await accountsService.findOne(id, { user_id });
 
@@ -69,6 +120,7 @@ exports.findTransactions = async (req, res) => {
           ...filters,
           account_id: accountDetails.id,
         },
+        includes,
       });
     }
 
@@ -331,6 +383,120 @@ exports.bulkCreateTransactions = async (req, res) => {
         message: 'Bad request',
       });
       return;
+    }
+
+    res.json({
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+exports.createTransactionTag = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user_id } = req.user;
+    const { transaction_id, tag_id } = req.body;
+
+    const account = await accountsService.findOne(id, { user_id });
+
+    if (!account) {
+      res.status(400).json({
+        message: 'Bad request: Account not found!',
+      });
+      return;
+    }
+
+    let transaction = null;
+
+    switch (account.type) {
+      case 'CREDIT':
+        transaction = await creditTransactionService.findOne(transaction_id);
+        break;
+      case 'DEPOSIT':
+        break;
+      default:
+        break;
+    }
+
+    if (!transaction) {
+      res.status(400).json({
+        message: 'Bad request: Transaction not found.',
+      });
+      return;
+    }
+
+    const tag = await tagService.findOne(tag_id);
+
+    if (!tag) {
+      res.status(400).json({
+        message: 'Bad request: tag not found.',
+      });
+      return;
+    }
+
+    let data = null;
+
+    switch (account.type) {
+      case 'CREDIT':
+        data = await creditTransactionTagService.create({
+          credit_transaction_id: transaction.id,
+          tag_id: tag.id,
+        });
+        break;
+      case 'DEPOSIT':
+        break;
+      default:
+        break;
+    }
+
+    if (!data) {
+      res.status(400).json({
+        message: 'Bad request',
+      });
+    }
+
+    res.json({
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+exports.deleteTransactionTag = async (req, res) => {
+  try {
+    const { id, transactionTagId } = req.params;
+    const { user_id } = req.user;
+
+    const account = await accountsService.findOne(id, { user_id });
+
+    if (!account) {
+      res.status(400).json({
+        message: 'Bad request: Account not found!',
+      });
+      return;
+    }
+
+    let data = null;
+
+    switch (account.type) {
+      case 'CREDIT':
+        data = await creditTransactionTagService.delete(transactionTagId);
+        break;
+      case 'DEPOSIT':
+        break;
+    }
+
+    if (!data) {
+      res.status(400).json({
+        message: 'Bad request',
+      });
     }
 
     res.json({
