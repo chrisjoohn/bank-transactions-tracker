@@ -16,6 +16,7 @@ export interface Account extends BaseEntityType {
 
 export const accountsApi = createApi({
   reducerPath: 'accounts',
+  tagTypes: ['Accounts', 'Transactions'],
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8080',
     prepareHeaders: async (headers) => {
@@ -56,6 +57,17 @@ export const accountsApi = createApi({
       }),
       transformResponse: (response: { data: DebitTransaction[] | CreditTransaction[] }) =>
         response.data,
+      providesTags: (result, error, arg) => {
+        return result
+          ? [
+              ...result.map((item) => ({
+                type: 'Transactions' as const,
+                id: item.unique_code,
+              })),
+              { type: 'Transactions', id: JSON.stringify(arg) },
+            ]
+          : [{ type: 'Transactions', id: JSON.stringify(arg) }];
+      },
     }),
     getAccountTrxAnalytics: builder.query<
       { data: { totalOutflow: number; totalInflow: number; total: number } },
