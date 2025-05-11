@@ -115,6 +115,10 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
           const tagInclude = {
             model: models.credit_transaction_tags,
             as: 'tags',
+            include: {
+              model: models.tags,
+              as: 'tag'
+            }
           };
           include.push(tagInclude);
           break;
