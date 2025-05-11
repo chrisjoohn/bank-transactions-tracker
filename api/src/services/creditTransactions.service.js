@@ -132,7 +132,7 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
   }
 };
 
-exports.findOne = async (id, { includes = {} }) => {
+exports.findOne = async (id, { includes } = { includes: {} }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
 
@@ -144,6 +144,7 @@ exports.findOne = async (id, { includes = {} }) => {
           const tagInclude = {
             model: models.credit_transaction_tags,
             as: 'tags',
+            include: { model: models.tags, as: 'tag' },
           };
           include.push(tagInclude);
           break;
