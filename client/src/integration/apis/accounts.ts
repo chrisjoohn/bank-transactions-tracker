@@ -69,6 +69,19 @@ export const accountsApi = createApi({
           : [{ type: 'Transactions', id: JSON.stringify(arg) }];
       },
     }),
+    getTransaction: builder.query<
+      DebitTransaction | CreditTransaction,
+      { id: Account['unique_code']; transactionId: string }
+    >({
+      query: ({ id, transactionId }) => ({
+        url: `/accounts/${id}/transactions/${transactionId}`,
+      }),
+      transformResponse: (response: { data: DebitTransaction | CreditTransaction }) =>
+        response.data,
+      providesTags: (result) => {
+        return [{ type: 'Transactions', id: result?.unique_code }];
+      },
+    }),
     getAccountTrxAnalytics: builder.query<
       { data: { totalOutflow: number; totalInflow: number; total: number } },
       {
