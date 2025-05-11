@@ -54,6 +54,20 @@ export const debitTransactionsApi = createApi({
         body: requestBody,
       }),
       transformResponse: (response: { data: DebitTransaction[] }) => response.data,
+      providesTags: (result, error, arg) => {
+        return result
+          ? [
+              ...result.map(({ id }) => ({
+                type: 'DebitTransactions' as const,
+                id,
+              })),
+              {
+                type: 'DebitTransactions',
+                id: JSON.stringify(arg),
+              },
+            ]
+          : [{ type: 'DebitTransactions', id: JSON.stringify(arg) }];
+      },
     }),
     findOne: builder.query<DebitTransaction, number | string>({
       query: (id) => `/debit_transactions/${id}`,
