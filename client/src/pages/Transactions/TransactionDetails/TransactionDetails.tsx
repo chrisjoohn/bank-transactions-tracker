@@ -3,7 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
 import { accountsApi } from '../../../integration/apis';
-import { CreditTransaction } from '../../../integration/apis/creditTransactions';
+import type { CreditTransaction } from '../../../integration/apis/creditTransactions';
+
+import { TransactionTagSelector } from '../components';
 
 // export type TransactionDetailsProps = { transactionId: string; accountId: Account['unique_code'] };
 
@@ -44,6 +46,7 @@ const TransactionDetails: FC = () => {
         <h4>Post date</h4>
         <p>{format((data as CreditTransaction)?.post_date, 'MMM dd, yyyy')}</p>
       </div>
+      <TransactionTagSelector accountId={accountId} transactionId={transactionId} />
     </div>
   );
 };
