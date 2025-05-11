@@ -60,7 +60,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
           <Button onClick={() => setModalOpen(true)}>Add transactions</Button>
         </div>
         <div className="transactions-list">
-          <TransactionList accountType={account.type} listData={accountTransactions.data} />
+          <TransactionList account={account} listData={accountTransactions.data} />
         </div>
       </Card>
 
