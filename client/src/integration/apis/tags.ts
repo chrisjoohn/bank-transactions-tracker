@@ -2,16 +2,23 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { getAuth } from 'firebase/auth';
 
-import type { Editable } from '../types';
+import type { BaseEntityType, Editable } from '../types';
+import { Account } from './accounts';
 
 // TODO: create base AppData type defintion
-export type Tag = {
-  id: number;
-  unique_code: string;
+export interface Tag extends BaseEntityType {
   name: string;
-};
+}
 
-export type EditableTag = Editable<Tag, 'id' | 'unique_code'>; // TODO: make second param default value
+export interface TransactionTag extends BaseEntityType {
+  transaction_id: string | number;
+  tag_id: Tag['id'];
+
+  tag?: Tag;
+}
+
+export type EditableTag = Editable<Tag>;
+export type EditableTransactionTag = Editable<TransactionTag>;
 
 export const tagsApi = createApi({
   reducerPath: 'tags',
@@ -46,11 +53,12 @@ export const tagsApi = createApi({
         const tempId = Date.now().toString();
         const patchResult = dispatch(
           tagsApi.util.updateQueryData('getTags', undefined, (items) => {
-            items.push({
-              ...requestBody,
-              unique_code: tempId,
-              id: 0,
-            });
+            // TODO: Fix type on this ene
+            // items.push({
+            //   ...requestBody,
+            //   unique_code: tempId,
+            //   id: 0,
+            // });
           })
         );
 
@@ -114,6 +122,26 @@ export const tagsApi = createApi({
           patchResult.undo();
         }
       },
+    }),
+    createTransactionTag: builder.mutation<
+      TransactionTag,
+      { account_id: Account['id'] | Account['unique_code']; body: EditableTransactionTag }
+    >({
+      query: ({ account_id, body }) => ({
+        url: `/accounts/${account_id}/transaction-tags`,
+        method: 'POST',
+        body: body,
+      }),
+    }),
+
+    deleteTransactionTags: builder.mutation<
+      void,
+      { accountId: Account['unique_code']; transactionTagId: TransactionTag['unique_code'] }
+    >({
+      query: ({ accountId, transactionTagId }) => ({
+        url: `/accounts/${accountId}/transaction-tags/${transactionTagId}`,
+        method: 'DELETE',
+      }),
     }),
   }),
 });
