@@ -1,4 +1,5 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { DatePicker, Select, Row, Col } from 'antd';
 import dayjs from 'dayjs';
@@ -8,19 +9,41 @@ import type { RangePickerProps } from 'antd/es/date-picker';
 
 import './dateFilter.styles.scss';
 
+type FilterType = 'month' | 'quarter' | 'year' | 'custom';
+
 export type DateFilterProps = {
-  onChange: ({ startDate, endDate }: { startDate: string; endDate: string }) => void;
+  onChange: ({
+    startDate,
+    endDate,
+    filterType,
+  }: {
+    startDate: string;
+    endDate: string;
+    filterType: string;
+  }) => void;
 };
 
 const DateFilter: FC<DateFilterProps> = (props) => {
   const { onChange } = props;
 
-  const [filterType, setFilterType] = useState<'month' | 'quarter' | 'year' | 'custom'>('month');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filterType, setFilterType] = useState<FilterType>('month');
+  const [datePickerVal, setDatePickerVal] = useState<dayjs.Dayjs>(dayjs());
 
-  const dateChangeHandler: DatePickerProps['onChange'] = (date) => {
-    if (!date) {
+  const defaultStartDate = searchParams.get('startDate');
+  const defaultFilterType = searchParams.get('filterType');
+
+  useEffect(() => {
+    if (!defaultStartDate || !defaultFilterType) {
       return;
     }
+
+    _dateChangeHandler(dayjs(defaultStartDate), defaultFilterType as FilterType);
+  }, []);
+
+  const _dateChangeHandler = (date: dayjs.Dayjs, filterType: FilterType) => {
+    setFilterType(filterType);
+    setDatePickerVal(date);
 
     let startDate = '',
       endDate = '';
@@ -53,27 +76,42 @@ const DateFilter: FC<DateFilterProps> = (props) => {
         break;
     }
 
+    setSearchParams({
+      startDate,
+      filterType,
+    });
+
     onChange({
       startDate,
       endDate,
+      filterType,
     });
+  };
+
+  const dateChangeHandler: DatePickerProps['onChange'] = (date) => {
+    if (!date) {
+      return;
+    }
+
+    _dateChangeHandler(date, filterType);
+  };
+
+  const _filterTypeChangeHandler = (filterType: FilterType) => {
+    _dateChangeHandler(dayjs(), filterType);
   };
 
   const customDateChangeHandler: RangePickerProps['onChange'] = (_, dateStrings) => {
     onChange({
       startDate: dateStrings[0],
       endDate: dateStrings[1],
+      filterType,
     });
   };
 
   return (
     <Row gutter={8} className="btt-account-details-date-filter">
       <Col span={2}>
-        <Select
-          value={filterType}
-          onChange={(value) => setFilterType(value)}
-          className="filter-type"
-        >
+        <Select value={filterType} onChange={_filterTypeChangeHandler} className="filter-type">
           <Select.Option value="month">Month</Select.Option>
           <Select.Option value="quarter">Quarter</Select.Option>
           <Select.Option value="year">Year</Select.Option>
@@ -88,6 +126,7 @@ const DateFilter: FC<DateFilterProps> = (props) => {
             format={'MMM YYYY'}
             defaultValue={dayjs()}
             allowClear={false}
+            value={datePickerVal}
           />
         )}
         {filterType === 'quarter' && (
@@ -96,6 +135,8 @@ const DateFilter: FC<DateFilterProps> = (props) => {
             onChange={dateChangeHandler}
             className="date-picker"
             allowClear={false}
+            defaultValue={dayjs()}
+            value={datePickerVal}
           />
         )}
         {filterType === 'year' && (
@@ -103,6 +144,8 @@ const DateFilter: FC<DateFilterProps> = (props) => {
             onChange={dateChangeHandler}
             className="date-picker"
             allowClear={false}
+            defaultValue={dayjs()}
+            value={datePickerVal}
           />
         )}
         {filterType === 'custom' && (
