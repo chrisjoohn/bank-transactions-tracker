@@ -124,7 +124,6 @@ const DateFilter: FC<DateFilterProps> = (props) => {
             onChange={dateChangeHandler}
             className="date-picker"
             format={'MMM YYYY'}
-            defaultValue={dayjs()}
             allowClear={false}
             value={datePickerVal}
           />
@@ -135,7 +134,6 @@ const DateFilter: FC<DateFilterProps> = (props) => {
             onChange={dateChangeHandler}
             className="date-picker"
             allowClear={false}
-            defaultValue={dayjs()}
             value={datePickerVal}
           />
         )}
@@ -144,7 +142,6 @@ const DateFilter: FC<DateFilterProps> = (props) => {
             onChange={dateChangeHandler}
             className="date-picker"
             allowClear={false}
-            defaultValue={dayjs()}
             value={datePickerVal}
           />
         )}
