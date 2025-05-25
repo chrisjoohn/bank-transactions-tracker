@@ -100,7 +100,7 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
 
         case 'date_range':
           const { start_date, end_date } = filters[filterKey];
-          whereCondition['transaction_date'] = {
+          whereCondition['post_date'] = {
             [Op.between]: [start_date, end_date],
           };
           break;
@@ -128,6 +128,7 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
     const data = await creditTransactionsModel.findAll({
       where: whereCondition,
       include,
+      order: [['post_date', 'asc']]
     });
     return data;
   } catch (err) {
@@ -249,7 +250,7 @@ exports.getTotalOutflow = async ({ account_id, date_range }) => {
     const totalOutflow = await creditTransactionsModel.sum('amount', {
       where: {
         account_id,
-        transaction_date: {
+        post_date: {
           [Op.between]: [date_range.startDate, date_range.endDate],
         },
       },
