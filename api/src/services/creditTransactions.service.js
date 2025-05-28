@@ -113,13 +113,11 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
       switch (includeKey) {
         case 'tags':
           const tagInclude = {
-            model: models.credit_transaction_tags,
+            model: models.tags,
+            through: { attributes: [] },
             as: 'tags',
-            include: {
-              model: models.tags,
-              as: 'tag'
-            }
-          };
+            attributes: ['id', 'unique_code', 'name']
+          }
           include.push(tagInclude);
           break;
       }
