@@ -48,9 +48,9 @@ exports.bulkCreate = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const { filters } = req.body;
+    const { filters, includes } = req.body;
 
-    const data = await creditTransactionsService.findAll({ filters });
+    const data = await creditTransactionsService.findAll({ filters, includes });
     res.json({
       data,
     });
