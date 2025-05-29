@@ -26,7 +26,7 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
   const _transaction = transaction as CreditTransaction;
 
   const transactionTags = _transaction?.tags
-    ? _transaction.tags.map((item) => item.tag?.unique_code)
+    ? _transaction.tags.map((item) => item.unique_code)
     : [];
 
   const options: SelectProps['options'] = tags?.map((item) => {
@@ -46,17 +46,10 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
   };
 
   const _onDeselectHandler: SelectProps['onDeselect'] = (value) => {
-    const transactionTag = (_transaction.tags || []).find((item) => {
-      return item.tag?.unique_code === value;
-    });
-
-    if (!transactionTag) {
-      return;
-    }
-
     deleteTransactionTag({
       accountId,
-      transactionTagId: transactionTag?.unique_code,
+      transactionId,
+      tagId: value,
     });
   };
 
