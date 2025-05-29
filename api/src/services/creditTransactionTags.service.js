@@ -98,3 +98,39 @@ exports.delete = async (id) => {
     throw err;
   }
 };
+
+exports.deleteByTransactionAndTag = async ({ transactionId, tagId }) => {
+  try {
+    const creditTransactionTagsModel = models.credit_transaction_tags;
+    const tagsModel = models.tags;
+    const creditTransactionsModel = models.credit_transactions;
+
+    const ccTrxKeyField = isNaN(transactionId) ? 'unique_code' : 'id';
+    const ccTrx = await creditTransactionsModel.findOne({
+      where: { [ccTrxKeyField]: transactionId },
+    });
+
+    const tagKeyField = isNaN(tagId) ? 'unique_code' : 'id';
+    const tag = await tagsModel.findOne({ where: { [tagKeyField]: tagId } });
+
+    if (!ccTrx) {
+      throw new Error('Cannot find transaction');
+    }
+
+    if (!tag) {
+      throw new Error('Cannot find tag');
+    }
+
+    const data = await creditTransactionTagsModel.destroy({
+      where: {
+        credit_transaction_id: ccTrx.id,
+        tag_id: tag.id,
+      },
+    });
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
