@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getAuth } from 'firebase/auth';
 
 import { BaseEntityType, Editable } from '../types';
-import { TransactionTag } from './tags';
+import { Tag } from './tags';
 
 export interface CreditTransaction extends BaseEntityType {
   account_id: number;
@@ -12,7 +12,7 @@ export interface CreditTransaction extends BaseEntityType {
   post_date: string;
   amount: number;
 
-  tags?: TransactionTag[];
+  tags?: Tag[];
 }
 
 export type EditableCreditTransaction = Editable<CreditTransaction, 'account_id'>;
