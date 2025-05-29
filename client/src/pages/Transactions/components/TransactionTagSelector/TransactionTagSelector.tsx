@@ -53,6 +53,10 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
     });
   };
 
+  const _selectFilter: SelectProps['filterOption'] = (input, option) => {
+    return (option?.label || '').toString().toLowerCase().includes(input.toLowerCase());
+  };
+
   return (
     <Select
       mode="multiple"
@@ -65,6 +69,7 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
       onChange={_onChangeHandler}
       onSelect={_onSelectHandler}
       onDeselect={_onDeselectHandler}
+      filterOption={_selectFilter}
     />
   );
 };
