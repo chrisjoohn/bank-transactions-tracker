@@ -471,7 +471,7 @@ exports.createTransactionTag = async (req, res) => {
 
 exports.deleteTransactionTag = async (req, res) => {
   try {
-    const { id, transactionTagId } = req.params;
+    const { id, transactionId, tagId } = req.params;
     const { user_id } = req.user;
 
     const account = await accountsService.findOne(id, { user_id });
@@ -487,7 +487,10 @@ exports.deleteTransactionTag = async (req, res) => {
 
     switch (account.type) {
       case 'CREDIT':
-        data = await creditTransactionTagService.delete(transactionTagId);
+        data = await creditTransactionTagService.deleteByTransactionAndTag({
+          transactionId,
+          tagId,
+        });
         break;
       case 'DEPOSIT':
         break;
@@ -497,6 +500,7 @@ exports.deleteTransactionTag = async (req, res) => {
       res.status(400).json({
         message: 'Bad request',
       });
+      return;
     }
 
     res.json({

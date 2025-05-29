@@ -136,10 +136,10 @@ export const tagsApi = createApi({
 
     deleteTransactionTags: builder.mutation<
       void,
-      { accountId: Account['unique_code']; transactionTagId: TransactionTag['unique_code'] }
+      { accountId: Account['unique_code']; tagId: Tag['unique_code']; transactionId: string }
     >({
-      query: ({ accountId, transactionTagId }) => ({
-        url: `/accounts/${accountId}/transaction-tags/${transactionTagId}`,
+      query: ({ accountId, transactionId, tagId }) => ({
+        url: `/accounts/${accountId}/transaction/${transactionId}/tags/${tagId}`,
         method: 'DELETE',
       }),
     }),

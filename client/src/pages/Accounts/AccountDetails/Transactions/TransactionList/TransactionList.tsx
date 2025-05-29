@@ -93,7 +93,7 @@ const creditTrxColumns = ({
       }
 
       return tags.map((item) => {
-        return <Tag>{item.tag?.name}</Tag>;
+        return <Tag>{item.name}</Tag>;
       });
     },
   },
