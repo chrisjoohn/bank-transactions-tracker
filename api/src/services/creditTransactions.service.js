@@ -1,8 +1,8 @@
 const { Op } = require('sequelize');
-const { parse, format } = require('date-fns');
 
 const { createHashFromObj } = require('../tools/createHash');
 const bankStatementParser = require('../tools/parsers/bankStatementParser');
+const csvStatementParser = require('../tools/parsers/csvStatementParser');
 
 const models = require('../models');
 
@@ -215,7 +215,7 @@ exports.delete = async (id) => {
   }
 };
 
-exports.parseStatement = async (file) => {
+const parsePdfStatement = async (file) => {
   try {
     const startKeywords = ['INSTALLMENT', 'AMORTIZATION'];
     const endKeywords = ['BALANCE', 'SUMMARY', 'S.I.P.'];
@@ -234,6 +234,29 @@ exports.parseStatement = async (file) => {
     };
 
     const { data } = await bankStatementParser(file.buffer, options);
+
+    return data;
+  } catch (err) {}
+};
+
+exports.parseStatement = async (file) => {
+  try {
+    const fileType =
+      file.mimeType === 'text/csv' || file.originalname.toLowerCase().endsWith('csv')
+        ? 'csv'
+        : 'pdf';
+
+    let data = null;
+
+    switch (fileType) {
+      case 'csv':
+        data = await csvStatementParser(file.buffer);
+        break;
+      case 'pdf':
+      default:
+        data = await parsePdfStatement(file);
+        break;
+    }
 
     return data;
   } catch (err) {

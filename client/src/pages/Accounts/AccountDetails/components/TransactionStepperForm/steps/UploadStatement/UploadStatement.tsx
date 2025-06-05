@@ -42,7 +42,7 @@ const UploadStatement: FC<UploadStatementProps> = (props) => {
     <Flex justify="center" align="center" style={{ width: '100%' }}>
       <Upload.Dragger
         name="file"
-        accept=".pdf"
+        accept=".pdf,.csv"
         customRequest={_fileUploadHandler}
         showUploadList={false}
       >
@@ -51,8 +51,8 @@ const UploadStatement: FC<UploadStatementProps> = (props) => {
         </p>
         <p className="ant-upload-text">Click or drag file to this area to upload</p>
         <p className="ant-upload-hint">
-          Support for a single or bulk upload. Strictly prohibited from uploading company data or
-          other banned files.
+          Support for a single upload. You can either upload your bank statements or a CSV file.
+          Strictly prohibited from uploading company data or other banned files.
         </p>
       </Upload.Dragger>
     </Flex>
