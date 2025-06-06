@@ -99,11 +99,23 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
           };
           break;
 
-        case 'date_range':
-          const { start_date, end_date } = filters[filterKey];
-          whereCondition['post_date'] = {
-            [Op.between]: [start_date, end_date],
+        case 'transaction_date':
+          const transactionDateRange = filters[filterKey];
+
+          whereCondition['transaction_date'] = {
+            [Op.between]: [transactionDateRange.start_date, transactionDateRange.end_date],
           };
+
+          break;
+
+        case 'post_date':
+        case 'date_range': // TODO: remove this one once API integration is updated to use `post_date` 
+          const postDateRange = filters[filterKey];
+
+          whereCondition['post_date'] = {
+            [Op.between]: [postDateRange.start_date, postDateRange.end_date],
+          };
+
           break;
         case 'tags':
           const { ids } = filters[filterKey];
