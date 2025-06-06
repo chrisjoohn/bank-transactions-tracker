@@ -86,14 +86,18 @@ export const accountsApi = createApi({
       { data: { totalOutflow: number; totalInflow: number; total: number } },
       {
         id?: Account['id'] | Account['unique_code'];
-        date_range: { start_date: string; end_date: string };
+        post_date?: { start_date: string; end_date: string };
+        transaction_date?: { start_date: string; end_date: string };
       }
     >({
-      query: ({ id, date_range }) => ({
+      query: ({ id, post_date, transaction_date }) => ({
+        method: 'POST',
         url: `/accounts/${id}/transactions/analytics`,
-        params: {
-          start_date: date_range.start_date,
-          end_date: date_range.end_date,
+        body: {
+          filters: {
+            post_date,
+            transaction_date,
+          },
         },
       }),
     }),
