@@ -1,5 +1,5 @@
-const { Op } = require('sequelize');
-const { parse, format } = require('date-fns');
+const sequelize = require('sequelize');
+const { Op } = sequelize;
 
 const { createHashFromObj } = require('../tools/createHash');
 const bankStatementParser = require('../tools/parsers/bankStatementParser');
@@ -78,6 +78,7 @@ exports.bulkCreate = async ({ records = [], account_id }) => {
 exports.findAll = async ({ filters = {}, includes = {} }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
+    const creditTransactionTagsModel = models.credit_transaction_tags;
 
     const whereCondition = {};
 
@@ -102,6 +103,29 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
           const { start_date, end_date } = filters[filterKey];
           whereCondition['post_date'] = {
             [Op.between]: [start_date, end_date],
+          };
+          break;
+        case 'tags':
+          const { ids } = filters[filterKey];
+
+          if (ids.length === 0) {
+            break;
+          }
+
+          // TODO: add validation here before query
+          const ccTrxTags = await creditTransactionTagsModel.findAll({
+            attributes: ['credit_transaction_id'],
+            where: {
+              tag_id: {
+                [Op.in]: ids,
+              },
+            },
+            group: ['credit_transaction_id'],
+            having: sequelize.literal(`COUNT(*) = ${ids.length}`),
+          });
+
+          whereCondition['id'] = {
+            [Op.in]: ccTrxTags.map((item) => item.credit_transaction_id),
           };
           break;
       }
