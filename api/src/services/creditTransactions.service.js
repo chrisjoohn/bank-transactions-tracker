@@ -109,7 +109,7 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
           break;
 
         case 'post_date':
-        case 'date_range': // TODO: remove this one once API integration is updated to use `post_date` 
+        case 'date_range': // TODO: remove this one once API integration is updated to use `post_date`
           const postDateRange = filters[filterKey];
 
           whereCondition['post_date'] = {
@@ -278,17 +278,38 @@ exports.parseStatement = async (file) => {
   }
 };
 
-exports.getTotalOutflow = async ({ account_id, date_range }) => {
+exports.getTotalOutflow = async ({ account_id, post_date, transaction_date, tags }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
+    const creditTransactionTagsModel = models.credit_transaction_tags;
+
+    const whereCondition = {
+      account_id,
+      // TODO: update post_date filter to be more dynamic
+      post_date: {
+        [Op.between]: [post_date.startDate, post_date.endDate], // TODO: update object keys to be in snake-case
+      },
+    };
+
+    if (tags.length > 0) {
+      const ccTrxTags = await creditTransactionTagsModel.findAll({
+        attributes: ['credit_transaction_id'],
+        where: {
+          tag_id: {
+            [Op.in]: tags,
+          },
+        },
+        group: ['credit_transaction_id'],
+        having: sequelize.literal(`COUNT(*) = ${tags.length}`),
+      });
+
+      whereCondition['id'] = {
+        [Op.in]: ccTrxTags.map((item) => item.credit_transaction_id),
+      };
+    }
 
     const totalOutflow = await creditTransactionsModel.sum('amount', {
-      where: {
-        account_id,
-        post_date: {
-          [Op.between]: [date_range.startDate, date_range.endDate],
-        },
-      },
+      where: whereCondition,
     });
 
     return totalOutflow;
