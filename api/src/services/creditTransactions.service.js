@@ -152,8 +152,8 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
             model: models.tags,
             through: { attributes: [] },
             as: 'tags',
-            attributes: ['id', 'unique_code', 'name']
-          }
+            attributes: ['id', 'unique_code', 'name'],
+          };
           include.push(tagInclude);
           break;
       }
@@ -162,7 +162,7 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
     const data = await creditTransactionsModel.findAll({
       where: whereCondition,
       include,
-      order: [['post_date', 'asc']]
+      order: [['post_date', 'asc']],
     });
     return data;
   } catch (err) {
@@ -184,8 +184,8 @@ exports.findOne = async (id, { includes } = { includes: {} }) => {
             model: models.tags,
             through: { attributes: [] },
             as: 'tags',
-            attributes: ['id', 'unique_code', 'name']
-          }
+            attributes: ['id', 'unique_code', 'name'],
+          };
           include.push(tagInclude);
           break;
       }
