@@ -278,7 +278,7 @@ exports.parseStatement = async (file) => {
   }
 };
 
-exports.getTotalOutflow = async ({ account_id, post_date, transaction_date, tags }) => {
+exports.getTotalOutflow = async ({ account_id, post_date, transaction_date, tags = [] }) => {
   try {
     const creditTransactionsModel = models.credit_transactions;
     const creditTransactionTagsModel = models.credit_transaction_tags;
@@ -287,7 +287,7 @@ exports.getTotalOutflow = async ({ account_id, post_date, transaction_date, tags
       account_id,
       // TODO: update post_date filter to be more dynamic
       post_date: {
-        [Op.between]: [post_date.startDate, post_date.endDate], // TODO: update object keys to be in snake-case
+        [Op.between]: [post_date.start_date, post_date.end_date],
       },
     };
 

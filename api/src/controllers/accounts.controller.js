@@ -172,8 +172,8 @@ exports.transactionAnalytics = async (req, res) => {
     const defaultEndDate = endOfMonth(new Date());
 
     let defaultDateRange = {
-      startDate: defaultStartDate,
-      endDate: defaultEndDate,
+      start_date: defaultStartDate,
+      end_date: defaultEndDate,
     };
 
     if (accountDetails.type === 'CREDIT') {
