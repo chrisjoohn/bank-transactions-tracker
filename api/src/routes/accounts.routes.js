@@ -3,12 +3,17 @@ const multer = require('multer');
 
 const router = express.Router();
 
+// middlewares
+const checkAccountMiddleware = require('../tools/middlewares/accounts/checkAccount');
+
 module.exports = (app) => {
   const route = 'accounts';
 
   const controller = require(`../controllers/accounts.controller`);
 
   const upload = multer({ storage: multer.memoryStorage() });
+
+  router.use(`/${route}/:id`, checkAccountMiddleware);
 
   /**
    * TODO: move transaction-related endpoints here to transactions endpoint
