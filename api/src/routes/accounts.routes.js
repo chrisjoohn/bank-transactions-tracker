@@ -13,26 +13,26 @@ module.exports = (app) => {
   /**
    * TODO: move transaction-related endpoints here to transactions endpoint
    */
-  router.get(`/${route}/:id`, controller.findOne);
-  router.get(`/${route}`, controller.findAll);
-  router.get(`/${route}/:id/transactions/:transactionId`, controller.findTransaction);
+  router.get(`/${route}/:id`, controller.findOne); // -- GET one account
+  router.get(`/${route}`, controller.findAll); // -- GET all accounts
+  router.get(`/${route}/:id/transactions/:transactionId`, controller.findTransaction); // -- GET one transaction
 
 
-  router.post(`/${route}/:id/transactions/analytics`, controller.transactionAnalytics);
-  router.post(`/${route}/:id/analytics`, controller.getTotalPerTag)
-  router.post(`/${route}/:id/transaction-tags`, controller.createTransactionTag);
-  router.post(`/${route}/:id/parse-statement`, upload.single('file'), controller.parseStatement);
-  router.post(`/${route}/:id/transactions/bulk-create`, controller.bulkCreateTransactions);
-  router.post(`/${route}/:id/transactions`, controller.findTransactions); // find account transactions
-  router.post(`/${route}`, controller.create);
+  router.post(`/${route}/:id/transactions/analytics`, controller.transactionAnalytics); // -- GET basic analytics; TODO: update route name for this one
+  router.post(`/${route}/:id/analytics`, controller.getTotalPerTag) // -- GET analytics data per tag; TODO: update route name for this one
+  router.post(`/${route}/:id/transaction-tags`, controller.createTransactionTag); // -- GET transaction tags
+  router.post(`/${route}/:id/parse-statement`, upload.single('file'), controller.parseStatement); // -- parse data from pdf/csv statement
+  router.post(`/${route}/:id/transactions/bulk-create`, controller.bulkCreateTransactions); // -- CREATE multiple transactions
+  router.post(`/${route}/:id/transactions`, controller.findTransactions); // -- GET all account transactions
+  router.post(`/${route}`, controller.create); // -- CREATE account
 
-  router.put(`/${route}/:id`, controller.update);
+  router.put(`/${route}/:id`, controller.update); // -- UPDATE account
 
   router.delete(
-    `/${route}/:id/transaction/:transactionId/tags/:tagId`,
+    `/${route}/:id/transaction/:transactionId/tags/:tagId`, // -- DELETE transaction tag
     controller.deleteTransactionTag
   );
-  router.delete(`/${route}/:id`, controller.delete);
+  router.delete(`/${route}/:id`, controller.delete); // -- DELETE account
 
   app.use(`/`, router);
 };
