@@ -19,6 +19,7 @@ module.exports = (app) => {
 
 
   router.post(`/${route}/:id/transactions/analytics`, controller.transactionAnalytics);
+  router.post(`/${route}/:id/analytics`, controller.getTotalPerTag)
   router.post(`/${route}/:id/transaction-tags`, controller.createTransactionTag);
   router.post(`/${route}/:id/parse-statement`, upload.single('file'), controller.parseStatement);
   router.post(`/${route}/:id/transactions/bulk-create`, controller.bulkCreateTransactions);

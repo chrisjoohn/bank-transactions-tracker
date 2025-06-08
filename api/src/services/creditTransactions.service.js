@@ -341,3 +341,67 @@ exports.getTotalOutflow = async ({ account_id, post_date, transaction_date, tags
     throw err;
   }
 };
+
+exports.getTotalPerTag = async ({ accountId, tags }) => { // check param name
+  try {
+    const creditTransactionsModel = models.credit_transactions;
+    const tagsModel = models.tags;
+    const ccTrxTagsModel = models.credit_transaction_tags;
+
+    const tagFilters = [...tags];
+
+    let includedTrx = [];
+    if (tagFilters.length > 0) {
+      includedTrx = await ccTrxTagsModel.findAll({
+        attributes: ['credit_transaction_id'],
+        where: {
+          tag_id: {
+            [Op.in]: tagFilters,
+          },
+        },
+        group: ['credit_transaction_id'],
+        having: sequelize.literal(`COUNT(*) = ${tagFilters.length}`),
+      });
+    }
+
+    const ccTrxWhereCondition = {
+      account_id: accountId,
+      post_date: {
+        [Op.between]: ['2025-06-01', '2025-06-30'], // should also be a parameter
+      },
+    };
+
+    if (includedTrx.length > 0) {
+      ccTrxWhereCondition.id = {
+        [Op.in]: includedTrx.map((item) => item.credit_transaction_id),
+      };
+    }
+
+    const data = await tagsModel.findAll({
+      attributes: [
+        'id',
+        'name',
+        [sequelize.fn('SUM', sequelize.col('bt_credit_transactions.amount')), 'total_amount'],
+      ],
+      include: [
+        {
+          model: creditTransactionsModel,
+          attributes: [],
+          through: { attributes: [] },
+          where: ccTrxWhereCondition,
+        },
+      ],
+      where: {
+        id: {
+          [Op.notIn]: tagFilters,
+        },
+      },
+      group: ['bt_tags.id'],
+      order: [[sequelize.literal('total_amount'), 'DESC']],
+    });
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
