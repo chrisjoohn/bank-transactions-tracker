@@ -17,9 +17,8 @@ module.exports = (app) => {
   router.get(`/${route}`, controller.findAll); // -- GET all accounts
   router.get(`/${route}/:id/transactions/:transactionId`, controller.findTransaction); // -- GET one transaction
 
-
-  router.post(`/${route}/:id/transactions/analytics`, controller.transactionAnalytics); // -- GET basic analytics; TODO: update route name for this one
-  router.post(`/${route}/:id/analytics`, controller.getTotalPerTag) // -- GET analytics data per tag; TODO: update route name for this one
+  router.post(`/${route}/:id/analytics/basic`, controller.transactionAnalytics); // -- GET basic analytics;
+  router.post(`/${route}/:id/analytics`, controller.getTotalPerTag); // -- GET analytics data per tag; TODO: update route name for this one
   router.post(`/${route}/:id/transaction-tags`, controller.createTransactionTag); // -- GET transaction tags
   router.post(`/${route}/:id/parse-statement`, upload.single('file'), controller.parseStatement); // -- parse data from pdf/csv statement
   router.post(`/${route}/:id/transactions/bulk-create`, controller.bulkCreateTransactions); // -- CREATE multiple transactions
