@@ -82,7 +82,7 @@ export const accountsApi = createApi({
         return [{ type: 'Transactions', id: result?.unique_code }];
       },
     }),
-    getAccountTrxAnalytics: builder.query<
+    getAccountBasicAnalytics: builder.query<
       { data: { totalOutflow: number; totalInflow: number; total: number } },
       {
         id?: Account['id'] | Account['unique_code'];
@@ -92,7 +92,7 @@ export const accountsApi = createApi({
     >({
       query: ({ id, post_date, transaction_date }) => ({
         method: 'POST',
-        url: `/accounts/${id}/transactions/analytics`,
+        url: `/accounts/${id}/analytics/basic`,
         body: {
           filters: {
             post_date,

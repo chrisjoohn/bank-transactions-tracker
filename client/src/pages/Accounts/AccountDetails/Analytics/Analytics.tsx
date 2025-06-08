@@ -18,7 +18,7 @@ export type AnalyticsProps = {
 const Analytics: FC<AnalyticsProps> = (props) => {
   const { account, dateFilter } = props;
 
-  const [getAccountAnalytics, accountAnalytics] = accountsApi.useLazyGetAccountTrxAnalyticsQuery();
+  const [getAccountAnalytics, accountAnalytics] = accountsApi.useLazyGetAccountBasicAnalyticsQuery();
 
   useEffect(() => {
     if (!account.id) {
