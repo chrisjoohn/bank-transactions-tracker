@@ -50,20 +50,8 @@ exports.findAll = async (req, res) => {
 
 exports.findTransaction = async (req, res) => {
   try {
-    const { id, transactionId } = req.params;
-    const user_id = req.user.user_id;
-
-    const accountDetails = await accountsService.findOne(id, { user_id });
-
-    /**
-     * TODO: update these to just be thrown from API services and be caught and error parsed
-     */
-    if (!accountDetails) {
-      res.status(400).json({
-        message: 'Bad request: Account not found!',
-      });
-      return;
-    }
+    const { transactionId } = req.params;
+    const accountDetails = req.account;
 
     let data = null;
 
@@ -99,18 +87,8 @@ exports.findTransaction = async (req, res) => {
 
 exports.findTransactions = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user_id = req.user.user_id;
     const { filters, includes } = req.body;
-
-    const accountDetails = await accountsService.findOne(id, { user_id });
-
-    if (!accountDetails) {
-      res.status(400).json({
-        message: 'Bad request: Account not found!',
-      });
-      return;
-    }
+    const accountDetails = req.account;
 
     let data;
 
@@ -152,19 +130,9 @@ exports.findTransactions = async (req, res) => {
 
 exports.transactionAnalytics = async (req, res) => {
   try {
-    const { id } = req.params;
     const { filters } = req.body;
     const { transaction_date, post_date, tags } = filters; // TODO: check what should happen if there's transaction and post dates passed as filters
-
-    const user_id = req.user.user_id;
-    const accountDetails = await accountsService.findOne(id, { user_id });
-
-    if (!accountDetails) {
-      res.status(400).json({
-        message: 'Bad request: Account not found!',
-      });
-      return;
-    }
+    const accountDetails = req.account;
 
     let data;
 
@@ -227,10 +195,7 @@ exports.transactionAnalytics = async (req, res) => {
 
 exports.findOne = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user_id = req.user.user_id;
-
-    const data = await accountsService.findOne(id, { user_id });
+    const data = req.account;
 
     res.json({
       data,
@@ -245,17 +210,7 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { user_id } = req.user;
-
     const putData = req.body;
-
-    const toUpdate = await accountsService.findOne(id, { user_id });
-    if (!toUpdate) {
-      res.status(400).json({
-        message: `Can't find record to update: ${id}`,
-      });
-      return;
-    }
 
     const data = await accountsService.update(id, putData);
 
@@ -272,15 +227,6 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     const { id } = req.params;
-    const { user_id } = req.user;
-
-    const toDelete = await accountsService.findOne(id, { user_id });
-    if (!toDelete) {
-      res.status(400).json({
-        message: `Can't find record to update: ${id}`,
-      });
-      return;
-    }
 
     const data = await accountsService.delete(id);
 
@@ -296,17 +242,8 @@ exports.delete = async (req, res) => {
 
 exports.parseStatement = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { user_id } = req.user;
     const file = req.file;
-
-    const account = await accountsService.findOne(id, { user_id });
-    if (!account) {
-      res.status(400).json({
-        message: 'Bad request: Account not found!',
-      });
-      return;
-    }
+    const account = req.account;
 
     let parsedData = null;
 
@@ -334,20 +271,8 @@ exports.parseStatement = async (req, res) => {
 
 exports.bulkCreateTransactions = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { user_id } = req.user;
     const { records } = req.body;
-
-    const account = await accountsService.findOne(id, { user_id }); // TODO: check if we can incorporate that we'll always just query user data without passing filters
-
-    if (!account) {
-      // TODO: check if we can create a generic one for this one
-      // so that we're not doing this everytime
-      res.status(400).json({
-        message: 'Bad request: Account not found!',
-      });
-      return;
-    }
+    const account = req.account;
 
     let data = null;
 
@@ -388,18 +313,8 @@ exports.bulkCreateTransactions = async (req, res) => {
 
 exports.createTransactionTag = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { user_id } = req.user;
     const { transaction_id, tag_id } = req.body;
-
-    const account = await accountsService.findOne(id, { user_id });
-
-    if (!account) {
-      res.status(400).json({
-        message: 'Bad request: Account not found!',
-      });
-      return;
-    }
+    const account = req.account;
 
     let transaction = null;
 
@@ -462,17 +377,8 @@ exports.createTransactionTag = async (req, res) => {
 
 exports.deleteTransactionTag = async (req, res) => {
   try {
-    const { id, transactionId, tagId } = req.params;
-    const { user_id } = req.user;
-
-    const account = await accountsService.findOne(id, { user_id });
-
-    if (!account) {
-      res.status(400).json({
-        message: 'Bad request: Account not found!',
-      });
-      return;
-    }
+    const { transactionId, tagId } = req.params;
+    const account = await req.account;
 
     let data = null;
 
