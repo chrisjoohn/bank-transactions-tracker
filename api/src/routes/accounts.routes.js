@@ -11,7 +11,7 @@ module.exports = (app) => {
   const upload = multer({ storage: multer.memoryStorage() });
 
   /**
-   * TODO: move transaction-related endpoints here to transactions endpoint
+   * TODO: re-group routes for better readability
    */
   router.get(`/${route}/:id`, controller.findOne); // -- GET one account
   router.get(`/${route}`, controller.findAll); // -- GET all accounts
