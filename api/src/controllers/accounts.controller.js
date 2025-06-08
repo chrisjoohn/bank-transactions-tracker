@@ -131,22 +131,15 @@ exports.findTransactions = async (req, res) => {
 exports.getTotalPerTag = async (req, res) => {
   try {
     const { tagIds } = req.body; // check param names
-    const { id } = req.params;
-
-    const user_id = req.user.user_id;
-    const accountDetails = await accountsService.findOne(id, { user_id });
-
-    if (!accountDetails) {
-      res.status(400).json({
-        message: 'Bad request: Account not found!',
-      });
-      return;
-    }
+    const accountDetails = req.account;
 
     let data = [];
 
     if (accountDetails.type === 'CREDIT') {
-      data = await creditTransactionService.getTotalPerTag({ accountId: accountDetails.id, tags: tagIds });
+      data = await creditTransactionService.getTotalPerTag({
+        accountId: accountDetails.id,
+        tags: tagIds,
+      });
     }
 
     if (accountDetails.type === 'DEPOSIT') {
