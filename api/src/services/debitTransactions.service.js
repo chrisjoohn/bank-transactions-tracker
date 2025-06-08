@@ -217,7 +217,7 @@ exports.getTotalOutflow = async ({ account_id, date_range }) => {
         account_id,
         transaction_type: 'OUTFLOW',
         transaction_date: {
-          [Op.between]: [date_range.startDate, date_range.endDate],
+          [Op.between]: [date_range.start_date, date_range.end_date],
         },
       },
     });
@@ -237,7 +237,7 @@ exports.getTotalInflow = async ({ account_id, date_range }) => {
         account_id,
         transaction_type: 'INFLOW',
         transaction_date: {
-          [Op.between]: [date_range.startDate, date_range.endDate],
+          [Op.between]: [date_range.start_date, date_range.end_date],
         },
       },
     });

@@ -93,7 +93,7 @@ const creditTrxColumns = ({
       }
 
       return tags.map((item) => {
-        return <Tag>{item.name}</Tag>;
+        return <Tag key={item.id}>{item.name}</Tag>;
       });
     },
   },
@@ -122,6 +122,7 @@ const TransactionList: FC<TransactionListProps> = (props) => {
     if (account.type === 'CREDIT') {
       return (
         <Table<CreditTransaction>
+          rowKey='unique_code'
           dataSource={listData as CreditTransaction[]}
           columns={creditTrxColumns({
             recordClickHandler: _transactionClickHandler,

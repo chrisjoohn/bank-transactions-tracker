@@ -153,7 +153,8 @@ exports.findTransactions = async (req, res) => {
 exports.transactionAnalytics = async (req, res) => {
   try {
     const { id } = req.params;
-    const { start_date, end_date } = req.query;
+    const { filters } = req.body;
+    const { transaction_date, post_date, tags } = filters; // TODO: check what should happen if there's transaction and post dates passed as filters
 
     const user_id = req.user.user_id;
     const accountDetails = await accountsService.findOne(id, { user_id });
@@ -170,26 +171,16 @@ exports.transactionAnalytics = async (req, res) => {
     const defaultStartDate = startOfMonth(new Date());
     const defaultEndDate = endOfMonth(new Date());
 
-    let dateRange = {
-      startDate: defaultStartDate,
-      endDate: defaultEndDate,
+    let defaultDateRange = {
+      start_date: defaultStartDate,
+      end_date: defaultEndDate,
     };
-
-    /**
-     * TODO:
-     * Add validation of date_range here
-     */
-    if (start_date && end_date) {
-      dateRange = {
-        startDate: start_date,
-        endDate: end_date,
-      };
-    }
 
     if (accountDetails.type === 'CREDIT') {
       const totalOutflow = await creditTransactionService.getTotalOutflow({
         account_id: accountDetails.id,
-        date_range: dateRange,
+        post_date: post_date || defaultDateRange,
+        tags,
       });
 
       data = {
@@ -202,11 +193,11 @@ exports.transactionAnalytics = async (req, res) => {
     if (accountDetails.type === 'DEPOSIT') {
       const totalOutflow = await debitTransactionService.getTotalOutflow({
         account_id: accountDetails.id,
-        date_range: dateRange,
+        date_range: transaction_date || defaultDateRange,
       });
       const totalInflow = await debitTransactionService.getTotalInflow({
         account_id: accountDetails.id,
-        date_range: dateRange,
+        date_range: transaction_date || defaultDateRange,
       });
 
       data = {

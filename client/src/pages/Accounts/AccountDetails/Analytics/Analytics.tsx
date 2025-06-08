@@ -25,10 +25,19 @@ const Analytics: FC<AnalyticsProps> = (props) => {
       return;
     }
 
-    getAccountAnalytics({
-      id: account.id,
-      date_range: dateFilter,
-    });
+    if (account.type === 'CREDIT') {
+      getAccountAnalytics({
+        id: account.id,
+        post_date: dateFilter,
+      });
+      return;
+    }
+    if (account.type === 'DEPOSIT') {
+      getAccountAnalytics({
+        id: account.id,
+        transaction_date: dateFilter,
+      });
+    }
   }, [account.id, dateFilter]);
 
   if (accountAnalytics.isUninitialized || accountAnalytics.isLoading) {
