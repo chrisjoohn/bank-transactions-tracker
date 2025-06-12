@@ -130,15 +130,17 @@ exports.findTransactions = async (req, res) => {
 
 exports.getTotalPerTag = async (req, res) => {
   try {
-    const { tagIds } = req.body; // check param names
+    const { filters } = req.body; // check param names
     const accountDetails = req.account;
 
     let data = [];
 
     if (accountDetails.type === 'CREDIT') {
       data = await creditTransactionService.getTotalPerTag({
-        accountId: accountDetails.id,
-        tags: tagIds,
+        filters: {
+          ...filters,
+          account: accountDetails.id,
+        },
       });
     }
 
