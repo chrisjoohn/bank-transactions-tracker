@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
 import { Row, Col, Statistic, Card, Spin } from 'antd';
 
@@ -18,27 +18,17 @@ export type AnalyticsProps = {
 const Analytics: FC<AnalyticsProps> = (props) => {
   const { account, dateFilter } = props;
 
-  const [getAccountAnalytics, accountAnalytics] = accountsApi.useLazyGetAccountTrxAnalyticsQuery();
-
-  useEffect(() => {
-    if (!account.id) {
-      return;
+  // const [getAccountAnalytics, accountAnalytics] = accountsApi.useLazyGetAccountTrxAnalyticsQuery();
+  const accountAnalytics = accountsApi.useGetAccountTrxAnalyticsQuery(
+    {
+      id: account.id,
+      post_date: account.type === 'CREDIT' ? dateFilter : undefined,
+      transaction_date: account.type === 'DEPOSIT' ? dateFilter : undefined,
+    },
+    {
+      skip: !account,
     }
-
-    if (account.type === 'CREDIT') {
-      getAccountAnalytics({
-        id: account.id,
-        post_date: dateFilter,
-      });
-      return;
-    }
-    if (account.type === 'DEPOSIT') {
-      getAccountAnalytics({
-        id: account.id,
-        transaction_date: dateFilter,
-      });
-    }
-  }, [account.id, dateFilter]);
+  );
 
   if (accountAnalytics.isUninitialized || accountAnalytics.isLoading) {
     return <Spin size="large" />;

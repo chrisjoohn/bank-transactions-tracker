@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 // components
 import { Modal, Button, Card } from 'antd';
@@ -25,30 +25,20 @@ const Transactions: FC<TransactionsProps> = (props) => {
 
   const { account, dateFilter } = props;
 
-  const [getAccountTransactions, accountTransactions] = accountsApi.useLazyGetTransactionsQuery();
-
-  useEffect(() => {
-    if (!account.id) {
-      return;
-    }
-
-    let includes = undefined;
-    if (account.type === 'CREDIT') {
-      includes = {
-        tags: {},
-      };
-    }
-
-    getAccountTransactions({
+  const accountTransactions = accountsApi.useGetTransactionsQuery(
+    {
       id: account.id,
       requestBody: {
         filters: {
           date_range: dateFilter,
         },
-        includes,
+        includes: {
+          tags: {},
+        },
       },
-    });
-  }, [account.id, dateFilter]);
+    },
+    { skip: !account.id }
+  );
 
   return (
     <>
