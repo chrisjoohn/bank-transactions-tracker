@@ -416,6 +416,7 @@ exports.getTotalPerTag = async ({ filters }) => {
       attributes: [
         'id',
         'name',
+        [sequelize.fn('SUM', sequelize.col('bt_credit_transactions.amount')), 'total_amount'],
         [sequelize.fn('COUNT', sequelize.col('*')), 'count'],
       ],
       include: [
