@@ -6,6 +6,7 @@ import { getAuth } from 'firebase/auth';
 import type { DebitTransaction, EditableDebitTransaction } from './debitTransactions';
 import type { CreditTransaction, EditableCreditTransaction } from './creditTransactions';
 import type { BaseEntityType, ParsedTrx } from '../types';
+import { Tag } from './tags';
 
 export interface Account extends BaseEntityType {
   user_id: string;
@@ -100,6 +101,35 @@ export const accountsApi = createApi({
           },
         },
       }),
+    }),
+    getTotalPerTagAnalytics: builder.query<
+      {
+        id: Tag['id'];
+        name: Tag['name'];
+        count: number;
+        total_amount: number;
+      }[],
+      {
+        account_id?: Account['id'] | Account['unique_code'];
+        post_date?: { start_date: string; end_date: string };
+        transaction_date?: { start_date: string; end_date: string };
+        tags?: Tag['id'][];
+      }
+    >({
+      query: ({ account_id, post_date, transaction_date, tags }) => ({
+        url: `/accounts/${account_id}/analytics/total-per-tag`,
+        method: 'POST',
+        body: {
+          filters: {
+            post_date,
+            transaction_date,
+            tags,
+          },
+        },
+      }),
+      transformResponse: (res: {
+        data: { id: Tag['id']; name: Tag['name']; count: number; total_amount: number }[];
+      }) => res.data,
     }),
     parseStatement: builder.query<
       ParsedTrx[],
