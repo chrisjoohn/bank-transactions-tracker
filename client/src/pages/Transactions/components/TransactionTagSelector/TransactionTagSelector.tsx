@@ -1,11 +1,19 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Select } from 'antd';
 
 import type { SelectProps } from 'antd';
 
+// apis
 import { tagsApi, accountsApi } from '../../../../integration/apis';
+
+// redux slice
+import { transactionSelectors } from '../../../../integration/slices/transactions.slice';
+
+// type definitions
 import { CreditTransaction } from '../../../../integration/apis/creditTransactions';
+import { RootState } from '../../../../integration/store';
 
 export type TransactionTagSelectorProps = {
   transactionId: string;
@@ -15,13 +23,23 @@ export type TransactionTagSelectorProps = {
 const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
   const { transactionId, accountId } = props;
 
-  const { data: transaction } = accountsApi.useGetTransactionQuery({
-    id: accountId,
-    transactionId,
-  });
+  const transaction = useSelector((state: RootState) =>
+    transactionSelectors.selectById(state, transactionId)
+  );
+
   const { data: tags } = tagsApi.useGetTagsQuery();
   const [createTransactionTag] = tagsApi.useCreateTransactionTagMutation();
   const [deleteTransactionTag] = tagsApi.useDeleteTransactionTagsMutation();
+  const [getTransaction] = accountsApi.useLazyGetTransactionQuery();
+
+  useEffect(() => {
+    if (!transaction) {
+      getTransaction({
+        id: accountId,
+        transactionId,
+      });
+    }
+  }, [transaction, accountId, transactionId]);
 
   const _transaction = transaction as CreditTransaction;
 
