@@ -11,6 +11,8 @@ import type { ColumnsType } from 'antd/es/table';
 import type { TransactionsProps } from '../Transactions';
 import type { DebitTransaction } from '../../../../../integration/apis/debitTransactions';
 import type { CreditTransaction } from '../../../../../integration/apis/creditTransactions';
+import { TransactionTagSelector } from '../../../../Transactions/components';
+import { Account } from '../../../../../integration/apis/accounts';
 
 export type TransactionListProps = {
   account: TransactionsProps['account'];
@@ -47,12 +49,14 @@ const debitTrxColumns: ColumnsType<DebitTransaction> = [
 
 const creditTrxColumns = ({
   recordClickHandler,
+  account,
 }: {
   recordClickHandler: ({
     transactionId,
   }: {
     transactionId: CreditTransaction['unique_code'];
   }) => void;
+  account: Account;
 }): ColumnsType<CreditTransaction> => [
   {
     title: 'ID',
@@ -87,14 +91,12 @@ const creditTrxColumns = ({
   {
     title: 'Tags',
     render: (_, record) => {
-      const tags = record?.tags || [];
-      if (tags.length === 0) {
-        return '-';
-      }
-
-      return tags.map((item) => {
-        return <Tag key={item.id}>{item.name}</Tag>;
-      });
+      return (
+        <TransactionTagSelector
+          transactionId={record.unique_code}
+          accountId={account.unique_code}
+        />
+      );
     },
   },
   {
@@ -122,10 +124,11 @@ const TransactionList: FC<TransactionListProps> = (props) => {
     if (account.type === 'CREDIT') {
       return (
         <Table<CreditTransaction>
-          rowKey='unique_code'
+          rowKey="unique_code"
           dataSource={listData as CreditTransaction[]}
           columns={creditTrxColumns({
             recordClickHandler: _transactionClickHandler,
+            account,
           })}
           {...commonTblProps}
         />
