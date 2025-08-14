@@ -1,24 +1,28 @@
-import { FC, cloneElement, Children, ReactNode, isValidElement } from 'react';
+import { FC, ReactNode } from 'react';
 
-import useAuthentication from '../../hooks/useAuthentication.hooks';
+// hooks
+import useAuthentication from './appAuthenticator.hooks';
+
+// context
+import { AuthContext } from './auth.context';
 
 const AppAuthenticator: FC<{ children: ReactNode }> = (props) => {
   const { children } = props;
-  const { authState, currentUser } = useAuthentication();
+  const { authState } = useAuthentication();
 
   if (authState === 'loading') {
     return <h1>Loading...</h1>; // update UI
   }
 
-  const childWithAuthProps = Children.map(children, (child) => {
-    if (isValidElement(child)) {
-      return cloneElement(child, {
-        authenticated: authState === 'loggedIn', // need to update this one for ts handling
-      });
-    }
-  });
-
-  return childWithAuthProps;
+  return (
+    <AuthContext.Provider
+      value={{
+        authenticated: authState === 'loggedIn',
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export default AppAuthenticator;
