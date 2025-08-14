@@ -1,6 +1,6 @@
 import { FC, cloneElement, Children, ReactNode, isValidElement } from 'react';
 
-import useAuthentication from '../../hooks/useAuthentication.hooks';
+import useAuthentication from './appAuthenticator.hooks';
 
 const AppAuthenticator: FC<{ children: ReactNode }> = (props) => {
   const { children } = props;
