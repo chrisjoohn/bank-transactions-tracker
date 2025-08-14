@@ -1,8 +1,13 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
+// context
+import { AuthContext } from '../AppAuthenticator/auth.context';
+
+// layouts
 import { MainLayout } from '../../layouts';
 
+// pages
 import { Accounts, Tags, Transactions } from '../../pages';
 
 import AccountDetails from '../../pages/Accounts/AccountDetails';
@@ -62,8 +67,8 @@ const securedRouter = createBrowserRouter([
   },
 ]);
 
-const AppRouter: FC<{ authenticated?: boolean }> = (props) => {
-  const { authenticated = false } = props;
+const AppRouter: FC = () => {
+  const { authenticated } = useContext(AuthContext);
 
   return <RouterProvider router={authenticated ? securedRouter : publicRoutes} />;
 };
