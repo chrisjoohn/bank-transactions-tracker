@@ -4,6 +4,8 @@ import { getAuth } from 'firebase/auth';
 
 import type { BaseEntityType, Editable } from '../types';
 import { Account } from './accounts';
+import { transactionSelectors } from '../slices/transactions.slice';
+import { RootState } from '../store';
 
 // TODO: create base AppData type defintion
 export interface Tag extends BaseEntityType {
@@ -11,7 +13,7 @@ export interface Tag extends BaseEntityType {
 }
 
 export interface TransactionTag extends BaseEntityType {
-  transaction_id: string | number;
+  transaction_id: string;
   tag_id: Tag['id'];
 
   tag?: Tag;
@@ -132,6 +134,23 @@ export const tagsApi = createApi({
         method: 'POST',
         body: body,
       }),
+      async onQueryStarted({ body }, { queryFulfilled, getState }) {
+        try {
+          const { transaction_id, tag_id } = body;
+
+          const transaction = transactionSelectors.selectById(
+            getState() as RootState,
+            transaction_id
+          );
+
+          // TODO: Implement optimistic updates here
+
+          await queryFulfilled;
+        } catch {
+          // TODO: implement optimistic rollback here
+          // rollback here
+        }
+      },
     }),
 
     deleteTransactionTags: builder.mutation<
