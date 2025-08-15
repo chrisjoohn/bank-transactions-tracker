@@ -4,7 +4,6 @@
 import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { useParams } from 'react-router-dom';
-import { endOfMonth, format, startOfMonth } from 'date-fns';
 
 import { Spin } from 'antd';
 
@@ -24,10 +23,7 @@ import './accountDetails.styles.scss';
 const AccountDetails: FC = () => {
   const { id } = useParams();
 
-  const [dateFilter, setDateFilter] = useState({
-    start_date: format(startOfMonth(new Date()), 'yyyy-MM-dd'),
-    end_date: format(endOfMonth(new Date()), 'yyyy-MM-dd'),
-  });
+  const [dateFilter, setDateFilter] = useState<null | { start_date: string; end_date: string }>(null);
 
   const accountDetails = accountsApi.useGetAccountQuery(id || '');
 
@@ -58,10 +54,10 @@ const AccountDetails: FC = () => {
         />
       </div>
       <div className={classNames('simple-analytics')}>
-        <Analytics account={accountDetails.data} dateFilter={dateFilter} />
+        {dateFilter && <Analytics account={accountDetails.data} dateFilter={dateFilter} />}
       </div>
       <div className="transactions">
-        <Transactions account={accountDetails.data} dateFilter={dateFilter} />
+        {dateFilter && <Transactions account={accountDetails.data} dateFilter={dateFilter} />}
       </div>
     </div>
   );

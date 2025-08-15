@@ -2,6 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { getAuth } from 'firebase/auth';
 
+import { transactionSliceActions } from '../slices/transactions.slice';
+
 // type definitinos
 import type { DebitTransaction, EditableDebitTransaction } from './debitTransactions';
 import type { CreditTransaction, EditableCreditTransaction } from './creditTransactions';
@@ -40,6 +42,10 @@ export const accountsApi = createApi({
       query: (id) => `/accounts/${id}`,
       transformResponse: (response: { data: Account }) => response.data,
     }),
+
+    /**
+     * Transaction related
+     */
     getTransactions: builder.query<
       DebitTransaction[] | CreditTransaction[],
       {
@@ -68,6 +74,14 @@ export const accountsApi = createApi({
             ]
           : [{ type: 'Transactions', id: JSON.stringify(arg) }];
       },
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(transactionSliceActions.setMany(data));
+        } catch {
+          // optional rollback
+        }
+      },
     }),
     getTransaction: builder.query<
       DebitTransaction | CreditTransaction,
@@ -80,6 +94,14 @@ export const accountsApi = createApi({
         response.data,
       providesTags: (result) => {
         return [{ type: 'Transactions', id: result?.unique_code }];
+      },
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(transactionSliceActions.setOne(data));
+        } catch {
+          // optional rollback
+        }
       },
     }),
     getAccountTrxAnalytics: builder.query<

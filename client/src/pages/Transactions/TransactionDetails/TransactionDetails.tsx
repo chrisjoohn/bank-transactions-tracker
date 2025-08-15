@@ -1,9 +1,18 @@
-import { FC } from 'react';
+/**
+ * TODO: Update this to have more details about the transaction
+ * e.g.
+ *  - linked transactions
+ *  - notes/comments
+ */
+import { FC, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
 import { accountsApi } from '../../../integration/apis';
 import type { CreditTransaction } from '../../../integration/apis/creditTransactions';
+import { transactionSelectors } from '../../../integration/slices/transactions.slice';
+import { RootState } from '../../../integration/store';
 
 import { TransactionTagSelector } from '../components';
 
@@ -18,10 +27,20 @@ const TransactionDetails: FC = () => {
     return;
   }
 
-  const { data } = accountsApi.useGetTransactionQuery({
-    id: accountId,
-    transactionId,
-  });
+  const data = useSelector((state: RootState) =>
+    transactionSelectors.selectById(state, transactionId)
+  );
+
+  const [getTransaction] = accountsApi.useLazyGetTransactionQuery();
+
+  useEffect(() => {
+    if (!data) {
+      getTransaction({
+        id: accountId,
+        transactionId,
+      });
+    }
+  }, [data]);
 
   if (!data) {
     return null;

@@ -35,6 +35,7 @@ const DateFilter: FC<DateFilterProps> = (props) => {
 
   useEffect(() => {
     if (!defaultStartDate || !defaultFilterType) {
+      _dateChangeHandler(dayjs(), 'month');
       return;
     }
 
