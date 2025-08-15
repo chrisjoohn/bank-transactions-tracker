@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
@@ -8,11 +9,15 @@ import { Flex, Empty, Table, Button, Tag } from 'antd';
 // type definitions
 import type { ColumnsType } from 'antd/es/table';
 
+// redux slice
+import { transactionSelectors } from '../../../../../integration/slices/transactions.slice';
+
 import type { TransactionsProps } from '../Transactions';
 import type { DebitTransaction } from '../../../../../integration/apis/debitTransactions';
 import type { CreditTransaction } from '../../../../../integration/apis/creditTransactions';
 import { TransactionTagSelector } from '../../../../Transactions/components';
 import { Account } from '../../../../../integration/apis/accounts';
+import { RootState } from '../../../../../integration/store';
 
 export type TransactionListProps = {
   account: TransactionsProps['account'];
@@ -109,6 +114,15 @@ const creditTrxColumns = ({
 
 const TransactionList: FC<TransactionListProps> = (props) => {
   const { listData, account } = props;
+
+  const transactions = useSelector((state: RootState) => transactionSelectors.selectAll(state));
+  const _trxIds = (listData || []).map((item) => item.unique_code);
+
+  // TODO: put this in a useMemo hook
+  const _listData = transactions.filter((item) => {
+    return _trxIds.includes(item.unique_code);
+  });
+
   const navigate = useNavigate();
 
   const _transactionClickHandler = ({ transactionId }: { transactionId: string }) => {
@@ -125,7 +139,7 @@ const TransactionList: FC<TransactionListProps> = (props) => {
       return (
         <Table<CreditTransaction>
           rowKey="unique_code"
-          dataSource={listData as CreditTransaction[]}
+          dataSource={_listData as CreditTransaction[]}
           columns={creditTrxColumns({
             recordClickHandler: _transactionClickHandler,
             account,
@@ -138,7 +152,7 @@ const TransactionList: FC<TransactionListProps> = (props) => {
     if (account.type === 'DEPOSIT') {
       return (
         <Table<DebitTransaction>
-          dataSource={listData as DebitTransaction[]}
+          dataSource={_listData as DebitTransaction[]}
           columns={debitTrxColumns}
           {...commonTblProps}
         />
