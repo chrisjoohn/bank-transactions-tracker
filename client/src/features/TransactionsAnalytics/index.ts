@@ -1,3 +1,3 @@
-import Analytics from './Analytics';
+import TransactionAnalytics from './TransactionsAnalytics';
 
-export default Analytics;
+export default TransactionAnalytics;

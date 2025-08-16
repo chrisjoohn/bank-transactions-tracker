@@ -7,7 +7,7 @@ import { accountsApi } from '../../integration/apis';
 // type definitions
 import type { Account } from '../../integration/apis/accounts';
 
-export type AnalyticsProps = {
+export type TransactionsAnalyticsProps = {
   account: Account;
   dateFilter: {
     start_date: string;
@@ -15,7 +15,7 @@ export type AnalyticsProps = {
   };
 };
 
-const Analytics: FC<AnalyticsProps> = (props) => {
+const TransactionsAnalytics: FC<TransactionsAnalyticsProps> = (props) => {
   const { account, dateFilter } = props;
 
   const accountAnalytics = accountsApi.useGetAccountTrxAnalyticsQuery(
@@ -89,4 +89,4 @@ const Analytics: FC<AnalyticsProps> = (props) => {
   );
 };
 
-export default Analytics;
+export default TransactionsAnalytics;
