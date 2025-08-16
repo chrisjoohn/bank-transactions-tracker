@@ -6,11 +6,11 @@ import { TransactionStepperFormContext } from '../../TransactionStepperFormConte
 import { Flex, Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 
-import { accountsApi } from '../../../../../../../integration/apis';
+import { accountsApi } from '../../../../integration/apis';
 
 // type definitions
 import type { UploadProps } from 'antd';
-import { Account } from '../../../../../../../integration/apis/accounts';
+import type { Account } from '../../../../integration/apis/accounts';
 
 export type UploadStatementProps = {
   accountId: Account['id'];
