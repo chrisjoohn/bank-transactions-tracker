@@ -2,10 +2,10 @@ import { FC } from 'react';
 
 import { Row, Col, Statistic, Card, Spin } from 'antd';
 
-import { accountsApi } from '../../../../integration/apis';
+import { accountsApi } from '../../integration/apis';
 
 // type definitions
-import type { Account } from '../../../../integration/apis/accounts';
+import type { Account } from '../../integration/apis/accounts';
 
 export type AnalyticsProps = {
   account: Account;
@@ -18,10 +18,9 @@ export type AnalyticsProps = {
 const Analytics: FC<AnalyticsProps> = (props) => {
   const { account, dateFilter } = props;
 
-  // const [getAccountAnalytics, accountAnalytics] = accountsApi.useLazyGetAccountTrxAnalyticsQuery();
   const accountAnalytics = accountsApi.useGetAccountTrxAnalyticsQuery(
     {
-      id: account.id,
+      id: account.unique_code,
       post_date: account.type === 'CREDIT' ? dateFilter : undefined,
       transaction_date: account.type === 'DEPOSIT' ? dateFilter : undefined,
     },
