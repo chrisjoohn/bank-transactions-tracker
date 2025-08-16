@@ -2,9 +2,9 @@ import { createContext, useState } from 'react';
 
 import type { StepsProps } from 'antd';
 
-import type { ParsedTrx } from '../../../../../integration/types';
-import type { EditableCreditTransaction } from '../../../../../integration/apis/creditTransactions';
-import type { EditableDebitTransaction } from '../../../../../integration/apis/debitTransactions';
+import type { ParsedTrx } from '../../integration/types';
+import type { EditableCreditTransaction } from '../../integration/apis/creditTransactions';
+import type { EditableDebitTransaction } from '../../integration/apis/debitTransactions';
 
 interface TransactionStepperFormContextType {
   formControls: {

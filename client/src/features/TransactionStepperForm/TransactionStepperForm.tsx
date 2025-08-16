@@ -1,8 +1,3 @@
-/**
- * TODO:
- * Check if we should put this inside AccountDetails/Transactions/ directory
- * as it's usage is very specific to it
- */
 import { FC, useContext } from 'react';
 
 import { TransactionStepperFormContext } from './TransactionStepperFormContext';
@@ -11,7 +6,7 @@ import { Flex, Result, Row, Steps } from 'antd';
 import { UploadStatement, VerifyData } from './steps';
 
 // type definitions
-import type { Account } from '../../../../../integration/apis/accounts';
+import { Account } from '../../integration/apis/accounts';
 
 export type TransactionStepperFormProps = {
   account: Account;

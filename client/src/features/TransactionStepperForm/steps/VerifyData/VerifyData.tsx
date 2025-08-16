@@ -11,7 +11,7 @@ import DebitTransactions from './DebitTransactions';
 import CreditTransactions from './CreditTransactions';
 
 // type definitions
-import { accountsApi, type Account } from '../../../../../../../integration/apis/accounts';
+import { accountsApi, type Account } from '../../../../integration/apis/accounts';
 
 export type VerifyDataProps = {
   account: Account;
