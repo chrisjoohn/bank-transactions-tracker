@@ -119,9 +119,9 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
 
           break;
         case 'tags':
-          const { ids } = filters[filterKey];
+          const tagIds = filters[filterKey];
 
-          if (ids.length === 0) {
+          if (tagIds.length === 0) {
             break;
           }
 
@@ -130,11 +130,11 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
             attributes: ['credit_transaction_id'],
             where: {
               tag_id: {
-                [Op.in]: ids,
+                [Op.in]: tagIds,
               },
             },
             group: ['credit_transaction_id'],
-            having: sequelize.literal(`COUNT(*) = ${ids.length}`),
+            having: sequelize.literal(`COUNT(*) = ${tagIds.length}`),
           });
 
           whereCondition['id'] = {
