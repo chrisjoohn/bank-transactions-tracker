@@ -14,6 +14,8 @@ const useTransactions = (props: TransactionsProps) => {
   const [dateFilter, setDateFilter] = useState<
     undefined | { start_date: string; end_date: string }
   >(undefined);
+  const [tagFilter, setTagFilter] = useState<number[]>([]);
+
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const accountTransactions = accountsApi.useGetTransactionsQuery(
@@ -22,6 +24,7 @@ const useTransactions = (props: TransactionsProps) => {
       requestBody: {
         filters: {
           date_range: dateFilter,
+          tags: tagFilter,
         },
         includes: {
           tags: {},
@@ -50,6 +53,9 @@ const useTransactions = (props: TransactionsProps) => {
 
     showModal,
     setShowModal,
+
+    tagFilter,
+    setTagFilter,
   };
 };
 
