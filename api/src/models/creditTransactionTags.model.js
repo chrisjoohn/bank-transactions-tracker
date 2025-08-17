@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: 'tag_id',
       as: 'tag',
     });
+    Model.hasOne(models.credit_transactions, {
+      foreignKey: 'id',
+      sourceKey: 'credit_transaction_id',
+    })
   };
 
   return Model;

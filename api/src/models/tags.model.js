@@ -20,7 +20,13 @@ module.exports = (sequelize, DataTypes) => {
 
   let Model = sequelize.define('bt_tags', new Tags());
 
-  Model.associate = (models) => {};
+  Model.associate = (models) => {
+    Model.belongsToMany(models.credit_transactions, {
+      through: models.credit_transaction_tags,
+      foreignKey: 'tag_id',
+      otherKey: 'credit_transaction_id',
+    });
+  };
 
   return Model;
 };
