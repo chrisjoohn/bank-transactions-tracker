@@ -16,6 +16,9 @@ import useTransactions from './useTransactions.hooks';
 import type { Account } from '../../integration/apis/accounts';
 import TransactionStepperForm from '../TransactionStepperForm';
 
+// styles
+import './transactions.styles.scss';
+
 export interface TransactionsProps {
   withAnalytics?: boolean;
   account: Account;
@@ -27,7 +30,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
   const { dateFilter, setDateFilter, listData, showModal, setShowModal } = useTransactions(props);
 
   return (
-    <div className="transactions">
+    <div className="btt-transactions">
       <div className="date-filter">
         <DateFilter
           onChange={(date) => {
@@ -35,7 +38,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
           }}
         />
       </div>
-      <div className="simple-analytics">
+      <div className="analytics">
         {dateFilter && <Analytics dateFilter={dateFilter} account={account} />}
       </div>
       <div className="transactions-list">
