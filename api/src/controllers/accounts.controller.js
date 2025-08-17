@@ -409,3 +409,33 @@ exports.deleteTransactionTag = async (req, res) => {
     });
   }
 };
+
+exports.getTotalPerTag = async (req, res) => {
+  try {
+    const { filters } = req.body; // check param names
+    const accountDetails = req.account;
+
+    let data = [];
+
+    if (accountDetails.type === 'CREDIT') {
+      data = await creditTransactionService.getTotalPerTag({
+        filters: {
+          ...filters,
+          account: accountDetails.id,
+        },
+      });
+    }
+
+    if (accountDetails.type === 'DEPOSIT') {
+      res.status(400).json({
+        message: 'Not yet handled',
+      });
+    }
+
+    res.json({
+      data,
+    });
+  } catch (err) {
+    throw err;
+  }
+};
