@@ -11,9 +11,9 @@ import { RootState } from '../../integration/store';
 const useTransactions = (props: TransactionsProps) => {
   const { account } = props;
 
-  const [dateFilter, setDateFilter] = useState<null | { start_date: string; end_date: string }>(
-    null
-  );
+  const [dateFilter, setDateFilter] = useState<
+    undefined | { start_date: string; end_date: string }
+  >(undefined);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const accountTransactions = accountsApi.useGetTransactionsQuery(
