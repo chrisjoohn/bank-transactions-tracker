@@ -52,7 +52,7 @@ export const TransactionStepperFormContextWrapper: React.FC<{
   >([]);
 
   // TODO: implement this one
-  const setError = (msg: string) => {};
+  // const setError = (msg: string) => {};
 
   const nextStep = () => {
     if (currentStep >= stepItems.length - 1) {

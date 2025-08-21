@@ -54,7 +54,7 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
     };
   });
 
-  const _onChangeHandler: SelectProps['onChange'] = (value, option) => {};
+  // const _onChangeHandler: SelectProps['onChange'] = (value, option) => {};
 
   const _onSelectHandler: SelectProps['onSelect'] = (value) => {
     createTransactionTag({
@@ -84,7 +84,7 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
       options={options}
       defaultValue={transactionTags}
       // value={transactionTags} // TODO: needs to invalidate transaction data so it's always refreshed
-      onChange={_onChangeHandler}
+      // onChange={_onChangeHandler}
       onSelect={_onSelectHandler}
       onDeselect={_onDeselectHandler}
       filterOption={_selectFilter}

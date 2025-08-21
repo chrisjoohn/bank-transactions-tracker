@@ -6,7 +6,7 @@ import './accounts.styles.scss';
 
 export type AccountsProps = {};
 
-const Accounts: FC<AccountsProps> = (props) => {
+const Accounts: FC<AccountsProps> = () => {
   return (
     <div className={classNames('btt-accounts')}>
       <Outlet />

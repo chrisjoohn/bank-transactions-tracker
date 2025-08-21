@@ -55,7 +55,7 @@ export const debitTransactionsApi = createApi({
         body: requestBody,
       }),
       transformResponse: (response: { data: DebitTransaction[] }) => response.data,
-      providesTags: (result, error, arg) => {
+      providesTags: (result, _, arg) => {
         return result
           ? [
               ...result.map(({ id }) => ({

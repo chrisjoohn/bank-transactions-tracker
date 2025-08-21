@@ -10,8 +10,8 @@ import { TransactionStepperFormContext } from '../../../TransactionStepperFormCo
 // type definitions
 import type { ColumnsType } from 'antd/es/table';
 
-import type { ParsedCreditTrx } from '../../../../../../../../integration/types';
-import type { EditableCreditTransaction } from '../../../../../../../../integration/apis/creditTransactions';
+import type { ParsedCreditTrx } from '../../../../../integration/types';
+import type { EditableCreditTransaction } from '../../../../../integration/apis/creditTransactions';
 
 export type CreditTransactionsProps = {
   finalizeDate: (dateString: string, dateFormat: string) => Date;

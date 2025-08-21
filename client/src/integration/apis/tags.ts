@@ -4,8 +4,6 @@ import { getAuth } from 'firebase/auth';
 
 import type { BaseEntityType, Editable } from '../types';
 import { Account } from './accounts';
-import { transactionSelectors } from '../slices/transactions.slice';
-import { RootState } from '../store';
 import { tagsSliceActions } from '../slices/tags.slice';
 
 // TODO: create base AppData type defintion
@@ -44,7 +42,7 @@ export const tagsApi = createApi({
     getTags: builder.query<Tag[], void>({
       query: () => `/tags`,
       transformResponse: (response: { data: Tag[] }) => response.data,
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           dispatch(tagsSliceActions.setMany(data));
@@ -60,31 +58,7 @@ export const tagsApi = createApi({
         body: requestBody,
       }),
       transformResponse: (response: { data: Tag }) => response.data,
-      async onQueryStarted(requestBody, { dispatch, queryFulfilled }) {
-        const tempId = Date.now().toString();
-        const patchResult = dispatch(
-          tagsApi.util.updateQueryData('getTags', undefined, (items) => {
-            // TODO: Fix type on this ene
-            // items.push({
-            //   ...requestBody,
-            //   unique_code: tempId,
-            //   id: 0,
-            // });
-          })
-        );
-
-        try {
-          const { data: createdTag } = await queryFulfilled;
-          dispatch(
-            tagsApi.util.updateQueryData('getTags', undefined, (items) => {
-              const idx = items.findIndex((item) => item.unique_code === tempId);
-              items[idx] = createdTag;
-            })
-          );
-        } catch {
-          patchResult.undo();
-        }
-      },
+      // TODO: implement optimistic updates here
     }),
     updateTag: builder.mutation<Tag, { id: string; requestBody: Tag }>({
       query: ({ id, requestBody }) => ({
@@ -143,23 +117,24 @@ export const tagsApi = createApi({
         method: 'POST',
         body: body,
       }),
-      async onQueryStarted({ body }, { queryFulfilled, getState }) {
-        try {
-          const { transaction_id, tag_id } = body;
+      // TODO: Reimplement this
+      // async onQueryStarted({ body }, { queryFulfilled, getState }) {
+      //   try {
+      // const { transaction_id, tag_id } = body;
 
-          const transaction = transactionSelectors.selectById(
-            getState() as RootState,
-            transaction_id
-          );
+      // const transaction = transactionSelectors.selectById(
+      //   getState() as RootState,
+      //   transaction_id
+      // );
 
-          // TODO: Implement optimistic updates here
+      // TODO: Implement optimistic updates here
 
-          await queryFulfilled;
-        } catch {
-          // TODO: implement optimistic rollback here
-          // rollback here
-        }
-      },
+      // await queryFulfilled;
+      // } catch {
+      // TODO: implement optimistic rollback here
+      // rollback here
+      // }
+      // },
     }),
 
     deleteTransactionTags: builder.mutation<
