@@ -1,6 +1,7 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
-import { Tag } from '../apis/tags';
-import { RootState } from '../store';
+
+import type { Tag } from '../apis/tags';
+import type { RootState } from '../store';
 
 const tagsAdapter = createEntityAdapter({
   selectId: (tag: Tag) => tag.id,
@@ -9,7 +10,7 @@ const tagsAdapter = createEntityAdapter({
 const initialState = tagsAdapter.getInitialState();
 
 const tagsSlice = createSlice({
-  name: 'tags_slice',
+  name: 'tags',
   initialState,
   reducers: {
     setMany: tagsAdapter.setMany,
