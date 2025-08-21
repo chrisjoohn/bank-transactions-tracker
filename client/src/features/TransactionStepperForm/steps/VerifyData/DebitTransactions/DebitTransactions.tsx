@@ -10,8 +10,8 @@ import { TransactionStepperFormContext } from '../../../TransactionStepperFormCo
 // type definitions
 import type { ColumnsType } from 'antd/es/table';
 
-import type { ParsedDebitTrx } from '../../../../../../../../integration/types';
-import type { EditableDebitTransaction } from '../../../../../../../../integration/apis/debitTransactions';
+import type { ParsedDebitTrx } from '../../../../../integration/types';
+import type { EditableDebitTransaction } from '../../../../../integration/apis/debitTransactions';
 
 export type DebitTransactionsProps = {
   finalizeDate: (dateString: string) => Date;

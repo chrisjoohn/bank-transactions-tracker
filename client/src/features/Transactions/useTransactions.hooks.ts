@@ -72,7 +72,7 @@ const useTransactions = (props: TransactionsProps) => {
       .map((item) => {
         return tags.find((tag) => item === tag.id);
       })
-      .filter((item) => !!item);
+      .filter((item): item is Tag => !!item);
   }, [tags, tagFilter]);
 
   const addTagFilter = (tagId: number) => {

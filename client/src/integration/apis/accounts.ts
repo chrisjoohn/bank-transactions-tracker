@@ -71,7 +71,7 @@ export const accountsApi = createApi({
       }),
       transformResponse: (response: { data: DebitTransaction[] | CreditTransaction[] }) =>
         response.data,
-      providesTags: (result, error, arg) => {
+      providesTags: (result, _, arg) => {
         return result
           ? [
               ...result.map((item) => ({
@@ -82,7 +82,7 @@ export const accountsApi = createApi({
             ]
           : [{ type: 'Transactions', id: JSON.stringify(arg) }];
       },
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           dispatch(transactionSliceActions.setMany(data));
@@ -125,7 +125,7 @@ export const accountsApi = createApi({
       providesTags: (result) => {
         return [{ type: 'Transactions', id: result?.unique_code }];
       },
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           dispatch(transactionSliceActions.setOne(data));

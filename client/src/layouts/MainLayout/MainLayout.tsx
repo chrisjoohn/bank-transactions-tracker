@@ -31,7 +31,7 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-const MainLayout: FC<MainLayoutProps> = (props) => {
+const MainLayout: FC<MainLayoutProps> = () => {
   const navigate = useNavigate();
   return (
     <Layout className={classNames('btt-main-layout')}>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
 // components
-import { Flex, Empty, Table, Button, Tag } from 'antd';
+import { Flex, Empty, Table, Button } from 'antd';
 
 // type definitions
 import type { ColumnsType } from 'antd/es/table';
