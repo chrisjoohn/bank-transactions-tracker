@@ -1,7 +1,12 @@
 .btt-main-layout {
-  height: 100vh;
+  min-height: 100vh;
 
   .main-content {
     padding: 24px;
+  }
+
+  .navigation {
+    position: sticky;
+    top: 0;
   }
 }
