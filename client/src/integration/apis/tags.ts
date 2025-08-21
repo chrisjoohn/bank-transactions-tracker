@@ -6,6 +6,7 @@ import type { BaseEntityType, Editable } from '../types';
 import { Account } from './accounts';
 import { transactionSelectors } from '../slices/transactions.slice';
 import { RootState } from '../store';
+import { tagsSliceActions } from '../slices/tags.slice';
 
 // TODO: create base AppData type defintion
 export interface Tag extends BaseEntityType {
@@ -23,7 +24,7 @@ export type EditableTag = Editable<Tag>;
 export type EditableTransactionTag = Editable<TransactionTag>;
 
 export const tagsApi = createApi({
-  reducerPath: 'tags',
+  reducerPath: 'tags-rtk',
   tagTypes: ['Tags'],
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8080',
@@ -43,6 +44,14 @@ export const tagsApi = createApi({
     getTags: builder.query<Tag[], void>({
       query: () => `/tags`,
       transformResponse: (response: { data: Tag[] }) => response.data,
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(tagsSliceActions.setMany(data));
+        } catch {
+          // optional rollback
+        }
+      },
     }),
     createTag: builder.mutation<Tag, EditableTag>({
       query: (requestBody) => ({

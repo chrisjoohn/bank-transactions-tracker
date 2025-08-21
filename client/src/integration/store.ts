@@ -14,6 +14,7 @@ export const store = configureStore({
 
     // redux slices
     transactions: slices.transactionsSlice.reducer,
+    tags: slices.tagsSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({ serializableCheck: false }).concat(
