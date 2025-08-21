@@ -66,7 +66,9 @@ const Transactions: FC<TransactionsProps> = (props) => {
         />
       </div>
       <div className="analytics">
-        {dateFilter && <Analytics dateFilter={dateFilter} account={account} />}
+        {dateFilter && (
+          <Analytics dateFilter={dateFilter} account={account} tagsFilter={activeTagFilters} />
+        )}
       </div>
       <Card className="charts">
         {activeTagFilters.length > 0 && (

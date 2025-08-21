@@ -5,10 +5,11 @@ import _ from 'lodash';
 import { accountsApi } from '../../integration/apis';
 
 import { transactionSelectors } from '../../integration/slices/transactions.slice';
-
-import { TransactionsProps } from './Transactions';
-import { RootState } from '../../integration/store';
 import { tagSelectors } from '../../integration/slices/tags.slice';
+
+import type { TransactionsProps } from './Transactions';
+import type { RootState } from '../../integration/store';
+import type { Tag } from '../../integration/apis/tags';
 
 const useTransactions = (props: TransactionsProps) => {
   const { account } = props;
@@ -66,10 +67,12 @@ const useTransactions = (props: TransactionsProps) => {
 
   /** Tags */
   const tags = useSelector((state: RootState) => tagSelectors.selectAll(state));
-  const activeTagFilters = useMemo(() => {
-    return tagFilter.map((item) => {
-      return tags.find((tag) => item === tag.id);
-    });
+  const activeTagFilters: Tag[] = useMemo(() => {
+    return tagFilter
+      .map((item) => {
+        return tags.find((tag) => item === tag.id);
+      })
+      .filter((item) => !!item);
   }, [tags, tagFilter]);
 
   const addTagFilter = (tagId: number) => {
