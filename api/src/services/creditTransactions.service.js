@@ -119,9 +119,9 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
 
           break;
         case 'tags':
-          const { ids } = filters[filterKey];
+          const tagIds = filters[filterKey];
 
-          if (ids.length === 0) {
+          if (tagIds.length === 0) {
             break;
           }
 
@@ -130,11 +130,11 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
             attributes: ['credit_transaction_id'],
             where: {
               tag_id: {
-                [Op.in]: ids,
+                [Op.in]: tagIds,
               },
             },
             group: ['credit_transaction_id'],
-            having: sequelize.literal(`COUNT(*) = ${ids.length}`),
+            having: sequelize.literal(`COUNT(*) = ${tagIds.length}`),
           });
 
           whereCondition['id'] = {
@@ -338,6 +338,98 @@ exports.getTotalOutflow = async ({ account_id, post_date, transaction_date, tags
 
     return totalOutflow;
   } catch (err) {
+    throw err;
+  }
+};
+
+const getIncludedTrxByTag = async (tags) => {
+  const ccTrxTagsModel = models.credit_transaction_tags;
+
+  let includedTrx = [];
+  if (tags.length > 0) {
+    includedTrx = await ccTrxTagsModel.findAll({
+      attributes: ['credit_transaction_id'],
+      where: {
+        tag_id: {
+          [Op.in]: tags,
+        },
+      },
+      group: ['credit_transaction_id'],
+      having: sequelize.literal(`COUNT(*) = ${tags.length}`),
+    });
+  }
+
+  return includedTrx;
+};
+
+exports.getTotalPerTag = async ({ filters = {} }) => {
+  try {
+    const tagsModel = models.tags;
+    const creditTransactionsModel = models.credit_transactions;
+    const creditTransactionTagsModel = models.credit_transaction_tags;
+
+    const whereCond = {
+      tags: {},
+      credit_transactions: {},
+      credit_transaction_tags: {},
+    };
+
+    const filterKeys = Object.keys(filters);
+    for (const filterKey of filterKeys) {
+      switch (filterKey) {
+        case 'account_id':
+          whereCond.credit_transactions['account_id'] = {
+            [Op.eq]: filters[filterKey],
+          };
+          break;
+        case 'post_date':
+          const postDateRange = filters[filterKey];
+          whereCond.credit_transactions['post_date'] = {
+            [Op.between]: [postDateRange.start_date, postDateRange.end_date],
+          };
+          break;
+
+        case 'tags':
+          const filterTags = filters[filterKey];
+          if (filterTags.length > 0) {
+            const includedTrx = await getIncludedTrxByTag(filterTags);
+
+            whereCond.tags['id'] = {
+              [Op.notIn]: filterTags, // TODO: query first using `id` or `unique_code` before passing value
+            };
+
+            whereCond.credit_transactions['id'] = {
+              [Op.in]: includedTrx.map((item) => item.credit_transaction_id),
+            };
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+    const data = await tagsModel.findAll({
+      attributes: [
+        'id',
+        'name',
+        [sequelize.fn('SUM', sequelize.col('bt_credit_transactions.amount')), 'total_amount'],
+        [sequelize.fn('COUNT', sequelize.col('*')), 'count'],
+      ],
+      include: [
+        {
+          model: creditTransactionsModel,
+          attributes: [],
+          through: { attributes: [] },
+          where: whereCond.credit_transactions,
+        },
+      ],
+      where: whereCond.tags,
+      group: ['bt_tags.id'],
+    });
+
+    return data;
+  } catch (err) {
+    console.log('Error in creditTransactions analytics', err);
     throw err;
   }
 };

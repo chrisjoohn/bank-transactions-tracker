@@ -1,19 +1,24 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import _ from 'lodash';
 
 import { accountsApi } from '../../integration/apis';
 
 import { transactionSelectors } from '../../integration/slices/transactions.slice';
+import { tagSelectors } from '../../integration/slices/tags.slice';
 
-import { TransactionsProps } from './Transactions';
-import { RootState } from '../../integration/store';
+import type { TransactionsProps } from './Transactions';
+import type { RootState } from '../../integration/store';
+import type { Tag } from '../../integration/apis/tags';
 
 const useTransactions = (props: TransactionsProps) => {
   const { account } = props;
 
-  const [dateFilter, setDateFilter] = useState<null | { start_date: string; end_date: string }>(
-    null
-  );
+  const [dateFilter, setDateFilter] = useState<
+    undefined | { start_date: string; end_date: string }
+  >(undefined);
+  const [tagFilter, setTagFilter] = useState<number[]>([]);
+
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const accountTransactions = accountsApi.useGetTransactionsQuery(
@@ -22,6 +27,7 @@ const useTransactions = (props: TransactionsProps) => {
       requestBody: {
         filters: {
           date_range: dateFilter,
+          tags: tagFilter,
         },
         includes: {
           tags: {},
@@ -33,6 +39,23 @@ const useTransactions = (props: TransactionsProps) => {
     }
   );
 
+  // TODO: rename this
+  const perTagAnalytics = accountsApi.useGetTotalPerTagQuery(
+    {
+      id: account.unique_code,
+      requestBody: {
+        filters: {
+          post_date: dateFilter,
+          tags: tagFilter,
+        },
+      },
+    },
+    {
+      skip: !account.id || !dateFilter,
+    }
+  );
+
+  /** Transactions */
   const transactions = useSelector((state: RootState) => transactionSelectors.selectAll(state));
 
   const listData = useMemo(() => {
@@ -42,6 +65,32 @@ const useTransactions = (props: TransactionsProps) => {
     });
   }, [transactions, accountTransactions]);
 
+  /** Tags */
+  const tags = useSelector((state: RootState) => tagSelectors.selectAll(state));
+  const activeTagFilters: Tag[] = useMemo(() => {
+    return tagFilter
+      .map((item) => {
+        return tags.find((tag) => item === tag.id);
+      })
+      .filter((item) => !!item);
+  }, [tags, tagFilter]);
+
+  const addTagFilter = (tagId: number) => {
+    const _tagFilter = _.cloneDeep(tagFilter);
+    _tagFilter.push(tagId);
+
+    setTagFilter(_tagFilter);
+  };
+
+  const removeTagFilter = (tagId: number) => {
+    const _tagFilter = _.cloneDeep(tagFilter);
+    const idx = _tagFilter.findIndex((item) => item === tagId);
+    if (idx > -1) {
+      _tagFilter.splice(idx, 1);
+      setTagFilter(_tagFilter);
+    }
+  };
+
   return {
     listData,
 
@@ -50,6 +99,12 @@ const useTransactions = (props: TransactionsProps) => {
 
     showModal,
     setShowModal,
+
+    activeTagFilters,
+    addTagFilter,
+    removeTagFilter,
+
+    perTagAnalytics: perTagAnalytics.data,
   };
 };
 

@@ -1,6 +1,17 @@
 import { FC } from 'react';
 
-import { Card, Button, Modal } from 'antd';
+import { Card, Button, Modal, Tag } from 'antd';
+import {
+  Bar,
+  BarChart,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts';
 
 // major components
 import Analytics from '../TransactionsAnalytics';
@@ -16,6 +27,9 @@ import useTransactions from './useTransactions.hooks';
 import type { Account } from '../../integration/apis/accounts';
 import TransactionStepperForm from '../TransactionStepperForm';
 
+// styles
+import './transactions.styles.scss';
+
 export interface TransactionsProps {
   withAnalytics?: boolean;
   account: Account;
@@ -24,10 +38,26 @@ export interface TransactionsProps {
 const Transactions: FC<TransactionsProps> = (props) => {
   const { account } = props;
 
-  const { dateFilter, setDateFilter, listData, showModal, setShowModal } = useTransactions(props);
+  const {
+    dateFilter,
+    setDateFilter,
+
+    listData,
+
+    showModal,
+    setShowModal,
+
+    activeTagFilters,
+
+    // tagFilter,
+    addTagFilter,
+    removeTagFilter,
+
+    perTagAnalytics: data,
+  } = useTransactions(props);
 
   return (
-    <div className="transactions">
+    <div className="btt-transactions">
       <div className="date-filter">
         <DateFilter
           onChange={(date) => {
@@ -35,9 +65,48 @@ const Transactions: FC<TransactionsProps> = (props) => {
           }}
         />
       </div>
-      <div className="simple-analytics">
-        {dateFilter && <Analytics dateFilter={dateFilter} account={account} />}
+      <div className="analytics">
+        {dateFilter && (
+          <Analytics dateFilter={dateFilter} account={account} tagsFilter={activeTagFilters} />
+        )}
       </div>
+      {/**
+       * TODO: Refactor this charts thing
+       */}
+      <Card className="charts">
+        {activeTagFilters.length > 0 && (
+          <div style={{ marginBottom: 20 }}>
+            <p>Active tag filters: </p>
+            {activeTagFilters.map((item) => {
+              return (
+                <Tag closable onClose={() => removeTagFilter(item?.id || 0)}>
+                  {item?.name}
+                </Tag>
+              );
+            })}
+          </div>
+        )}
+        <ResponsiveContainer width={'100%'} height={500}>
+          <BarChart width={500} height={300} data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey={'name'} />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey={'total_amount'} name={'Total Amount'} fill="#8cc8e9">
+              {(data || []).map((item) => {
+                return (
+                  <Cell
+                    style={{ cursor: 'pointer' }}
+                    key={item.id}
+                    onClick={() => addTagFilter(item.id)}
+                  />
+                );
+              })}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </Card>
       <div className="transactions-list">
         <Card>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>

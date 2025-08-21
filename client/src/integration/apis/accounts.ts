@@ -8,12 +8,20 @@ import { transactionSliceActions } from '../slices/transactions.slice';
 import type { DebitTransaction, EditableDebitTransaction } from './debitTransactions';
 import type { CreditTransaction, EditableCreditTransaction } from './creditTransactions';
 import type { BaseEntityType, ParsedTrx } from '../types';
+import { Tag } from './tags';
 
 export interface Account extends BaseEntityType {
   user_id: string;
   name: string;
   description: string;
   type: 'DEPOSIT' | 'CREDIT';
+}
+
+export interface GroupedTag {
+  id: number;
+  name: string;
+  total_amount: number;
+  count: number;
 }
 
 export const accountsApi = createApi({
@@ -51,7 +59,7 @@ export const accountsApi = createApi({
       {
         id: Account['id'] | Account['unique_code'];
         requestBody: {
-          filters: { date_range?: { start_date: string; end_date: string } };
+          filters: { date_range?: { start_date: string; end_date: string }; tags?: number[] };
           includes?: { [includeKey: string]: {} };
         };
       }
@@ -83,6 +91,28 @@ export const accountsApi = createApi({
         }
       },
     }),
+    getTotalPerTag: builder.query<
+      GroupedTag[],
+      {
+        id: Account['unique_code'];
+        requestBody: {
+          filters: {
+            post_date?: {
+              start_date: string;
+              end_date: string;
+            };
+            tags?: number[];
+          };
+        };
+      }
+    >({
+      query: ({ id, requestBody }) => ({
+        url: `/accounts/${id}/analytics/total-per-tag`,
+        method: 'POST',
+        body: requestBody,
+      }),
+      transformResponse: (response: { data: GroupedTag[] }) => response.data,
+    }),
     getTransaction: builder.query<
       DebitTransaction | CreditTransaction,
       { id: Account['unique_code']; transactionId: string }
@@ -110,15 +140,17 @@ export const accountsApi = createApi({
         id?: Account['id'] | Account['unique_code'];
         post_date?: { start_date: string; end_date: string };
         transaction_date?: { start_date: string; end_date: string };
+        tags: Tag['id'][]
       }
     >({
-      query: ({ id, post_date, transaction_date }) => ({
+      query: ({ id, post_date, transaction_date, tags }) => ({
         method: 'POST',
         url: `/accounts/${id}/transactions/analytics`,
         body: {
           filters: {
             post_date,
             transaction_date,
+            tags,
           },
         },
       }),

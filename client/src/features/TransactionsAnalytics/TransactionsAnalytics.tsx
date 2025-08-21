@@ -6,6 +6,7 @@ import { accountsApi } from '../../integration/apis';
 
 // type definitions
 import type { Account } from '../../integration/apis/accounts';
+import type { Tag } from '../../integration/apis/tags';
 
 export type TransactionsAnalyticsProps = {
   account: Account;
@@ -13,16 +14,18 @@ export type TransactionsAnalyticsProps = {
     start_date: string;
     end_date: string;
   };
+  tagsFilter: Tag[];
 };
 
 const TransactionsAnalytics: FC<TransactionsAnalyticsProps> = (props) => {
-  const { account, dateFilter } = props;
+  const { account, dateFilter, tagsFilter } = props;
 
   const accountAnalytics = accountsApi.useGetAccountTrxAnalyticsQuery(
     {
       id: account.unique_code,
       post_date: account.type === 'CREDIT' ? dateFilter : undefined,
       transaction_date: account.type === 'DEPOSIT' ? dateFilter : undefined,
+      tags: tagsFilter.map((item) => item.id),
     },
     {
       skip: !account,
