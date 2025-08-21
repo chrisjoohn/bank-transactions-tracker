@@ -16,6 +16,13 @@ export interface Account extends BaseEntityType {
   type: 'DEPOSIT' | 'CREDIT';
 }
 
+export interface GroupedTag {
+  id: number;
+  name: string;
+  total_amount: number;
+  count: number;
+}
+
 export const accountsApi = createApi({
   reducerPath: 'accounts',
   tagTypes: ['Accounts', 'Transactions'],
@@ -82,6 +89,28 @@ export const accountsApi = createApi({
           // optional rollback
         }
       },
+    }),
+    getTotalPerTag: builder.query<
+      GroupedTag[],
+      {
+        id: Account['unique_code'];
+        requestBody: {
+          filters: {
+            post_date?: {
+              start_date: string;
+              end_date: string;
+            };
+            tags?: number[];
+          };
+        };
+      }
+    >({
+      query: ({ id, requestBody }) => ({
+        url: `/accounts/${id}/analytics/total-per-tag`,
+        method: 'POST',
+        body: requestBody,
+      }),
+      transformResponse: (response: { data: GroupedTag[] }) => response.data,
     }),
     getTransaction: builder.query<
       DebitTransaction | CreditTransaction,
