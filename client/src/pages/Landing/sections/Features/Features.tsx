@@ -25,7 +25,7 @@ const Features: FC = () => {
     <section className="features">
       {featureList.map((item) => {
         return (
-          <div className="item">
+          <div className="item" key={item.title}>
             <div className="icon"></div>
             <div className="details">
               <div className="name">{item.title}</div>

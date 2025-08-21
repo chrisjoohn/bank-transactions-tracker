@@ -46,10 +46,14 @@ const Footer: FC = () => {
         {linkSections.map((linkSection) => {
           const { title, links } = linkSection;
           return (
-            <div className="link-section">
+            <div className="link-section" key={title}>
               <div className="link-section-title">{title}</div>
               {links.map((item) => {
-                return <div className="link">{item.name}</div>;
+                return (
+                  <div key={item.name} className="link">
+                    {item.name}
+                  </div>
+                );
               })}
             </div>
           );
