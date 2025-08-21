@@ -8,7 +8,7 @@ import { AuthContext } from '../AppAuthenticator/auth.context';
 import { MainLayout } from '../../layouts';
 
 // pages
-import { Accounts, Tags, Transactions } from '../../pages';
+import { Accounts, Tags, Transactions, Landing, Login } from '../../pages';
 
 import AccountDetails from '../../pages/Accounts/AccountDetails';
 import AccountsList from '../../pages/Accounts/AccountsList';
@@ -18,7 +18,11 @@ import TransactionDetails from '../../pages/Transactions/TransactionDetails';
 const publicRoutes = createBrowserRouter([
   {
     path: '/',
-    element: <div id="firebaseui-auth-container"></div>, // this div id is important and is used by firebase
+    element: <Landing />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
   },
 ]);
 

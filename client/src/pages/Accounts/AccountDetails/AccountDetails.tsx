@@ -2,7 +2,7 @@ import { FC } from 'react';
 import classNames from 'classnames';
 import { useParams } from 'react-router-dom';
 
-import { Spin } from 'antd';
+import { Card, Spin } from 'antd';
 
 // components
 import { Transactions } from '../../../features';
@@ -30,10 +30,10 @@ const AccountDetails: FC = () => {
 
   return (
     <div className={classNames('btt-account-details')}>
-      <div className="basic-details">
+      <Card className="basic-details">
         <h2>{name}</h2>
         <p>{description}</p>
-      </div>
+      </Card>
       <div className="transactions">
         <Transactions account={accountDetails.data} />
       </div>

@@ -1,0 +1,19 @@
+.cta {
+  height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+
+  .title {
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  .description {
+    font-size: 22px;
+    font-weight: 500;
+    color: #999999;
+  }
+}
