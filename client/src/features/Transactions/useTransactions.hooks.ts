@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import _ from 'lodash';
 
 import { accountsApi } from '../../integration/apis';
 
@@ -7,6 +8,7 @@ import { transactionSelectors } from '../../integration/slices/transactions.slic
 
 import { TransactionsProps } from './Transactions';
 import { RootState } from '../../integration/store';
+import { tagSelectors } from '../../integration/slices/tags.slice';
 
 const useTransactions = (props: TransactionsProps) => {
   const { account } = props;
@@ -36,6 +38,23 @@ const useTransactions = (props: TransactionsProps) => {
     }
   );
 
+  // TODO: rename this
+  const perTagAnalytics = accountsApi.useGetTotalPerTagQuery(
+    {
+      id: account.unique_code,
+      requestBody: {
+        filters: {
+          post_date: dateFilter,
+          tags: tagFilter,
+        },
+      },
+    },
+    {
+      skip: !account.id || !dateFilter,
+    }
+  );
+
+  /** Transactions */
   const transactions = useSelector((state: RootState) => transactionSelectors.selectAll(state));
 
   const listData = useMemo(() => {
@@ -44,6 +63,30 @@ const useTransactions = (props: TransactionsProps) => {
       return ids.includes(item.unique_code);
     });
   }, [transactions, accountTransactions]);
+
+  /** Tags */
+  const tags = useSelector((state: RootState) => tagSelectors.selectAll(state));
+  const activeTagFilters = useMemo(() => {
+    return tagFilter.map((item) => {
+      return tags.find((tag) => item === tag.id);
+    });
+  }, [tags, tagFilter]);
+
+  const addTagFilter = (tagId: number) => {
+    const _tagFilter = _.cloneDeep(tagFilter);
+    _tagFilter.push(tagId);
+
+    setTagFilter(_tagFilter);
+  };
+
+  const removeTagFilter = (tagId: number) => {
+    const _tagFilter = _.cloneDeep(tagFilter);
+    const idx = _tagFilter.findIndex((item) => item === tagId);
+    if (idx > -1) {
+      _tagFilter.splice(idx, 1);
+      setTagFilter(_tagFilter);
+    }
+  };
 
   return {
     listData,
@@ -54,8 +97,11 @@ const useTransactions = (props: TransactionsProps) => {
     showModal,
     setShowModal,
 
-    tagFilter,
-    setTagFilter,
+    activeTagFilters,
+    addTagFilter,
+    removeTagFilter,
+
+    perTagAnalytics: perTagAnalytics.data,
   };
 };
 
