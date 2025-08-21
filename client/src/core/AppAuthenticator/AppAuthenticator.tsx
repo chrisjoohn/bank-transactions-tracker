@@ -1,5 +1,7 @@
 import { FC, ReactNode } from 'react';
 
+import { Spin } from 'antd';
+
 // hooks
 import useAuthentication from './appAuthenticator.hooks';
 
@@ -11,7 +13,18 @@ const AppAuthenticator: FC<{ children: ReactNode }> = (props) => {
   const { authState } = useAuthentication();
 
   if (authState === 'loading') {
-    return <h1>Loading...</h1>; // update UI
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Spin size="large"></Spin>
+      </div>
+    );
   }
 
   return (
