@@ -70,6 +70,9 @@ const Transactions: FC<TransactionsProps> = (props) => {
           <Analytics dateFilter={dateFilter} account={account} tagsFilter={activeTagFilters} />
         )}
       </div>
+      {/**
+       * TODO: Refactor this charts thing
+       */}
       <Card className="charts">
         {activeTagFilters.length > 0 && (
           <div style={{ marginBottom: 20 }}>
