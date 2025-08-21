@@ -49,7 +49,30 @@ const Landing: FC = () => {
             <div className="icon"></div>
           </div>
         </section>
-        <section className="features"></section>
+        <section className="features">
+          <div className="item">
+            <div className="icon"></div>
+            <div className="details">
+              <div className="name">Multi-account tracking.</div>
+              <div className="description">Manage all your banks and cards in one view.</div>
+            </div>
+          </div>
+
+          <div className="item">
+            <div className="icon"></div>
+            <div className="details">
+              <div className="name">Multi-account tracking.</div>
+              <div className="description">Manage all your banks and cards in one view.</div>
+            </div>
+          </div>
+          <div className="item">
+            <div className="icon"></div>
+            <div className="details">
+              <div className="name">Multi-account tracking.</div>
+              <div className="description">Manage all your banks and cards in one view.</div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
