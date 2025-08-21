@@ -7,7 +7,7 @@ import './hero.styles.scss';
 const Hero: FC = () => {
   return (
     <section className="hero">
-      <div className="hero-logo">Logo here</div>
+      <div className="hero-logo">{`<Logo />`}</div>
       <div className="hero-text-1">Track Your Bank Transactions.</div>
       <div className="hero-text-2">Understand Your Cashflow.</div>
       <div className="hero-buttons">
