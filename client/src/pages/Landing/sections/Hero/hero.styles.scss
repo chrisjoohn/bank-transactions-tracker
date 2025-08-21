@@ -1,0 +1,25 @@
+.hero {
+  .hero-logo {
+    margin-bottom: 40px;
+  }
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  .hero-text-1,
+  .hero-text-2 {
+    font-size: 40px;
+    font-weight: 700;
+  }
+
+  .hero-text-2 {
+    color: #999999;
+  }
+
+  .hero-buttons {
+    margin-top: 40px;
+    display: flex;
+    gap: 10px;
+  }
+}
