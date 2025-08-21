@@ -12,6 +12,7 @@ const Landing: FC = () => {
         <sections.Hero />
         <sections.Overview />
         <sections.Features />
+        <sections.CallToAction />
       </div>
     </div>
   );
