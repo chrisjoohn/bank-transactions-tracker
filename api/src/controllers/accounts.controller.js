@@ -421,7 +421,7 @@ exports.getTotalPerTag = async (req, res) => {
       data = await creditTransactionService.getTotalPerTag({
         filters: {
           ...filters,
-          account: accountDetails.id,
+          account_id: accountDetails.id,
         },
       });
     }
