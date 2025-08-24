@@ -1,4 +1,5 @@
-$breakpoint-tablet: 810px;
+$breakpoint-desktop: 1024px;
+$breakpoint-tablet: 768px;
 $breakpoint-mobile: 480px;
 
 .wrapper {
@@ -15,7 +16,7 @@ $breakpoint-mobile: 480px;
     flex-direction: column;
     gap: 160px;
 
-    @media (max-width: $breakpoint-tablet) {
+    @media (min-width: $breakpoint-tablet) and (max-width: $breakpoint-desktop) {
       max-width: 770px;
     }
 
