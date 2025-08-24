@@ -1,13 +1,23 @@
 .features {
   display: flex;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
   gap: 20px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 40px;
+  }
 
   .item {
     width: 31%;
     display: flex;
     flex-direction: column;
     gap: 20px;
+
+    @media (max-width: 480px) {
+      width: 100%;
+    }
+
     .icon {
       height: 306.5px;
       background-color: #999999;
@@ -19,6 +29,14 @@
         font-weight: 600;
         font-size: 22px;
         margin-bottom: 20px;
+
+        @media (max-width: 480px) {
+          margin-bottom: 10px;
+        }
+      }
+
+      .description {
+        color: #999999;
       }
     }
   }
