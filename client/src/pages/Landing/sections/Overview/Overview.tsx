@@ -15,12 +15,12 @@ const Overview: FC = () => {
         <div className="icon"></div>
       </div>
 
-      <div className="steps">
-        <div className="icon"></div>
+      <div className="steps odd">
         <div className="details">
           <div className="step-name">Import transactions.</div>
           <div className="step-definition">Step 2: Upload bank statements or CSVs in seconds.</div>
         </div>
+        <div className="icon"></div>
       </div>
 
       <div className="steps">

@@ -1,14 +1,26 @@
+$breakpoint-tablet: 810px;
+$breakpoint-mobile: 480px;
+
 .wrapper {
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   .container {
     max-width: 960px;
     width: 960px;
     display: flex;
     flex-direction: column;
     gap: 160px;
+
+    @media (max-width: $breakpoint-tablet) {
+      max-width: 770px;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      max-width: 350px;
+    }
   }
 }
