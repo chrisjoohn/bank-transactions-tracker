@@ -7,6 +7,7 @@ import { Card, Spin, Divider } from 'antd';
 import { accountsApi } from '../../../integration/apis';
 
 const AccountsList: FC = () => {
+  const navigate = useNavigate();
   const { isLoading, data = [] } = accountsApi.useGetAccountsQuery();
 
   const creditAccounts = useMemo(() => {
@@ -21,7 +22,6 @@ const AccountsList: FC = () => {
     });
   }, [data]);
 
-  const navigate = useNavigate();
   return (
     <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
       {isLoading ? (
