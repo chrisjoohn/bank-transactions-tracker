@@ -3,10 +3,8 @@ import { FC } from 'react';
 import { Button, Select, Input, Form } from 'antd';
 
 import useAccountForm from './useAccountForm.hooks';
-import type { Account } from '../../integration/apis/accounts';
-import { Editable } from '../../integration/types';
+import type { EditableAccount } from '../../integration/apis/accounts';
 
-export type EditableAccount = Editable<Account, 'user_id'>;
 export type AccountFormProps = {
   defaultValue?: EditableAccount;
 };
@@ -24,7 +22,7 @@ const AccountForm: FC<AccountFormProps> = (props) => {
         onFinish={_submitHandler}
         initialValues={defaultValue}
       >
-        <Form.Item<Account['name']>
+        <Form.Item
           name={'name'}
           label="Name"
           rules={[{ required: true, message: 'This field is required.' }]}

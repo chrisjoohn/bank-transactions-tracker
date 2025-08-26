@@ -1,12 +1,23 @@
 import { Form } from 'antd';
 
-import type { EditableAccount } from './AccountForm';
+import { accountsApi } from '../../integration/apis';
 
-const useAccountForm = () => {
+import type { AccountFormProps } from './AccountForm';
+import type { EditableAccount } from '../../integration/apis/accounts';
+
+const useAccountForm = (props: AccountFormProps) => {
+  const { defaultValue } = props;
   const [form] = Form.useForm<EditableAccount>();
 
+  const [createAccount] = accountsApi.useCreateAccountMutation();
+
   const _submitHandler = (values: EditableAccount) => {
-    console.log('values', values);
+    if (defaultValue) {
+      // perform update
+      return;
+    }
+
+    createAccount(values);
   };
 
   return {
