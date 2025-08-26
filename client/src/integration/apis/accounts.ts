@@ -7,7 +7,7 @@ import { transactionSliceActions } from '../slices/transactions.slice';
 // type definitinos
 import type { DebitTransaction, EditableDebitTransaction } from './debitTransactions';
 import type { CreditTransaction, EditableCreditTransaction } from './creditTransactions';
-import type { BaseEntityType, ParsedTrx } from '../types';
+import type { BaseEntityType, Editable, ParsedTrx } from '../types';
 import { Tag } from './tags';
 
 export interface Account extends BaseEntityType {
@@ -16,6 +16,8 @@ export interface Account extends BaseEntityType {
   description: string;
   type: 'DEPOSIT' | 'CREDIT';
 }
+
+export type EditableAccount = Editable<Account, 'user_id'>;
 
 export interface GroupedTag {
   id: number;
@@ -42,6 +44,14 @@ export const accountsApi = createApi({
     },
   }),
   endpoints: (builder) => ({
+    createAccount: builder.mutation<Account, EditableAccount>({
+      query: (requestBody: EditableAccount) => ({
+        url: `/accounts`,
+        method: 'POST',
+        body: requestBody,
+      }),
+      transformResponse: (response: { data: Account }) => response.data,
+    }),
     getAccounts: builder.query<Account[], void>({
       query: () => `/accounts`,
       transformResponse: (response: { data: Account[] }) => response.data,
@@ -140,7 +150,7 @@ export const accountsApi = createApi({
         id?: Account['id'] | Account['unique_code'];
         post_date?: { start_date: string; end_date: string };
         transaction_date?: { start_date: string; end_date: string };
-        tags: Tag['id'][]
+        tags: Tag['id'][];
       }
     >({
       query: ({ id, post_date, transaction_date, tags }) => ({
