@@ -1,7 +1,9 @@
 import { FC, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, Spin, Divider } from 'antd';
+import { Card, Spin, Divider, Button, Modal } from 'antd';
+
+import { AccountForm } from '../../../features';
 
 // redux APIs
 import { accountsApi } from '../../../integration/apis';
@@ -24,9 +26,14 @@ const AccountsList: FC = () => {
 
   return (
     <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+      <Button style={{ justifySelf: 'flex-end' }}>Add Account</Button>
+      <Modal open footer={null}>
+        <AccountForm />
+      </Modal>
       {isLoading ? (
         <Spin size="large" />
       ) : (
+        // TODO: Refactor this list
         <div style={{ width: '100%' }}>
           <div
             style={{
