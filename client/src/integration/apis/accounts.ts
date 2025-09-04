@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getAuth } from 'firebase/auth';
 
 import { transactionSliceActions } from '../slices/transactions.slice';
+import { accountsSliceActions } from '../slices/accounts.slice';
 
 // type definitinos
 import type { DebitTransaction, EditableDebitTransaction } from './debitTransactions';
@@ -27,7 +28,7 @@ export interface GroupedTag {
 }
 
 export const accountsApi = createApi({
-  reducerPath: 'accounts',
+  reducerPath: 'accounts-rtk',
   tagTypes: ['Accounts', 'Transactions'],
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8080',
@@ -55,6 +56,14 @@ export const accountsApi = createApi({
     getAccounts: builder.query<Account[], void>({
       query: () => `/accounts`,
       transformResponse: (response: { data: Account[] }) => response.data,
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(accountsSliceActions.setMany(data));
+        } catch {
+          // optional rollback
+        }
+      },
     }),
     getAccount: builder.query<Account, string>({
       query: (id) => `/accounts/${id}`,
