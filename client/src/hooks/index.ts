@@ -1,1 +1,1 @@
-import { default as useModal } from './useModal.hooks';
+export { default as useModal } from './useModal.hooks';
