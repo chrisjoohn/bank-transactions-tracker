@@ -1,19 +1,28 @@
 import { FC, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
+// components
 import { Card, Spin, Divider, Button, Modal } from 'antd';
+
+import { AccountForm } from '../../../features';
 
 // hooks
 import { useModal } from '../../../hooks';
 
-import { AccountForm } from '../../../features';
+// redux slices
+import { accountSelectors } from '../../../integration/slices/accounts.slice';
 
 // redux APIs
 import { accountsApi } from '../../../integration/apis';
+import { RootState } from '../../../integration/store';
 
+// TODO: separate UI from logic
 const AccountsList: FC = () => {
   const navigate = useNavigate();
-  const { isLoading, data = [] } = accountsApi.useGetAccountsQuery();
+
+  const { isLoading } = accountsApi.useGetAccountsQuery();
+  const data = useSelector((state: RootState) => accountSelectors.selectAll(state));
 
   const { showModal, toggleModal } = useModal();
 
