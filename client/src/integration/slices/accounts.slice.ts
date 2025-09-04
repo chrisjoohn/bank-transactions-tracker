@@ -21,7 +21,7 @@ const accountsSlice = createSlice({
 
 export const accountsSliceActions = accountsSlice.actions;
 
-export const tagSelectors = accountsAdapter.getSelectors((state: RootState) => {
+export const accountSelectors = accountsAdapter.getSelectors((state: RootState) => {
   return state.accounts;
 });
 
