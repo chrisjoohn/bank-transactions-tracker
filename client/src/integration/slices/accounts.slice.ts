@@ -15,6 +15,7 @@ const accountsSlice = createSlice({
   reducers: {
     setMany: accountsAdapter.setMany,
     setOne: accountsAdapter.setOne,
+    addOne: accountsAdapter.addOne,
   },
 });
 

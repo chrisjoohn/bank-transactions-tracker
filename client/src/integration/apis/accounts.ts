@@ -10,6 +10,7 @@ import type { DebitTransaction, EditableDebitTransaction } from './debitTransact
 import type { CreditTransaction, EditableCreditTransaction } from './creditTransactions';
 import type { BaseEntityType, Editable, ParsedTrx } from '../types';
 import { Tag } from './tags';
+import AccountsList from '../../pages/Accounts/AccountsList';
 
 export interface Account extends BaseEntityType {
   user_id: string;
@@ -52,6 +53,14 @@ export const accountsApi = createApi({
         body: requestBody,
       }),
       transformResponse: (response: { data: Account }) => response.data,
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(accountsSliceActions.addOne(data));
+        } catch {
+          // optional rollback
+        }
+      },
     }),
     getAccounts: builder.query<Account[], void>({
       query: () => `/accounts`,
