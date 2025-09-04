@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, Spin, Divider, Button, Modal } from 'antd';
 
+// hooks
+import { useModal } from '../../../hooks';
+
 import { AccountForm } from '../../../features';
 
 // redux APIs
@@ -11,6 +14,8 @@ import { accountsApi } from '../../../integration/apis';
 const AccountsList: FC = () => {
   const navigate = useNavigate();
   const { isLoading, data = [] } = accountsApi.useGetAccountsQuery();
+
+  const { showModal, toggleModal } = useModal();
 
   const creditAccounts = useMemo(() => {
     return data.filter((item) => {
@@ -26,8 +31,10 @@ const AccountsList: FC = () => {
 
   return (
     <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-      <Button style={{ justifySelf: 'flex-end' }}>Add Account</Button>
-      <Modal open footer={null}>
+      <Button style={{ justifySelf: 'flex-end' }} onClick={() => toggleModal(true)}>
+        Add Account
+      </Button>
+      <Modal open={showModal} footer={null} onCancel={() => toggleModal()}>
         <AccountForm />
       </Modal>
       {isLoading ? (
