@@ -6,18 +6,20 @@ import type { AccountFormProps } from './AccountForm';
 import type { EditableAccount } from '../../integration/apis/accounts';
 
 const useAccountForm = (props: AccountFormProps) => {
-  const { defaultValue } = props;
+  const { defaultValue, submitCallback } = props;
   const [form] = Form.useForm<EditableAccount>();
 
   const [createAccount] = accountsApi.useCreateAccountMutation();
 
-  const _submitHandler = (values: EditableAccount) => {
+  const _submitHandler = async (values: EditableAccount) => {
     if (defaultValue) {
       // perform update
       return;
     }
 
-    createAccount(values);
+    const result = await createAccount(values);
+
+    submitCallback && submitCallback('create', result.data!.unique_code);
   };
 
   return {

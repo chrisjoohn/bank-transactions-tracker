@@ -3,10 +3,11 @@ import { FC } from 'react';
 import { Button, Select, Input, Form } from 'antd';
 
 import useAccountForm from './useAccountForm.hooks';
-import type { EditableAccount } from '../../integration/apis/accounts';
+import type { Account, EditableAccount } from '../../integration/apis/accounts';
 
 export type AccountFormProps = {
   defaultValue?: EditableAccount;
+  submitCallback?: (action: 'create' | 'update', accountId: Account['unique_code']) => void;
 };
 
 const AccountForm: FC<AccountFormProps> = (props) => {
