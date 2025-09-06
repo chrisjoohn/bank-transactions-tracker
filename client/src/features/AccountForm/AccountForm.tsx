@@ -12,7 +12,7 @@ export type AccountFormProps = {
 
 const AccountForm: FC<AccountFormProps> = (props) => {
   const { defaultValue } = props;
-  const { form, _submitHandler } = useAccountForm(props);
+  const { disableSubmit, form, _submitHandler } = useAccountForm(props);
 
   return (
     <div className="btt-account-form">
@@ -53,7 +53,9 @@ const AccountForm: FC<AccountFormProps> = (props) => {
             ]}
           />
         </Form.Item>
-        <Button htmlType="submit">Submit</Button>
+        <Button htmlType="submit" disabled={disableSubmit}>
+          Submit
+        </Button>
       </Form>
     </div>
   );
