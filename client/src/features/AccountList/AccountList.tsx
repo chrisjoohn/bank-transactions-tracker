@@ -1,5 +1,6 @@
 import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // components
 import { Divider, Spin } from 'antd';
@@ -18,6 +19,8 @@ const List: FC<{
   data: Account[];
 }> = (props) => {
   const { data } = props;
+  const navigate = useNavigate();
+
   return (
     <div style={{ width: '100%' }}>
       <div
@@ -28,7 +31,13 @@ const List: FC<{
         }}
       >
         {data.map((item) => {
-          return <AccountCard key={item.unique_code} account={item} />;
+          return (
+            <AccountCard
+              key={item.unique_code}
+              account={item}
+              onClick={() => navigate(`/${item.unique_code}`)}
+            />
+          );
         })}
       </div>
     </div>
