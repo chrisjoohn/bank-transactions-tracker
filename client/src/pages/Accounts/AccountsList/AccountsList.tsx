@@ -13,7 +13,7 @@ const AccountsList: FC = () => {
 
   return (
     <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-      <Button style={{ justifySelf: 'flex-end' }} onClick={() => toggleModal(true)}>
+      <Button style={{ marginLeft: 'auto' }} onClick={() => toggleModal(true)}>
         Add Account
       </Button>
       <Modal open={showModal} footer={null} onCancel={() => toggleModal()}>
