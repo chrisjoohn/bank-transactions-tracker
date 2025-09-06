@@ -3,12 +3,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getAuth } from 'firebase/auth';
 
 import { transactionSliceActions } from '../slices/transactions.slice';
+import { accountsSliceActions } from '../slices/accounts.slice';
 
 // type definitinos
 import type { DebitTransaction, EditableDebitTransaction } from './debitTransactions';
 import type { CreditTransaction, EditableCreditTransaction } from './creditTransactions';
-import type { BaseEntityType, ParsedTrx } from '../types';
+import type { BaseEntityType, Editable, ParsedTrx } from '../types';
 import { Tag } from './tags';
+import AccountsList from '../../pages/Accounts/AccountsList';
 
 export interface Account extends BaseEntityType {
   user_id: string;
@@ -16,6 +18,8 @@ export interface Account extends BaseEntityType {
   description: string;
   type: 'DEPOSIT' | 'CREDIT';
 }
+
+export type EditableAccount = Editable<Account, 'user_id'>;
 
 export interface GroupedTag {
   id: number;
@@ -25,7 +29,7 @@ export interface GroupedTag {
 }
 
 export const accountsApi = createApi({
-  reducerPath: 'accounts',
+  reducerPath: 'accounts-rtk',
   tagTypes: ['Accounts', 'Transactions'],
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8080',
@@ -42,9 +46,33 @@ export const accountsApi = createApi({
     },
   }),
   endpoints: (builder) => ({
+    createAccount: builder.mutation<Account, EditableAccount>({
+      query: (requestBody: EditableAccount) => ({
+        url: `/accounts`,
+        method: 'POST',
+        body: requestBody,
+      }),
+      transformResponse: (response: { data: Account }) => response.data,
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(accountsSliceActions.addOne(data));
+        } catch {
+          // optional rollback
+        }
+      },
+    }),
     getAccounts: builder.query<Account[], void>({
       query: () => `/accounts`,
       transformResponse: (response: { data: Account[] }) => response.data,
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(accountsSliceActions.setMany(data));
+        } catch {
+          // optional rollback
+        }
+      },
     }),
     getAccount: builder.query<Account, string>({
       query: (id) => `/accounts/${id}`,
@@ -140,7 +168,7 @@ export const accountsApi = createApi({
         id?: Account['id'] | Account['unique_code'];
         post_date?: { start_date: string; end_date: string };
         transaction_date?: { start_date: string; end_date: string };
-        tags: Tag['id'][]
+        tags: Tag['id'][];
       }
     >({
       query: ({ id, post_date, transaction_date, tags }) => ({
