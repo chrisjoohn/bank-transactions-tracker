@@ -9,3 +9,4 @@ export { default as TransactionStepperForm } from './TransactionStepperForm';
  * account-related features
  */
 export { default as AccountForm } from './AccountForm';
+export { default as AccountList } from './AccountList';
