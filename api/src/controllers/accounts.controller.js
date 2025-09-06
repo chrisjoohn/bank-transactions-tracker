@@ -430,6 +430,7 @@ exports.getTotalPerTag = async (req, res) => {
       res.status(400).json({
         message: 'Not yet handled',
       });
+      return;
     }
 
     res.json({
