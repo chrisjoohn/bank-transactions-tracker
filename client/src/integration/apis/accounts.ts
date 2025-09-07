@@ -9,8 +9,7 @@ import { accountsSliceActions } from '../slices/accounts.slice';
 import type { DebitTransaction, EditableDebitTransaction } from './debitTransactions';
 import type { CreditTransaction, EditableCreditTransaction } from './creditTransactions';
 import type { BaseEntityType, Editable, ParsedTrx } from '../types';
-import { Tag } from './tags';
-import AccountsList from '../../pages/Accounts/AccountsList';
+import type { Tag } from './tags';
 
 export interface Account extends BaseEntityType {
   user_id: string;
