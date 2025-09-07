@@ -3,14 +3,13 @@ const models = require('../models');
 // required name to be used on exporting services on index
 exports.serviceName = 'debitTransactionTagService';
 
-exports.create = async ({ first_name, last_name, email }) => {
+exports.create = async ({ tag_id, debit_transaction_id }) => {
   try {
     const debitTransactionTagsModel = models.debit_transaction_tags;
 
     const postData = {
-      first_name,
-      last_name,
-      email,
+      tag_id,
+      debit_transaction_id,
     };
 
     const data = await debitTransactionTagsModel.create(postData);
@@ -45,37 +44,6 @@ exports.findOne = async (id) => {
     return data;
   } catch (err) {
     console.log('Error in find one debit_transaction_tags service: ', err);
-    throw err;
-  }
-};
-
-exports.update = async (id, { first_name, last_name, email }) => {
-  try {
-    const debitTransactionTagsModel = models.debit_transaction_tags;
-
-    const putData = {
-      first_name,
-      last_name,
-      email,
-    };
-
-    const keyField = isNaN(id) ? 'unique_code' : 'id';
-
-    const [updated] = await debitTransactionTagsModel.update(putData, {
-      where: {
-        [keyField]: id,
-      },
-    });
-
-    if (!updated) {
-      throw 'Not found!';
-    }
-
-    const data = await debitTransactionTagsModel.findOne({ where: { [keyField]: id } });
-
-    return data;
-  } catch (err) {
-    console.log('Error in update debit_transaction_tags service: ', err);
     throw err;
   }
 };
