@@ -63,7 +63,7 @@ exports.bulkCreate = async ({ records = [], account_id }) => {
   }
 };
 
-exports.findAll = async ({ filters = {} }) => {
+exports.findAll = async ({ filters = {}, includes = {} }) => {
   try {
     const debitTransactionsModel = models.debit_transactions;
 
@@ -94,8 +94,33 @@ exports.findAll = async ({ filters = {} }) => {
       }
     }
 
+    const include = [];
+    const includeKeys = Object.keys(includes);
+    for (const includeKey of includeKeys) {
+      switch (includeKey) {
+        case 'tags':
+          if (includes[includeKey]) {
+            const tagModel = models.tags;
+            const debitTransactionTagsModel = models.debit_transaction_tags;
+
+            include.push({
+              model: tagModel,
+              as: 'tags',
+              through: {
+                model: debitTransactionTagsModel,
+                as: 'debit_transaction_tags',
+              },
+            });
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
     const data = await debitTransactionsModel.findAll({
       where: whereCondition,
+      include,
     });
     return data;
   } catch (err) {
@@ -104,14 +129,39 @@ exports.findAll = async ({ filters = {} }) => {
   }
 };
 
-exports.findOne = async (id) => {
+exports.findOne = async (id, { includes } = { includes: {} }) => {
   try {
     const debitTransactionsModel = models.debit_transactions;
 
     const keyField = isNaN(id) ? 'unique_code' : 'id';
 
+    const include = [];
+    const includeKeys = Object.keys(includes || {});
+    for (const includeKey of includeKeys) {
+      switch (includeKey) {
+        case 'tags':
+          if (includes[includeKey]) {
+            const tagModel = models.tags;
+            const debitTransactionTagsModel = models.debit_transaction_tags;
+
+            include.push({
+              model: tagModel,
+              as: 'tags',
+              through: {
+                model: debitTransactionTagsModel,
+                as: 'debit_transaction_tags',
+              },
+            });
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
     const data = await debitTransactionsModel.findOne({
       where: { [keyField]: id },
+      include,
     });
 
     return data;
