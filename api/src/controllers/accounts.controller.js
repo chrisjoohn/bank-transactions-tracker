@@ -2,6 +2,7 @@ const { startOfMonth, endOfMonth } = require('date-fns');
 
 const accountsService = require('../services')['accountsService'];
 const debitTransactionService = require('../services/debitTransactions.service');
+const debitTransactionTagService = require('../services/debitTransactionTags.service');
 const creditTransactionService = require('../services/creditTransactions.service');
 const creditTransactionTagService = require('../services/creditTransactionTags.service');
 const tagService = require('../services/tags.service');
@@ -323,6 +324,7 @@ exports.createTransactionTag = async (req, res) => {
         transaction = await creditTransactionService.findOne(transaction_id);
         break;
       case 'DEPOSIT':
+        transaction = await debitTransactionService.findOne(transaction_id);
         break;
       default:
         break;
@@ -354,6 +356,10 @@ exports.createTransactionTag = async (req, res) => {
         });
         break;
       case 'DEPOSIT':
+        data = await debitTransactionTagService.create({
+          debit_transaction_id: transaction.id,
+          tag_id: tag.id,
+        });
         break;
       default:
         break;
