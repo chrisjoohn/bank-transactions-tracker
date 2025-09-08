@@ -109,6 +109,7 @@ exports.findTransactions = async (req, res) => {
           ...filters,
           account_id: accountDetails.id,
         },
+        includes,
       });
     }
 
