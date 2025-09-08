@@ -397,6 +397,10 @@ exports.deleteTransactionTag = async (req, res) => {
         });
         break;
       case 'DEPOSIT':
+        data = await debitTransactionTagService.deleteByTransactionAndTag({
+          transactionId,
+          tagId,
+        });
         break;
     }
 
