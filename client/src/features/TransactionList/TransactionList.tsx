@@ -18,7 +18,7 @@ export type TransactionListProps = {
   listData: (DebitTransaction | CreditTransaction)[];
 };
 
-const debitTrxColumns: ColumnsType<DebitTransaction> = [
+const debitTrxColumns = ({ account }: { account: Account }): ColumnsType<DebitTransaction> => [
   {
     title: 'ID',
     render: (_, record) => (
@@ -39,6 +39,17 @@ const debitTrxColumns: ColumnsType<DebitTransaction> = [
   {
     title: 'Transaction Type',
     dataIndex: 'transaction_type',
+  },
+  {
+    title: 'Tags',
+    render: (_, record) => {
+      return (
+        <TransactionTagSelector
+          transactionId={record.unique_code}
+          accountId={account.unique_code}
+        />
+      );
+    },
   },
   {
     title: 'Amount',
@@ -139,7 +150,7 @@ const TransactionList: FC<TransactionListProps> = (props) => {
       return (
         <Table<DebitTransaction>
           dataSource={listData as DebitTransaction[]}
-          columns={debitTrxColumns}
+          columns={debitTrxColumns({ account })}
           {...commonTblProps}
         />
       );
