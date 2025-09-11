@@ -11,11 +11,11 @@ const DebitTransaction: FC<DebitTransactionProps> = (props) => {
   const { transaction } = props;
 
   return (
-    <div className='btt-debit-transaction-details'>
+    <div className="btt-debit-transaction-details">
       <p>id: {transaction.unique_code}</p>
-	  <p>description: {transaction.description}</p>
+      <p>description: {transaction.description}</p>
       <p>amount: {transaction.amount}</p>
-	  <p>date: {transaction.transaction_date}</p>
+      <p>date: {transaction.transaction_date}</p>
       <p>type: {transaction.transaction_type}</p>
     </div>
   );
