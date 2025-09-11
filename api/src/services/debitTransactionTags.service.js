@@ -1,5 +1,8 @@
 const models = require('../models');
 
+const debitTransactionService = require('./debitTransactions.service');
+const tagService = require('./tags.service');
+
 // required name to be used on exporting services on index
 exports.serviceName = 'debitTransactionTagService';
 
@@ -59,6 +62,28 @@ exports.delete = async (id) => {
     return data;
   } catch (err) {
     console.log('Error in delete debit_transaction_tags service: ', err);
+    throw err;
+  }
+};
+
+exports.deleteByTransactionAndTag = async ({ transactionId, tagId }) => {
+  try {
+    const debitTransactionTagsModel = models.debit_transaction_tags;
+
+    const debitTransacton = await debitTransactionService.findOne(transactionId);
+    const tag = await tagService.findOne(tagId);
+
+    if (!debitTransacton || !tag) {
+      throw 'Cannot find transaction and/or tag!';
+    }
+
+    const data = await debitTransactionTagsModel.destroy({
+      where: { debit_transaction_id: debitTransacton.id, tag_id: tag.id },
+    });
+
+    return data;
+  } catch (err) {
+    console.log('Error in deleteByTransactionAndTag debit_transaction_tags service: ', err);
     throw err;
   }
 };
