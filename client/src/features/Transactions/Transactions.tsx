@@ -1,3 +1,12 @@
+/**
+ * TODO: Move this into pages/Transactions
+ * - should be the main component for the transactions page
+ * - should handle the layout and structure of the page
+ * - should include the date filter, analytics, and transaction list
+ * - should manage the state for the date filter and pass it down to child components
+ * - should handle the modal for adding transactions
+ * - should use the useTransactions hook for data fetching and state management
+ */
 import { FC } from 'react';
 
 import { Card, Button, Modal, Tag } from 'antd';
