@@ -163,6 +163,7 @@ const TransactionList: FC<TransactionListProps> = (props) => {
     if (account.type === 'DEPOSIT') {
       return (
         <Table<DebitTransaction>
+          rowKey={'unique_code'}
           dataSource={listData as DebitTransaction[]}
           columns={debitTrxColumns({ account, recordClickHandler: _transactionClickHandler })}
           {...commonTblProps}
