@@ -76,6 +76,14 @@ export const accountsApi = createApi({
     getAccount: builder.query<Account, string>({
       query: (id) => `/accounts/${id}`,
       transformResponse: (response: { data: Account }) => response.data,
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(accountsSliceActions.setOne(data));
+        } catch {
+          // optional rollback
+        }
+      },
     }),
 
     /**
