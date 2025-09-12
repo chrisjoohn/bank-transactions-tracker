@@ -1,9 +1,10 @@
-import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { FC, useState } from 'react';
 import { format } from 'date-fns';
 
 // components
-import { Flex, Empty, Table, Button } from 'antd';
+import { Flex, Empty, Table, Button, Modal } from 'antd';
+
+import TransactionDetails from '../TransactionDetails';
 
 // type definitions
 import type { ColumnsType } from 'antd/es/table';
@@ -12,17 +13,28 @@ import type { DebitTransaction } from '../../integration/apis/debitTransactions'
 import type { CreditTransaction } from '../../integration/apis/creditTransactions';
 import { TransactionTagSelector } from '../../pages/Transactions/components';
 import { Account } from '../../integration/apis/accounts';
+import { useModal } from '../../hooks';
 
 export type TransactionListProps = {
   account: Account;
   listData: (DebitTransaction | CreditTransaction)[];
 };
 
-const debitTrxColumns = ({ account }: { account: Account }): ColumnsType<DebitTransaction> => [
+const debitTrxColumns = ({
+  account,
+  recordClickHandler,
+}: {
+  account: Account;
+  recordClickHandler: ({
+    transactionId,
+  }: {
+    transactionId: DebitTransaction['unique_code'];
+  }) => void;
+}): ColumnsType<DebitTransaction> => [
   {
     title: 'ID',
     render: (_, record) => (
-      <Button type="link" onClick={() => alert('This part is under construction.')}>
+      <Button type="link" onClick={() => recordClickHandler({ transactionId: record.unique_code })}>
         {record.unique_code.slice(0, 6)}
       </Button>
     ),
@@ -119,11 +131,13 @@ const creditTrxColumns = ({
 
 const TransactionList: FC<TransactionListProps> = (props) => {
   const { listData, account } = props;
+  const [transactionId, setTransactionId] = useState<string | null>(null);
 
-  const navigate = useNavigate();
+  const { showModal, toggleModal } = useModal();
 
   const _transactionClickHandler = ({ transactionId }: { transactionId: string }) => {
-    navigate(`/transactions/${account.unique_code}/${transactionId}`);
+    toggleModal(true);
+    setTransactionId(transactionId);
   };
 
   const tableRender = () => {
@@ -150,7 +164,7 @@ const TransactionList: FC<TransactionListProps> = (props) => {
       return (
         <Table<DebitTransaction>
           dataSource={listData as DebitTransaction[]}
-          columns={debitTrxColumns({ account })}
+          columns={debitTrxColumns({ account, recordClickHandler: _transactionClickHandler })}
           {...commonTblProps}
         />
       );
@@ -159,6 +173,11 @@ const TransactionList: FC<TransactionListProps> = (props) => {
 
   return (
     <Flex style={{ width: '100%' }} justify="center" align="center">
+      <Modal open={showModal} onCancel={() => toggleModal(false)} footer={null} width={800}>
+        {transactionId && (
+          <TransactionDetails accountId={account.unique_code} transactionId={transactionId} />
+        )}
+      </Modal>
       {listData ? tableRender() : <Empty />}
     </Flex>
   );
