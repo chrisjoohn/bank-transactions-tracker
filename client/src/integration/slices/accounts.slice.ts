@@ -4,7 +4,7 @@ import type { Account } from '../apis/accounts';
 import type { RootState } from '../store';
 
 const accountsAdapter = createEntityAdapter({
-  selectId: (tag: Account) => tag.id,
+  selectId: (account: Account) => account.unique_code,
 });
 
 const initialState = accountsAdapter.getInitialState();
