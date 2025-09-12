@@ -29,7 +29,12 @@ const TransactionDetails: FC<TransactionDetailsProps> = (props) => {
   const account = useSelector((state: RootState) => accountSelectors.selectById(state, accountId));
 
   if (account.type === 'DEPOSIT') {
-    return <DebitTransaction transaction={transaction as DebitTransaction} />;
+    return (
+      <DebitTransaction
+        transaction={transaction as DebitTransaction}
+        accountId={account.unique_code}
+      />
+    );
   }
 
   if (account.type === 'CREDIT') {
