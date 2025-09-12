@@ -1,3 +1,6 @@
+/**
+ * TODO: move this as a feature
+ */
 import { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -41,7 +44,7 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
     }
   }, [transaction, accountId, transactionId]);
 
-  const _transaction = transaction as CreditTransaction;
+  const _transaction = transaction as CreditTransaction; // TODO: check way to remove this cast
 
   const transactionTags = _transaction?.tags
     ? _transaction.tags.map((item) => item.unique_code)
@@ -82,9 +85,7 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
         width: '100%',
       }}
       options={options}
-      defaultValue={transactionTags}
-      // value={transactionTags} // TODO: needs to invalidate transaction data so it's always refreshed
-      // onChange={_onChangeHandler}
+      value={transactionTags}
       onSelect={_onSelectHandler}
       onDeselect={_onDeselectHandler}
       filterOption={_selectFilter}
