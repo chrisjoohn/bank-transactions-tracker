@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 // components
 import DebitTransaction from './DebitTransaction';
+import CreditTransaction from './CreditTransaction';
 
 // redux
 import { transactionSelectors } from '../../integration/slices/transactions.slice';
@@ -32,7 +33,12 @@ const TransactionDetails: FC<TransactionDetailsProps> = (props) => {
   }
 
   if (account.type === 'CREDIT') {
-    // return <CreditTransaction transaction={transaction as CreditTransaction} />;
+    return (
+      <CreditTransaction
+        transaction={transaction as CreditTransaction}
+        accountId={account.unique_code}
+      />
+    );
   }
 
   return <div>Transaction Details</div>;
