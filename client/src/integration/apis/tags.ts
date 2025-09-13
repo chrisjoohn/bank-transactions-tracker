@@ -2,9 +2,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { getAuth } from 'firebase/auth';
 
+// redux
+import { tagsSliceActions, tagSelectors } from '../slices/tags.slice';
+import { transactionSliceActions, transactionSelectors } from '../slices/transactions.slice';
+
+// types
 import type { BaseEntityType, Editable } from '../types';
-import { Account } from './accounts';
-import { tagsSliceActions } from '../slices/tags.slice';
+import type { Account } from './accounts';
+import { RootState } from '../store';
 
 // TODO: create base AppData type defintion
 export interface Tag extends BaseEntityType {
@@ -13,7 +18,7 @@ export interface Tag extends BaseEntityType {
 
 export interface TransactionTag extends BaseEntityType {
   transaction_id: string;
-  tag_id: Tag['id'];
+  tag_id: Tag['id'] | Tag['unique_code'];
 
   tag?: Tag;
 }
@@ -117,24 +122,30 @@ export const tagsApi = createApi({
         method: 'POST',
         body: body,
       }),
-      // TODO: Reimplement this
-      // async onQueryStarted({ body }, { queryFulfilled, getState }) {
-      //   try {
-      // const { transaction_id, tag_id } = body;
+      async onQueryStarted({ body }, { queryFulfilled, getState, dispatch }) {
+        const { transaction_id, tag_id } = body;
 
-      // const transaction = transactionSelectors.selectById(
-      //   getState() as RootState,
-      //   transaction_id
-      // );
+        const tag = tagSelectors.selectById(getState() as RootState, tag_id as string);
 
-      // TODO: Implement optimistic updates here
+        const transaction = transactionSelectors.selectById(
+          getState() as RootState,
+          transaction_id
+        );
 
-      // await queryFulfilled;
-      // } catch {
-      // TODO: implement optimistic rollback here
-      // rollback here
-      // }
-      // },
+        try {
+          const updatedTransaction = {
+            ...transaction,
+            tags: transaction?.tags ? [...transaction.tags, tag as Tag] : [tag as Tag],
+          };
+
+          dispatch(transactionSliceActions.setOne(updatedTransaction));
+
+          await queryFulfilled;
+        } catch {
+          // rollback here
+          dispatch(transactionSliceActions.setOne(transaction));
+        }
+      },
     }),
 
     deleteTransactionTags: builder.mutation<
@@ -145,6 +156,25 @@ export const tagsApi = createApi({
         url: `/accounts/${accountId}/transaction/${transactionId}/tags/${tagId}`,
         method: 'DELETE',
       }),
+      onQueryStarted: async ({ transactionId, tagId }, { dispatch, getState, queryFulfilled }) => {
+        const transaction = transactionSelectors.selectById(getState() as RootState, transactionId);
+
+        const updatedTransaction = {
+          ...transaction,
+          tags: transaction?.tags
+            ? transaction.tags.filter((item) => item.unique_code !== tagId)
+            : [],
+        };
+
+        dispatch(transactionSliceActions.setOne(updatedTransaction));
+
+        try {
+          await queryFulfilled;
+        } catch {
+          // rollback: revert to the original transaction state
+          dispatch(transactionSliceActions.setOne(transaction));
+        }
+      },
     }),
   }),
 });
