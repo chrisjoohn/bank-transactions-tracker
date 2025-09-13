@@ -4,7 +4,7 @@ import type { Tag } from '../apis/tags';
 import type { RootState } from '../store';
 
 const tagsAdapter = createEntityAdapter({
-  selectId: (tag: Tag) => tag.id,
+  selectId: (tag: Tag) => tag.unique_code,
 });
 
 const initialState = tagsAdapter.getInitialState();
