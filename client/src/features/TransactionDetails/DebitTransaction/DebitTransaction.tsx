@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { format } from 'date-fns';
 
 // components
-import { TransactionTagSelector } from '../../../pages/Transactions/components';
+import TransactionTagSelector from '../../TransactionTagSelector';
 
 // types
 import type { DebitTransaction } from '../../../integration/apis/debitTransactions';
