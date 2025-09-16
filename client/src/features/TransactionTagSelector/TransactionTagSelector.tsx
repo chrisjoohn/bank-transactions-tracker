@@ -9,14 +9,14 @@ import { Select } from 'antd';
 import type { SelectProps } from 'antd';
 
 // apis
-import { tagsApi, accountsApi } from '../../../../integration/apis';
+import { tagsApi, accountsApi } from '../../integration/apis';
 
 // redux slice
-import { transactionSelectors } from '../../../../integration/slices/transactions.slice';
+import { transactionSelectors } from '../../integration/slices/transactions.slice';
 
 // type definitions
-import { CreditTransaction } from '../../../../integration/apis/creditTransactions';
-import { RootState } from '../../../../integration/store';
+import { CreditTransaction } from '../../integration/apis/creditTransactions';
+import { RootState } from '../../integration/store';
 
 export type TransactionTagSelectorProps = {
   transactionId: string;
