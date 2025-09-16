@@ -3,8 +3,7 @@ import { FC } from 'react';
 import { format } from 'date-fns';
 
 // components
-
-import { TransactionTagSelector } from '../../../pages/Transactions/components';
+import TransactionTagSelector from '../../TransactionTagSelector';
 
 // types
 import type { CreditTransaction } from '../../../integration/apis/creditTransactions';

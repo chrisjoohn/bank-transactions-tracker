@@ -5,13 +5,13 @@ import { format } from 'date-fns';
 import { Flex, Empty, Table, Button, Modal } from 'antd';
 
 import TransactionDetails from '../TransactionDetails';
+import TransactionTagSelector from '../TransactionTagSelector';
 
 // type definitions
 import type { ColumnsType } from 'antd/es/table';
 
 import type { DebitTransaction } from '../../integration/apis/debitTransactions';
 import type { CreditTransaction } from '../../integration/apis/creditTransactions';
-import { TransactionTagSelector } from '../../pages/Transactions/components';
 import { Account } from '../../integration/apis/accounts';
 import { useModal } from '../../hooks';
 

@@ -9,12 +9,12 @@ import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
+import { TransactionTagSelector } from '../../../features';
+
 import { accountsApi } from '../../../integration/apis';
 import type { CreditTransaction } from '../../../integration/apis/creditTransactions';
 import { transactionSelectors } from '../../../integration/slices/transactions.slice';
 import { RootState } from '../../../integration/store';
-
-import { TransactionTagSelector } from '../components';
 
 // export type TransactionDetailsProps = { transactionId: string; accountId: Account['unique_code'] };
 
