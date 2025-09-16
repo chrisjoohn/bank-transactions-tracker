@@ -1,6 +1,3 @@
-/**
- * TODO: move this as a feature
- */
 import { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
