@@ -12,3 +12,4 @@ export { default as TransactionTagSelector } from './TransactionTagSelector';
  */
 export { default as AccountForm } from './AccountForm';
 export { default as AccountList } from './AccountList';
+export { default as AccountAnalytics } from './AccountAnalytics';
