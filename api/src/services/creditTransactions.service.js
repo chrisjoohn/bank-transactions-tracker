@@ -433,3 +433,90 @@ exports.getTotalPerTag = async ({ filters = {} }) => {
     throw err;
   }
 };
+
+const getGroupExpression = (group_by) => {
+  const sequelize = models.sequelize;
+
+  let groupExpr;
+  switch (group_by) {
+    case 'day':
+      groupExpr = sequelize.literal('DATE(transaction_date)');
+      break;
+    case 'week':
+      groupExpr = sequelize.literal('YEARWEEK(transaction_date, 1)');
+      break;
+    case 'month':
+      groupExpr = sequelize.literal("DATE_FORMAT(transaction_date, '%Y-%m')");
+      break;
+    case 'year':
+      groupExpr = sequelize.literal('YEAR(transaction_date)');
+      break;
+    default:
+      groupExpr = sequelize.literal("DATE_FORMAT(transaction_date, '%Y-%m')");
+      break;
+  }
+
+  return groupExpr;
+};
+
+const getFieldAttribute = (field) => {
+  const sequelize = models.sequelize;
+
+  switch (field) {
+    case 'outflow':
+      return [sequelize.fn('SUM', sequelize.col(`amount`)), 'outflow'];
+    case 'transaction_count':
+      return [Op.count, sequelize.col('id'), 'transaction_count'];
+    default:
+      return null;
+  }
+};
+
+const getFieldAttributes = (fields) => {
+  const sequelize = models.sequelize;
+
+  const defaultFields = ['outflow'];
+  if (!fields || !Array.isArray(fields) || fields.length === 0) {
+    fields = defaultFields;
+  }
+
+  return [
+    ...fields.map((field) => getFieldAttribute(field)).filter((attr) => attr !== null),
+    [sequelize.fn('COUNT', sequelize.col('id')), 'transaction_count'],
+  ];
+};
+
+exports.getCashflow = async ({ account_id, date_range, group_by = 'month', fields = [] }) => {
+  try {
+    const creditTransactionsModel = models.credit_transactions;
+
+    const groupExpr = getGroupExpression(group_by);
+    const attributes = getFieldAttributes(fields);
+
+    const data = await creditTransactionsModel.findAll({
+      where: {
+        account_id,
+        transaction_date: {
+          [Op.between]: [date_range.start_date, date_range.end_date],
+        },
+      },
+      attributes: [[groupExpr, 'period'], ...attributes],
+      group: ['period'],
+      order: [['period', 'asc']],
+    });
+
+    const formattedData = data.map((item) => {
+      const plainItem = item.get({ plain: true });
+      return {
+        period: plainItem.period,
+        outflow: parseFloat(plainItem.outflow).toFixed(2),
+        transaction_count: parseInt(plainItem.transaction_count, 10),
+      };
+    });
+
+    return formattedData;
+  } catch (err) {
+    console.log('Error in find all debit_transactions service: ', err);
+    throw err;
+  }
+};

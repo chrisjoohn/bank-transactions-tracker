@@ -297,3 +297,108 @@ exports.getTotalInflow = async ({ account_id, date_range }) => {
     throw err;
   }
 };
+
+const getFieldAttribute = (field) => {
+  const sequelize = models.sequelize;
+
+  switch (field) {
+    case 'inflow':
+      return [
+        sequelize.fn(
+          'SUM',
+          sequelize.literal(`CASE WHEN transaction_type = 'INFLOW' THEN amount ELSE 0 END`)
+        ),
+        'inflow',
+      ];
+    case 'outflow':
+      return [
+        sequelize.fn(
+          'SUM',
+          sequelize.literal(`CASE WHEN transaction_type = 'OUTFLOW' THEN amount ELSE 0 END`)
+        ),
+        'outflow',
+      ];
+    case 'transaction_count':
+      return [Op.count, sequelize.col('id'), 'transaction_count'];
+    default:
+      return null;
+  }
+};
+
+const getGroupExpression = (group_by) => {
+  const sequelize = models.sequelize;
+
+  let groupExpr;
+  switch (group_by) {
+    case 'day':
+      groupExpr = sequelize.literal('DATE(transaction_date)');
+      break;
+    case 'week':
+      groupExpr = sequelize.literal('YEARWEEK(transaction_date, 1)');
+      break;
+    case 'month':
+      groupExpr = sequelize.literal("DATE_FORMAT(transaction_date, '%Y-%m')");
+      break;
+    case 'year':
+      groupExpr = sequelize.literal('YEAR(transaction_date)');
+      break;
+    default:
+      groupExpr = sequelize.literal("DATE_FORMAT(transaction_date, '%Y-%m')");
+      break;
+  }
+
+  return groupExpr;
+};
+
+const getFieldAttributes = (fields) => {
+  const sequelize = models.sequelize;
+
+  const defaultFields = ['inflow', 'outflow', 'transaction_count'];
+  if (!fields || !Array.isArray(fields) || fields.length === 0) {
+    fields = defaultFields;
+  }
+
+  return [
+    ...fields.map((field) => getFieldAttribute(field)).filter((attr) => attr !== null),
+    [sequelize.fn('COUNT', sequelize.col('id')), 'transaction_count'],
+  ];
+};
+
+exports.getCashflow = async ({ account_id, date_range, group_by = 'month', fields }) => {
+  try {
+    const debitTransactionsModel = models.debit_transactions;
+
+    const attributes = getFieldAttributes(fields);
+    const groupExpr = getGroupExpression(group_by);
+
+    // query
+    const data = await debitTransactionsModel.findAll({
+      logging: true,
+      attributes: [[groupExpr, 'period'], ...attributes],
+      where: {
+        account_id,
+        transaction_date: {
+          [Op.between]: [date_range.start_date, date_range.end_date],
+        },
+      },
+      group: ['period'],
+      order: [[groupExpr, 'ASC']],
+    });
+
+    // format data
+    const formattedData = data.map((item) => {
+      const plainItem = item.get({ plain: true });
+      return {
+        period: plainItem.period,
+        inflow: parseFloat(plainItem.inflow).toFixed(2),
+        outflow: parseFloat(plainItem.outflow).toFixed(2),
+        total: (parseFloat(plainItem.inflow) - parseFloat(plainItem.outflow)).toFixed(2),
+        transaction_count: parseInt(plainItem.transaction_count, 10),
+      };
+    });
+
+    return formattedData;
+  } catch (err) {
+    throw err;
+  }
+};
