@@ -13,9 +13,7 @@ import {
   Line,
 } from 'recharts';
 
-import { accountSelectors } from '../../../integration/slices/accounts.slice';
-import { transactionSelectors } from '../../../integration/slices/transactions.slice';
-import { RootState } from '../../../integration/store';
+import { accountsApi } from '../../../integration/apis';
 
 export interface CashBarChartType {
   accountId: string;
@@ -24,44 +22,77 @@ export interface CashBarChartType {
     startDate: string;
     endDate: string;
   };
-  listData?: any[];
 }
 
 const CashflowBarChart: FC<CashBarChartType> = (props) => {
-  const { accountId } = props;
+  const { accountId, dateFilter } = props;
 
-  const account = useSelector((state: RootState) => accountSelectors.selectById(state, accountId));
-  const transactions = useSelector((state: RootState) => transactionSelectors.selectAll(state));
+  const groupBy = useMemo(() => {
+    switch (dateFilter.filterType) {
+      case 'custom':
+      case 'month':
+        return 'week';
+      case 'quarter':
+      case 'year':
+        return 'month';
+    }
+  }, [dateFilter.filterType]);
 
-  const accountTransactions = useMemo(() => {
-    if (!account) return [];
-    return transactions.filter((item) => item.account_id === account.id);
-  }, [transactions, account]);
+  const { data: cashflowData } = accountsApi.useCashflowQuery({
+    id: accountId,
+    requestBody: {
+      account_id: accountId,
+      filters: {
+        transaction_date: {
+          start_date: dateFilter.startDate,
+          end_date: dateFilter.endDate,
+        },
+      },
+      group_by: groupBy,
+      fields: ['inflow', 'outflow', 'total'],
+    },
+  });
 
-  // Process accountTransactions to get inflow and outflow data
-  // This is a placeholder; replace with actual logic to compute inflow and outflow
-  const data = useMemo(() => {
-    // Example structure of data
-    return [
-      { date: '2023-01-01', inflow: 1000, outflow: 500, total: 400 },
-      { date: '2023-02-01', inflow: 1500, outflow: 700, total: 300 },
-      { date: '2023-02-05', inflow: 1500, outflow: 700, total: 1000 },
-      { date: '2023-02-06', inflow: 1500, outflow: 700, total: 900 },
-      { date: '2023-02-02', inflow: 1500, outflow: 700, total: 750 },
-      // Add more data points as needed
-    ];
-  }, [accountTransactions]);
+  const sampleResponse = {
+    shape: {
+      xKeys: [{ key: 'period', name: 'Period' }],
+      yKeys: [
+        { key: 'inflow', name: 'Inflow' },
+        { key: 'outflow', name: 'Outflow' },
+        // { key: 'total', name: 'Total' },
+      ],
+    },
+    data: cashflowData,
+  };
+
+  const colorMap: Record<'inflow' | 'outflow' | 'total', string> = {
+    inflow: '#82ca9d',
+    outflow: '#ff6961',
+    total: '#8884d8',
+  };
+
+  const { shape, data } = sampleResponse;
 
   return (
     <ResponsiveContainer width={'100%'} height={300}>
       <BarChart width={500} height={200} data={data}>
         <CartesianGrid strokeDasharray="5 5" />
-        <XAxis dataKey={'date'} />
+        {shape.xKeys.map((xKey) => {
+          return <XAxis key={xKey.key} dataKey={xKey.key} />;
+        })}
         <YAxis />
-        {/* <Legend /> */}
-        <Bar dataKey="inflow" name="Inflow" fill="#82ca9d" barSize={30}></Bar>
-        <Bar dataKey="outflow" name="Outflow" fill="#ff6961" barSize={30}></Bar>
-        {/* <Line dataKey={'total'} name="Total" type={'monotone'} /> */}
+        <Tooltip />
+        {shape.yKeys.map((yKey) => {
+          return (
+            <Bar
+              key={yKey.key}
+              dataKey={yKey.key}
+              name={yKey.name}
+              fill={colorMap[yKey.key as 'inflow' | 'outflow' | 'total'] || '#000000'}
+            />
+          );
+        })}
+        <Line dataKey={'total'} type={'bump'} name="Total" stroke={colorMap['total']} />
       </BarChart>
     </ResponsiveContainer>
   );
