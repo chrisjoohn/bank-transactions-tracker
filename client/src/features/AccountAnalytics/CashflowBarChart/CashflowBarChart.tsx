@@ -1,5 +1,4 @@
 import { FC, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import {
   ResponsiveContainer,
@@ -9,7 +8,6 @@ import {
   XAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   Line,
 } from 'recharts';
 
@@ -53,6 +51,7 @@ const CashflowBarChart: FC<CashBarChartType> = (props) => {
     },
   });
 
+  // TODO: API response should be on this shape
   const sampleResponse = {
     shape: {
       xKeys: [{ key: 'period', name: 'Period' }],

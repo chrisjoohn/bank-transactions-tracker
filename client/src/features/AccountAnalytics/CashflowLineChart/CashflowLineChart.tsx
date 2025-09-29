@@ -4,7 +4,6 @@ import {
   Line,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
@@ -93,7 +92,6 @@ const CashflowLineChart: FC<CashflowLineChartProps> = (props) => {
   return (
     <ResponsiveContainer width={'100%'} height={300}>
       <LineChart width={500} height={200} data={data}>
-        {/* <CartesianGrid strokeDasharray="5 5" /> */}
         {shape.xKeys.map((xKey) => {
           return <XAxis key={xKey.key} dataKey={xKey.key} />;
         })}
