@@ -65,6 +65,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
     if (account.type === 'CREDIT') {
       return (
         <Card style={{ width: '50%' }}>
+          <h2>Outflow Trend</h2>
           {dateFilter && (
             <AccountAnalytics.CashflowLineChart
               accountId={account.unique_code}
@@ -82,6 +83,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
     return (
       <>
         <Card style={{ width: '50%' }}>
+          <h2>Cashflow Chart</h2>
           {dateFilter && (
             <AccountAnalytics.CashflowBarChart
               accountId={account.unique_code}
@@ -94,6 +96,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
           )}
         </Card>
         <Card style={{ width: '50%' }}>
+          <h2>Cashflow Trend</h2>
           {dateFilter && (
             <AccountAnalytics.CashflowLineChart
               accountId={account.unique_code}
