@@ -221,6 +221,16 @@ export const accountsApi = createApi({
         return response.data;
       },
     }),
+    cashflow: builder.query({
+      query: ({ id, requestBody }: { id: Account['unique_code']; requestBody: any }) => ({
+        url: `/accounts/${id}/transactions/cashflow`,
+        method: 'POST',
+        body: requestBody,
+      }),
+      transformResponse: (response: { data: any }) => {
+        return response.data;
+      },
+    })
   }),
 });
 
