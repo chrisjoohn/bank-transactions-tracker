@@ -1,5 +1,6 @@
 import { FC, useMemo } from 'react';
 
+import { Empty } from 'antd';
 import {
   ResponsiveContainer,
   BarChart,
@@ -71,6 +72,10 @@ const CashflowBarChart: FC<CashBarChartType> = (props) => {
   };
 
   const { shape, data } = sampleResponse;
+
+  if (data === undefined || data.length === 0) {
+    return <Empty />
+  }
 
   return (
     <ResponsiveContainer width={'100%'} height={300}>

@@ -1,4 +1,6 @@
 import { FC, useMemo } from 'react';
+
+import { Empty } from  'antd';
 import {
   LineChart,
   Line,
@@ -86,6 +88,12 @@ const CashflowLineChart: FC<CashflowLineChartProps> = (props) => {
     outflow: '#ff6961',
     total: '#8884d8',
   };
+
+  if (data === undefined || data.length === 0) {
+    return <Empty />
+  }
+
+
 
   return (
     <ResponsiveContainer width={'100%'} height={300}>
