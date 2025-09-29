@@ -130,6 +130,57 @@ exports.findTransactions = async (req, res) => {
   }
 };
 
+exports.cashflow = async (req, res) => {
+  try {
+    const { group_by = 'month', fields = ['inflow', 'outflow', 'total'], filters = {} } = req.body;
+    const accountDetails = req.account;
+
+    let data;
+
+    const defaultStartDate = startOfMonth(new Date());
+    const defaultEndDate = endOfMonth(new Date());
+
+    let defaultDateRange = {
+      start_date: defaultStartDate,
+      end_date: defaultEndDate,
+    };
+
+    if (accountDetails.type === 'CREDIT') {
+      data = await creditTransactionService.getCashflow({
+        account_id: accountDetails.id,
+        date_range: filters.transaction_date || defaultDateRange,
+        group_by,
+        fields,
+      });
+    }
+
+    if (accountDetails.type === 'DEPOSIT') {
+      data = await debitTransactionService.getCashflow({
+        account_id: accountDetails.id,
+        date_range: filters.transaction_date || defaultDateRange,
+        group_by,
+        fields,
+      });
+    }
+
+    if (!data) {
+      res.status(400).json({
+        message: 'Bad request',
+      });
+      return;
+    }
+
+    res.json({
+      data,
+    });
+  } catch (err) {
+    console.log('err', err);
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
 exports.transactionAnalytics = async (req, res) => {
   try {
     const { filters } = req.body;

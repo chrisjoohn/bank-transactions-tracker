@@ -7,24 +7,14 @@
  * - should handle the modal for adding transactions
  * - should use the useTransactions hook for data fetching and state management
  */
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
-import { Card, Button, Modal, Tag } from 'antd';
-import {
-  Bar,
-  BarChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  Cell,
-} from 'recharts';
+import { Card, Button, Modal } from 'antd';
 
 // major components
 import Analytics from '../TransactionsAnalytics';
 import TransactionList from '../TransactionList';
+import AccountAnalytics from '../AccountAnalytics';
 
 // reusable components
 import { DateFilter } from './components';
@@ -47,6 +37,8 @@ export interface TransactionsProps {
 const Transactions: FC<TransactionsProps> = (props) => {
   const { account } = props;
 
+  const [dateFilterType, setDateFilterType] = useState('month');
+
   const {
     dateFilter,
     setDateFilter,
@@ -65,12 +57,66 @@ const Transactions: FC<TransactionsProps> = (props) => {
     perTagAnalytics: data,
   } = useTransactions(props);
 
+  const renderAnalytics = () => {
+    if (!dateFilter) return null;
+
+    if (account.type === 'CREDIT') {
+      return (
+        <Card style={{ width: '50%' }}>
+          <h2>Outflow Trend</h2>
+          {dateFilter && (
+            <AccountAnalytics.CashflowLineChart
+              accountId={account.unique_code}
+              dateFilter={{
+                startDate: dateFilter?.start_date,
+                endDate: dateFilter?.end_date,
+                filterType: dateFilterType,
+              }}
+            />
+          )}
+        </Card>
+      );
+    }
+
+    return (
+      <>
+        <Card style={{ width: '50%' }}>
+          <h2>Cashflow Chart</h2>
+          {dateFilter && (
+            <AccountAnalytics.CashflowBarChart
+              accountId={account.unique_code}
+              dateFilter={{
+                startDate: dateFilter?.start_date,
+                endDate: dateFilter?.end_date,
+                filterType: dateFilterType,
+              }}
+            />
+          )}
+        </Card>
+        <Card style={{ width: '50%' }}>
+          <h2>Cashflow Trend</h2>
+          {dateFilter && (
+            <AccountAnalytics.CashflowLineChart
+              accountId={account.unique_code}
+              dateFilter={{
+                startDate: dateFilter?.start_date,
+                endDate: dateFilter?.end_date,
+                filterType: dateFilterType,
+              }}
+            />
+          )}
+        </Card>
+      </>
+    );
+  };
+
   return (
     <div className="btt-transactions">
       <div className="date-filter">
         <DateFilter
           onChange={(date) => {
             setDateFilter({ start_date: date.startDate, end_date: date.endDate });
+            setDateFilterType(date.filterType);
           }}
         />
       </div>
@@ -79,43 +125,7 @@ const Transactions: FC<TransactionsProps> = (props) => {
           <Analytics dateFilter={dateFilter} account={account} tagsFilter={activeTagFilters} />
         )}
       </div>
-      {/**
-       * TODO: Refactor this charts thing
-       */}
-      <Card className="charts">
-        {activeTagFilters.length > 0 && (
-          <div style={{ marginBottom: 20 }}>
-            <p>Active tag filters: </p>
-            {activeTagFilters.map((item) => {
-              return (
-                <Tag closable onClose={() => removeTagFilter(item?.id || 0)}>
-                  {item?.name}
-                </Tag>
-              );
-            })}
-          </div>
-        )}
-        <ResponsiveContainer width={'100%'} height={500}>
-          <BarChart width={500} height={300} data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={'name'} />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey={'total_amount'} name={'Total Amount'} fill="#8cc8e9">
-              {(data || []).map((item) => {
-                return (
-                  <Cell
-                    style={{ cursor: 'pointer' }}
-                    key={item.id}
-                    onClick={() => addTagFilter(item.id)}
-                  />
-                );
-              })}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </Card>
+      <div style={{ display: 'flex', gap: 20, marginBottom: 20 }}>{renderAnalytics()}</div>
       <div className="transactions-list">
         <Card>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
