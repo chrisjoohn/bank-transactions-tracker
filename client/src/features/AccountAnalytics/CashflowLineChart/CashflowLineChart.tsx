@@ -23,8 +23,6 @@ export interface CashflowLineChartProps {
 const CashflowLineChart: FC<CashflowLineChartProps> = (props) => {
   const { accountId, dateFilter } = props;
 
-  console.log('CashflowLineChart props: ', props);
-
   const groupBy = useMemo(() => {
     switch (dateFilter.filterType) {
       case 'custom':

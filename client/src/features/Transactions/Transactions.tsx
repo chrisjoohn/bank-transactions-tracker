@@ -57,8 +57,6 @@ const Transactions: FC<TransactionsProps> = (props) => {
     perTagAnalytics: data,
   } = useTransactions(props);
 
-  console.log('datefilter', dateFilter);
-
   const renderAnalytics = () => {
     if (!dateFilter) return null;
 
