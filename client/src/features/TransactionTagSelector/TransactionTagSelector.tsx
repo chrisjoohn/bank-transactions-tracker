@@ -1,9 +1,7 @@
 import { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Select } from 'antd';
-
-import type { SelectProps } from 'antd';
+import TagSelector from '../TagSelector';
 
 // apis
 import { tagsApi, accountsApi } from '../../integration/apis';
@@ -12,6 +10,8 @@ import { tagsApi, accountsApi } from '../../integration/apis';
 import { transactionSelectors } from '../../integration/slices/transactions.slice';
 
 // type definitions
+import type { SelectProps } from 'antd';
+
 import { CreditTransaction } from '../../integration/apis/creditTransactions';
 import { RootState } from '../../integration/store';
 
@@ -27,7 +27,6 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
     transactionSelectors.selectById(state, transactionId)
   );
 
-  const { data: tags } = tagsApi.useGetTagsQuery();
   const [createTransactionTag] = tagsApi.useCreateTransactionTagMutation();
   const [deleteTransactionTag] = tagsApi.useDeleteTransactionTagsMutation();
   const [getTransaction] = accountsApi.useLazyGetTransactionQuery();
@@ -47,15 +46,6 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
     ? _transaction.tags.map((item) => item.unique_code)
     : [];
 
-  const options: SelectProps['options'] = tags?.map((item) => {
-    return {
-      label: item.name,
-      value: item.unique_code,
-    };
-  });
-
-  // const _onChangeHandler: SelectProps['onChange'] = (value, option) => {};
-
   const _onSelectHandler: SelectProps['onSelect'] = (value) => {
     createTransactionTag({
       account_id: accountId,
@@ -71,21 +61,12 @@ const TransactionTagSelector: FC<TransactionTagSelectorProps> = (props) => {
     });
   };
 
-  const _selectFilter: SelectProps['filterOption'] = (input, option) => {
-    return (option?.label || '').toString().toLowerCase().includes(input.toLowerCase());
-  };
-
   return (
-    <Select
+    <TagSelector
       mode="multiple"
-      style={{
-        width: '100%',
-      }}
-      options={options}
       value={transactionTags}
       onSelect={_onSelectHandler}
       onDeselect={_onDeselectHandler}
-      filterOption={_selectFilter}
     />
   );
 };
