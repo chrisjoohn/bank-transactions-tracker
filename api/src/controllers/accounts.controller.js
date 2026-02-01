@@ -1,11 +1,15 @@
 const { startOfMonth, endOfMonth } = require('date-fns');
 
+const models = require('../models');
+
 const accountsService = require('../services')['accountsService'];
 const debitTransactionService = require('../services/debitTransactions.service');
 const debitTransactionTagService = require('../services/debitTransactionTags.service');
 const creditTransactionService = require('../services/creditTransactions.service');
 const creditTransactionTagService = require('../services/creditTransactionTags.service');
 const tagService = require('../services/tags.service');
+const tagChartsService = require('../services/tagCharts.service');
+const accountTagChartsService = require('../services/accountTagCharts.service');
 
 exports.create = async (req, res) => {
   try {
@@ -500,5 +504,44 @@ exports.getTotalPerTag = async (req, res) => {
     });
   } catch (err) {
     throw err;
+  }
+};
+
+exports.createChart = async (req, res) => {
+  try {
+    const { title, chartType, data, preFilter, series } = req.body;
+    const account = req.account;
+
+    const t = await models.sequelize.transaction();
+
+    const tagChart = await tagChartsService.create(
+      {
+        title,
+        chartType,
+        data,
+        preFilter,
+        series,
+      },
+      { transaction: t }
+    );
+
+    await accountTagChartsService.create(
+      {
+        account_id: account.id,
+        tag_chart_id: tagChart.id,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+
+    res.json({
+      data: tagChart,
+    });
+  } catch (err) {
+    await t.rollback();
+    res.status(500).json({
+      message: err.message,
+    });
   }
 };
