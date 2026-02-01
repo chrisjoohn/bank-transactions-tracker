@@ -19,16 +19,11 @@ export interface ChartShape {
     mainTag?: string;
   };
 
-  shape: {
-    yKeys: {
-      tagId: string;
-      alias?: string;
-      style: { color: string };
-    }[];
-  };
-
-  // style-related properties
-  priority?: number; // lower number means higher priority
+  series: {
+    tagId: string;
+    alias?: string;
+    style: { color: string };
+  }[];
 }
 
 const TagChartsBuilder: FC = () => {
@@ -55,14 +50,12 @@ const TagChartsBuilder: FC = () => {
       chartType: shape.chartType,
       preFilter: { mainTag: shape.preFilter?.mainTag },
       data: dummyData,
-      shape: {
-        yKeys: shape.shape.yKeys.map((key) => ({
-          tagId: key.tagId,
-          tagName: reduxTags.entities[key.tagId]?.name ?? '',
-          alias: key.alias,
-          style: { color: key.style.color },
-        })),
-      },
+      series: shape.series.map((key) => ({
+        tagId: key.tagId,
+        tagName: reduxTags.entities[key.tagId]?.name ?? '',
+        alias: key.alias,
+        style: { color: key.style.color },
+      })),
     };
 
     return chartData;

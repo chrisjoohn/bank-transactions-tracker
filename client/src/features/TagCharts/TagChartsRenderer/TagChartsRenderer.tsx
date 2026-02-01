@@ -14,16 +14,14 @@ export interface ChartData {
   preFilter?: {
     mainTag?: string;
   };
-  shape: {
-    yKeys: {
-      tagId: string;
-      tagName: string;
-      alias?: string;
-      style: {
-        color: string;
-      };
-    }[];
-  };
+  series: {
+    tagId: string;
+    tagName: string;
+    alias?: string;
+    style: {
+      color: string;
+    };
+  }[];
 }
 
 // TODO: maybe add style on the shape?

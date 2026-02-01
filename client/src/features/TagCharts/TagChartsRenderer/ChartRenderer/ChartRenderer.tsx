@@ -20,10 +20,9 @@ export interface ChartRendererProps {
 }
 
 const ChartRenderer: FC<ChartRendererProps> = ({ chartData }) => {
-  const { title, chartType, data, shape } = chartData;
+  const { title, chartType, data, series } = chartData;
 
   const defaultXKey = { tagName: 'Period', key: 'period' };
-  const _shape = { ...shape, xKey: defaultXKey };
 
   switch (chartType) {
     case 'bar':
@@ -32,10 +31,10 @@ const ChartRenderer: FC<ChartRendererProps> = ({ chartData }) => {
           {title}
           <ResponsiveContainer width={'100%'} height={300}>
             <BarChart width={500} height={200} data={data}>
-              {_shape.xKey && <XAxis dataKey={_shape.xKey.key} name={_shape.xKey.tagName} />}
+              {defaultXKey && <XAxis dataKey={defaultXKey.key} name={defaultXKey.tagName} />}
               <YAxis />
               <Tooltip />
-              {_shape.yKeys.map((yKey, idx) => (
+              {series.map((yKey) => (
                 <Bar
                   key={yKey.tagId}
                   dataKey={yKey.tagId}
@@ -53,10 +52,10 @@ const ChartRenderer: FC<ChartRendererProps> = ({ chartData }) => {
           {title}
           <ResponsiveContainer width={'100%'} height={300}>
             <LineChart width={500} height={200} data={data}>
-              {_shape.xKey && <XAxis dataKey={_shape.xKey.key} name={_shape.xKey.tagName} />}
+              {defaultXKey && <XAxis dataKey={defaultXKey.key} name={defaultXKey.tagName} />}
               <YAxis />
               <Tooltip />
-              {_shape.yKeys.map((yKey, idx) => (
+              {series.map((yKey) => (
                 <Line
                   key={yKey.tagId}
                   type="monotone"
