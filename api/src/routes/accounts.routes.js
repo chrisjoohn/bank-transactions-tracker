@@ -26,7 +26,9 @@ module.exports = (app) => {
   router.post(`/${route}/:id/transactions/analytics`, controller.transactionAnalytics);
   router.post(`/${route}/:id/analytics/total-per-tag`, controller.getTotalPerTag);
 
+  // chart-related endpoints
   router.post(`/${route}/:id/charts`, controller.createChart);
+  router.get(`/${route}/:id/charts`, controller.findCharts);
 
 
   router.post(`/${route}/:id/transaction-tags`, controller.createTransactionTag);

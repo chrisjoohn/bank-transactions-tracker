@@ -545,3 +545,18 @@ exports.createChart = async (req, res) => {
     });
   }
 };
+
+exports.findCharts = async (req, res) => {
+  try {
+    const account = req.account;
+    const charts = await accountTagChartsService.findAllByAccountId({ account_id: account.id });
+
+    res.json({
+      data: charts,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
