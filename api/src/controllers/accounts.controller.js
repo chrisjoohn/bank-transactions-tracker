@@ -508,11 +508,10 @@ exports.getTotalPerTag = async (req, res) => {
 };
 
 exports.createChart = async (req, res) => {
+  const t = await models.sequelize.transaction();
   try {
     const { title, chartType, data, preFilter, series } = req.body;
     const account = req.account;
-
-    const t = await models.sequelize.transaction();
 
     const tagChart = await tagChartsService.create(
       {
@@ -527,8 +526,8 @@ exports.createChart = async (req, res) => {
 
     await accountTagChartsService.create(
       {
-        account_id: account.id,
-        tag_chart_id: tagChart.id,
+        accountId: account.id,
+        tagChartId: tagChart.id,
       },
       { transaction: t }
     );
