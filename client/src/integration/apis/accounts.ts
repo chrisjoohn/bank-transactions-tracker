@@ -10,6 +10,7 @@ import type { DebitTransaction, EditableDebitTransaction } from './debitTransact
 import type { CreditTransaction, EditableCreditTransaction } from './creditTransactions';
 import type { BaseEntityType, Editable, ParsedTrx } from '../types';
 import type { Tag } from './tags';
+import type { ChartShape } from '../../features/TagCharts/TagChartsBuilder/TagChartsBuilder'; // TODO: update export of t
 
 export interface Account extends BaseEntityType {
   user_id: string;
@@ -230,7 +231,28 @@ export const accountsApi = createApi({
       transformResponse: (response: { data: any }) => {
         return response.data;
       },
-    })
+    }),
+
+    createChart: builder.mutation({
+      query: ({ id, requestBody }: { id: Account['unique_code']; requestBody: ChartShape }) => ({
+        url: `/accounts/${id}/charts`,
+        method: 'POST',
+        body: requestBody,
+      }),
+      transformResponse: (response: { data: any }) => {
+        return response.data;
+      },
+    }),
+
+    getCharts: builder.query({
+      query: ({ id }) => ({
+        url: `/accounts/${id}/charts`,
+        method: 'GET',
+      }),
+      transformResponse: (response: { data: any }) => {
+        return response.data;
+      },
+    }),
   }),
 });
 
