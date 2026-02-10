@@ -49,13 +49,11 @@ const sampleData: ChartData[] = [
         utilities: 160,
       },
     ],
-    shape: {
-      yKeys: [
-        { tagId: 'rent', tagName: 'Rent', style: { color: '#8884d8' } },
-        { tagId: 'groceries', tagName: 'Groceries', style: { color: '#82ca9d' } },
-        { tagId: 'utilities', tagName: 'Utilities', style: { color: '#ffc658' } },
-      ],
-    },
+    series: [
+      { tagId: 'rent', tagName: 'Rent', style: { color: '#8884d8' } },
+      { tagId: 'groceries', tagName: 'Groceries', style: { color: '#82ca9d' } },
+      { tagId: 'utilities', tagName: 'Utilities', style: { color: '#ffc658' } },
+    ],
   },
   {
     title: 'Income',
@@ -77,12 +75,10 @@ const sampleData: ChartData[] = [
         freelance: 900,
       },
     ],
-    shape: {
-      yKeys: [
-        { tagId: 'salary', tagName: 'Salary', style: { color: '#8884d8' } },
-        { tagId: 'freelance', tagName: 'Freelance', style: { color: '#82ca9d' } },
-      ],
-    },
+    series: [
+      { tagId: 'salary', tagName: 'Salary', style: { color: '#8884d8' } },
+      { tagId: 'freelance', tagName: 'Freelance', style: { color: '#82ca9d' } },
+    ],
   },
   {
     title: 'Food',
@@ -107,13 +103,11 @@ const sampleData: ChartData[] = [
         coffee: 90,
       },
     ],
-    shape: {
-      yKeys: [
-        { tagId: 'groceries', tagName: 'Groceries', style: { color: '#8884d8' } },
-        { tagId: 'dining_out', tagName: 'Dining Out', style: { color: '#82ca9d' } },
-        { tagId: 'coffee', tagName: 'Coffee', style: { color: '#ffc658' } },
-      ],
-    },
+    series: [
+      { tagId: 'groceries', tagName: 'Groceries', style: { color: '#8884d8' } },
+      { tagId: 'dining_out', tagName: 'Dining Out', style: { color: '#82ca9d' } },
+      { tagId: 'coffee', tagName: 'Coffee', style: { color: '#ffc658' } },
+    ],
   },
 ];
 
@@ -127,7 +121,6 @@ type sampleChartPayload = {
     };
   };
 };
-
 
 const TagChartsRenderer: FC<TagChartsRendererProps> = (props) => {
   const { accountId } = props;
