@@ -2,14 +2,14 @@ const models = require('../models');
 
 exports.serviceName = 'accountTagCharts';
 
-exports.create = async ({ account_id, tag_chart_id }, options = {}) => {
+exports.create = async ({ accountId, tagChartId }, options = {}) => {
   try {
     const accountTagChartModel = models.account_tag_charts;
 
     const result = await accountTagChartModel.create(
       {
-        account_id,
-        tag_chart_id,
+        accountId,
+        tagChartId,
       },
       options
     );
