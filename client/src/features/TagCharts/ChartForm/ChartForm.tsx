@@ -5,15 +5,18 @@ import { MinusCircleOutlined } from '@ant-design/icons';
 
 import TagSelector from '../../TagSelector';
 
+import type { FormProps } from 'antd';
 import type { ChartShape } from '../TagChartsBuilder/TagChartsBuilder';
 
 interface ChartFormProps {
+  form?: FormProps['form'];
   onSubmit?: (values: any) => void;
   defaultValues?: ChartShape;
+  actionButton?: boolean;
 }
 
 const ChartForm: FC<ChartFormProps> = (props) => {
-  const { onSubmit, defaultValues } = props;
+  const { onSubmit, defaultValues, form, actionButton = true } = props;
 
   const [chartForm] = Form.useForm<ChartShape>();
 
@@ -22,7 +25,7 @@ const ChartForm: FC<ChartFormProps> = (props) => {
       onSubmit({
         ...formValues,
         data: {
-          tags: formValues.shape.yKeys.map((key) => key.tagId),
+          tags: formValues.series.map((key) => key.tagId),
         },
       });
   };
@@ -33,7 +36,7 @@ const ChartForm: FC<ChartFormProps> = (props) => {
       layout="vertical"
       onFinish={_onSubmit}
       initialValues={defaultValues}
-      form={chartForm}
+      form={form ?? chartForm}
     >
       <Form.Item
         name={'title'}
@@ -58,7 +61,7 @@ const ChartForm: FC<ChartFormProps> = (props) => {
       <Form.Item name={['preFilter', 'mainTag']} label="Main Tag">
         <TagSelector allowClear />
       </Form.Item>
-      <Form.List name={['shape', 'yKeys']}>
+      <Form.List name={['series']}>
         {(fields, { add, remove }) => (
           <>
             <span>Tags</span>
@@ -94,7 +97,7 @@ const ChartForm: FC<ChartFormProps> = (props) => {
           </>
         )}
       </Form.List>
-      <Button htmlType="submit">Submit</Button>
+      {!!actionButton && <Button htmlType="submit">Submit</Button>}
     </Form>
   );
 };
