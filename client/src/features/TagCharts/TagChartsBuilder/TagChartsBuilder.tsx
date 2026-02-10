@@ -1,12 +1,20 @@
 import { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Card } from 'antd';
+// components
+import { Button, Card, Form } from 'antd';
 
 import ChartForm from '../ChartForm';
 import ChartRenderer from '../TagChartsRenderer/ChartRenderer';
-import { ChartData } from '../TagChartsRenderer/ChartRenderer/ChartRenderer';
-import { RootState } from '../../../integration/store';
+
+// types
+import type { ChartData } from '../TagChartsRenderer/TagChartsRenderer';
+import type { RootState } from '../../../integration/store';
+import type { Account } from '../../../integration/apis/accounts';
+
+export interface TagChartsBuilderProps {
+  accountId: Account['unique_code'];
+}
 
 export interface ChartShape {
   title: string;
@@ -27,8 +35,9 @@ export interface ChartShape {
 }
 
 const TagChartsBuilder: FC = () => {
-  const [charts, setCharts] = useState<ChartShape[]>([]);
-  const [forPreview, setForPreview] = useState<ChartShape | null>(null);
+  const [forPreview, _setForPreview] = useState<ChartShape | null>(null);
+
+  const [formInstance] = Form.useForm();
 
   const reduxTags = useSelector((state: RootState) => state.tags);
 
@@ -66,15 +75,27 @@ const TagChartsBuilder: FC = () => {
       <Card>
         <ChartForm
           onSubmit={(data) => {
-            setForPreview(data);
+            _setForPreview(data);
           }}
+          form={formInstance}
+          actionButton={false}
         />
+        <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+          <Button onClick={formInstance.submit}>Preview</Button>
+        </div>
       </Card>
 
       {forPreview && (
         <div>
           <h1>Sampe Chart render</h1>
           <ChartRenderer chartData={_addDummyChartData(forPreview)} />
+          <Button
+            onClick={() => {
+              console.log(forPreview);
+            }}
+          >
+            Add Chart
+          </Button>
         </div>
       )}
     </div>

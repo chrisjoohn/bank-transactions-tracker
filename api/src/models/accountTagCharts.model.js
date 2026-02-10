@@ -21,7 +21,6 @@ module.exports = (sequelize, DataTypes) => {
 
       this.priority = {
         type: DataTypes.INTEGER,
-        allowNull: false,
       };
     }
   }
