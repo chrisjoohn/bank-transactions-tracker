@@ -10,7 +10,7 @@ import ChartRenderer from '../TagChartsRenderer/ChartRenderer';
 // types
 import type { ChartData } from '../TagChartsRenderer/TagChartsRenderer';
 import type { RootState } from '../../../integration/store';
-import type { Account } from '../../../integration/apis/accounts';
+import { accountsApi, type Account } from '../../../integration/apis/accounts';
 
 export interface TagChartsBuilderProps {
   accountId: Account['unique_code'];
@@ -34,10 +34,13 @@ export interface ChartShape {
   }[];
 }
 
-const TagChartsBuilder: FC = () => {
+const TagChartsBuilder: FC<TagChartsBuilderProps> = (props) => {
+  const { accountId } = props;
   const [forPreview, _setForPreview] = useState<ChartShape | null>(null);
 
   const [formInstance] = Form.useForm();
+
+  const [createChart] = accountsApi.useCreateChartMutation();
 
   const reduxTags = useSelector((state: RootState) => state.tags);
 
@@ -70,6 +73,12 @@ const TagChartsBuilder: FC = () => {
     return chartData;
   };
 
+  const _createChart = () => {
+    if (forPreview) {
+      createChart?.({ id: accountId, requestBody: forPreview });
+    }
+  };
+
   return (
     <div>
       <Card>
@@ -87,15 +96,9 @@ const TagChartsBuilder: FC = () => {
 
       {forPreview && (
         <div>
-          <h1>Sampe Chart render</h1>
+          <h1>Sample Chart render</h1>
           <ChartRenderer chartData={_addDummyChartData(forPreview)} />
-          <Button
-            onClick={() => {
-              console.log(forPreview);
-            }}
-          >
-            Add Chart
-          </Button>
+          <Button onClick={_createChart}>Add Chart</Button>
         </div>
       )}
     </div>
