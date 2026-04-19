@@ -7,6 +7,7 @@ import { tagsApi } from '../../integration/apis';
 
 export interface TagSelectorProps extends Omit<SelectProps, 'options' | 'filterOption'> {}
 
+// TODO: check if there's a way to return more data other than just entity unique_code
 const TagSelector: FC<TagSelectorProps> = (props) => {
   const { data: tags } = tagsApi.useGetTagsQuery();
 
@@ -25,7 +26,7 @@ const TagSelector: FC<TagSelectorProps> = (props) => {
   };
 
   return (
-    <Select options={options} style={{ width: '100%' }} filterOption={filterOption} {...props} />
+    <Select options={options} style={{ width: '100%', minWidth: '200px' }} filterOption={filterOption} {...props} />
   );
 };
 

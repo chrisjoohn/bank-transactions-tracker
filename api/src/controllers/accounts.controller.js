@@ -559,3 +559,23 @@ exports.findCharts = async (req, res) => {
     });
   }
 };
+
+exports.findChartData = async (req, res) => {
+  try {
+    const { chartId } = req.params;
+    const account = req.account;
+
+    const chartData = await tagChartsService.findChartData({
+      accountId: account.id,
+      chartId,
+    });
+
+    res.json({
+      data: chartData,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};

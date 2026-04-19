@@ -16,6 +16,8 @@ import Analytics from '../TransactionsAnalytics';
 import TransactionList from '../TransactionList';
 import AccountAnalytics from '../AccountAnalytics';
 
+import TagCharts from '../TagCharts';
+
 // reusable components
 import { DateFilter } from './components';
 
@@ -62,19 +64,22 @@ const Transactions: FC<TransactionsProps> = (props) => {
 
     if (account.type === 'CREDIT') {
       return (
-        <Card style={{ width: '50%' }}>
-          <h2>Outflow Trend</h2>
-          {dateFilter && (
-            <AccountAnalytics.CashflowLineChart
-              accountId={account.unique_code}
-              dateFilter={{
-                startDate: dateFilter?.start_date,
-                endDate: dateFilter?.end_date,
-                filterType: dateFilterType,
-              }}
-            />
-          )}
-        </Card>
+        <>
+          {/* <Card style={{ width: '50%' }}>
+            <h2>Outflow Trend</h2>
+            {dateFilter && (
+              <AccountAnalytics.CashflowLineChart
+                accountId={account.unique_code}
+                dateFilter={{
+                  startDate: dateFilter?.start_date,
+                  endDate: dateFilter?.end_date,
+                  filterType: dateFilterType,
+                }}
+              />
+            )}
+          </Card> */}
+          <TagCharts.TagChartsRenderer accountId={account.unique_code} />
+        </>
       );
     }
 

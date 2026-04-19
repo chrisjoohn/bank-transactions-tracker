@@ -29,6 +29,7 @@ module.exports = (app) => {
   // chart-related endpoints
   router.post(`/${route}/:id/charts`, controller.createChart);
   router.get(`/${route}/:id/charts`, controller.findCharts);
+  router.get(`/${route}/:id/chart-data/:chartId`, controller.findChartData);
 
 
   router.post(`/${route}/:id/transaction-tags`, controller.createTransactionTag);

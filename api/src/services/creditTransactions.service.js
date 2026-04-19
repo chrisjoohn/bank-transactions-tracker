@@ -134,7 +134,7 @@ exports.findAll = async ({ filters = {}, includes = {} }) => {
               },
             },
             group: ['credit_transaction_id'],
-            having: sequelize.literal(`COUNT(*) = ${tagIds.length}`),
+            having: strict ? sequelize.literal(`COUNT(*) = ${tagIds.length}`) : undefined,
           });
 
           whereCondition['id'] = {

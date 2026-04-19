@@ -37,6 +37,17 @@ exports.findAll = async ({ filters = {} } = {}) => {
             [Op.eq]: user_id,
           };
           break;
+
+        case 'tag_ids':
+          whereCondition['id'] = {
+            [Op.in]: filters[filterKey],
+          }
+          
+          // also handle passing unique_code as id
+          whereCondition['unique_code'] = {
+            [Op.in]: filters[filterKey]
+          }
+          break;
       }
     }
 

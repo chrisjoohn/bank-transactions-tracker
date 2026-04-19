@@ -10,8 +10,10 @@ import { MainLayout } from '../../layouts';
 // pages
 import { Accounts, Tags, Transactions, Landing, Login } from '../../pages';
 
+// TODO: need to fix relative imports
 import AccountDetails from '../../pages/Accounts/AccountDetails';
 import AccountsList from '../../pages/Accounts/AccountsList';
+import AccountCharts from '../../pages/Accounts/AccountCharts';
 
 import TransactionDetails from '../../pages/Transactions/TransactionDetails';
 
@@ -38,6 +40,10 @@ const securedRouter = createBrowserRouter([
           {
             path: '/',
             element: <AccountsList />,
+          },
+          {
+            path: ':id/charts',
+            element: <AccountCharts />
           },
           {
             path: ':id',
